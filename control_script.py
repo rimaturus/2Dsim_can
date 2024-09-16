@@ -8,7 +8,7 @@ import time
 bus = can.interface.Bus(channel='vcan0', interface='socketcan')
 
 # Key mapping
-key_codes = {'a': 0, 'd': 1, 'w': 2, 's': 3}
+key_codes = {'d': 0, 'a': 1, 'w': 2, 's': 3}
 
 # Function to send CAN messages
 def send_can_message(can_id, data):

@@ -1,4 +1,6 @@
 // visualization.cpp
+// g++ visualization.cpp -o visualization -lallegro -lallegro_main -lallegro_font -lallegro_ttf -lallegro_primitives -lyaml-cpp -pthread
+
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
@@ -64,7 +66,7 @@ std::vector<Cone> loadCones(const std::string& filename) {
 
 // Color mapping function
 ALLEGRO_COLOR getColor(const std::string& colorName) {
-    if (colorName == "red") return al_map_rgb(255, 0, 0);
+    if (colorName == "yellow") return al_map_rgb(255, 155, 0);
     if (colorName == "blue") return al_map_rgb(0, 0, 255);
     // Add more colors as needed
     return al_map_rgb(255, 255, 255); // Default color
@@ -80,7 +82,7 @@ void drawCones(const std::vector<Cone>& cones) {
 
 // Update steering angle function
 void updateSteeringAngle(Car& car, float deltaTime, std::atomic<bool>* keys) {
-    const float maxSteeringAngle = ALLEGRO_PI / 6; // 30 degrees
+    const float maxSteeringAngle = ALLEGRO_PI / 4; // 45 degrees
     const float steeringSpeed = ALLEGRO_PI;        // Radians per second
 
     if (keys[0].load()) { // A key - turn left
@@ -107,7 +109,7 @@ void updateSteeringAngle(Car& car, float deltaTime, std::atomic<bool>* keys) {
 
 // Function to update car movement
 void updateCar(Car& car, float deltaTime, std::atomic<bool>* keys) {
-    const float acceleration = 200.0f; // Units per second squared
+    const float acceleration = 20.0f; // Units per second squared
     const float friction = 0.99f;      // Friction coefficient
 
     // Update speed
@@ -120,7 +122,7 @@ void updateCar(Car& car, float deltaTime, std::atomic<bool>* keys) {
     car.speed *= friction;
 
     // Limit speed
-    const float maxSpeed = 500.0f;
+    const float maxSpeed = 100.0f;
     if (car.speed > maxSpeed) car.speed = maxSpeed;
     if (car.speed < -maxSpeed) car.speed = -maxSpeed;
 
@@ -309,7 +311,7 @@ int main() {
     std::vector<Cone> cones = loadCones("cones.yaml");
 
     // Initialize car
-    Car car = {400.0f, 300.0f, 0.0f, 0.0f, 0.0f, 50.0f}; // Starting position and parameters
+    Car car = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 50.0f}; // Starting position and parameters
 
     // Atomic flag for thread control
     std::atomic<bool> done(false);

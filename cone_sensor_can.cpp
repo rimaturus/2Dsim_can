@@ -14,6 +14,10 @@
 #include <cstring>
 #include <fcntl.h>
 #include <errno.h>
+#include <random>
+
+// Conversion factor: 50 pixels correspond to 1 meter
+const float PIXELS_PER_METER = 50.0f; // Pixels per meter
 
 // Structure for Cone
 struct Cone {
@@ -90,6 +94,17 @@ int main() {
 
     struct can_frame frame;
 
+    // Random number generators for Gaussian noise
+    std::default_random_engine generator(std::random_device{}());
+
+    // Standard deviations for noise (in meters and degrees)
+    const double rangeNoiseStdDev = 0.1;       // Adjust as needed (meters)
+    const double bearingNoiseStdDev = 1.0;     // Adjust as needed (degrees)
+
+    // Distributions for noise
+    std::normal_distribution<double> rangeNoiseDist(0.0, rangeNoiseStdDev);
+    std::normal_distribution<double> bearingNoiseDist(0.0, bearingNoiseStdDev);
+
     while (true) {
         int nbytes = read(can_socket, &frame, sizeof(struct can_frame));
 
@@ -131,13 +146,21 @@ int main() {
 
         // If all data received, compute range and bearing
         if (has_car_x && has_car_y && has_car_angle) {
-            std::cout << "Received car data: X=" << car_x << ", Y=" << car_y
-                      << ", Angle=" << car_angle * 180.0 / M_PI << " degrees" << std::endl;
+            // Convert car position from pixels to meters
+            float car_x_m = car_x / PIXELS_PER_METER;
+            float car_y_m = car_y / PIXELS_PER_METER;
+
+            std::cout << "Received car data: X=" << car_x_m << " m, Y=" << car_y_m
+                      << " m, Angle=" << car_angle * 180.0 / M_PI << " degrees" << std::endl;
 
             // Compute range and bearing to each cone
             for (const auto& cone : cones) {
-                float dx = cone.x - car_x;
-                float dy = cone.y - car_y;
+                // Convert cone position from pixels to meters
+                float cone_x_m = cone.x / PIXELS_PER_METER;
+                float cone_y_m = cone.y / PIXELS_PER_METER;
+
+                float dx = cone_x_m - car_x_m;
+                float dy = cone_y_m - car_y_m;
 
                 // Rotate into car's coordinate frame (negative angle)
                 float cos_angle = cos(-car_angle);
@@ -152,9 +175,18 @@ int main() {
                 // Convert bearing to degrees
                 float bearing_deg = bearing * 180.0 / M_PI;
 
+                // Add Gaussian noise to range and bearing
+                double noisyRange = range + rangeNoiseDist(generator);
+                double noisyBearingDeg = bearing_deg + bearingNoiseDist(generator);
+
+                // Ensure range is not negative
+                if (noisyRange < 0.0) {
+                    noisyRange = 0.0;
+                }
+
                 // Output the result
-                std::cout << "Cone at (" << cone.x << ", " << cone.y << "): Range = "
-                          << range << ", Bearing = " << bearing_deg << " degrees" << std::endl;
+                std::cout << "Cone at (" << cone_x_m << " m, " << cone_y_m << " m): Range = "
+                          << noisyRange << " m, Bearing = " << noisyBearingDeg << " degrees" << std::endl;
             }
 
             std::cout << "-----\n" << std::endl;
