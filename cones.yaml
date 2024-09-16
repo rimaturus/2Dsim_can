@@ -1,0 +1,13 @@
+cones:
+  - x: 200
+    y: 150
+    color: yellow
+  - x: 300
+    y: 250
+    color: blue
+  - x: 400
+    y: 350
+    color: yellow
+  - x: 500
+    y: 450
+    color: blue
