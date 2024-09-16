@@ -1,10 +1,11 @@
 # control_script.py
 
 import can
-from pynput import keyboard
+from pynput import keyboard  # Using pynput to avoid needing root privileges
+import time
 
 # Create a bus instance
-bus = can.interface.Bus(channel='vcan0', bustype='socketcan')
+bus = can.interface.Bus(channel='vcan0', interface='socketcan')
 
 # Key mapping
 key_codes = {'a': 0, 'd': 1, 'w': 2, 's': 3}
