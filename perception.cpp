@@ -1,6 +1,3 @@
-// cone_sensor_can.cpp
-// g++ cone_sensor_can.cpp -o cone_sensor_can -lyaml-cpp
-
 #include <iostream>
 #include <vector>
 #include <string>
@@ -15,15 +12,26 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <random>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
 
 // Conversion factor: 50 pixels correspond to 1 meter
-const float PIXELS_PER_METER = 50.0f; // Pixels per meter
+const float PIXELS_PER_METER = 10.0f; // Pixels per meter
 
 // Structure for Cone
 struct Cone {
     float x;
     float y;
     std::string color;
+};
+
+// Structure for CAN data to send
+struct CANData {
+    int id;
+    float range;
+    float bearing;
 };
 
 // Function to load cones from YAML file
@@ -54,7 +62,11 @@ int setupCANSocket(const std::string& interface_name) {
     }
 
     strcpy(ifr.ifr_name, interface_name.c_str());
-    ioctl(can_socket, SIOCGIFINDEX, &ifr);
+    if (ioctl(can_socket, SIOCGIFINDEX, &ifr) < 0) {
+        perror("Error getting interface index");
+        close(can_socket);
+        return -1;
+    }
 
     addr.can_family = AF_CAN;
     addr.can_ifindex = ifr.ifr_ifindex;
@@ -62,23 +74,66 @@ int setupCANSocket(const std::string& interface_name) {
     // Bind the socket to the CAN interface
     if (bind(can_socket, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         perror("Error in socket bind");
+        close(can_socket);
         return -2;
     }
 
     // Set socket to non-blocking mode
     int flags = fcntl(can_socket, F_GETFL, 0);
-    fcntl(can_socket, F_SETFL, flags | O_NONBLOCK);
+    if (fcntl(can_socket, F_SETFL, flags | O_NONBLOCK) < 0) {
+        perror("Error setting non-blocking mode");
+        close(can_socket);
+        return -3;
+    }
 
     return can_socket;
+}
+
+// Thread function to send CAN data
+void sendCANData(int send_can_socket, std::queue<CANData>& dataQueue, std::mutex& queueMutex, std::condition_variable& cv) {
+    while (true) {
+        std::unique_lock<std::mutex> lock(queueMutex);
+        cv.wait(lock, [&]{ return !dataQueue.empty(); });
+
+        while (!dataQueue.empty()) {
+            CANData data = dataQueue.front();
+            dataQueue.pop();
+
+            // Prepare CAN frame to send
+            struct can_frame out_frame;
+            out_frame.can_id = data.id;
+            out_frame.can_dlc = 8; // 4 bytes for range, 4 bytes for bearing
+
+            // Pack range and bearing into data
+            memcpy(out_frame.data, &data.range, sizeof(float));
+            memcpy(out_frame.data + 4, &data.bearing, sizeof(float));
+
+            // Send the CAN frame
+            int bytes_sent = write(send_can_socket, &out_frame, sizeof(struct can_frame));
+            if (bytes_sent != sizeof(struct can_frame)) {
+                perror("Failed to send CAN frame for cone");
+            } else {
+                // Uncomment the following line for debugging
+                std::cout << "Sent CAN frame with Range: " << data.range << " m and Bearing: " << data.bearing << " degrees." << std::endl;
+            }
+        }
+    }
 }
 
 int main() {
     // Load cones from YAML file
     std::vector<Cone> cones = loadCones("cones.yaml");
 
-    // Set up CAN socket
+    // Set up CAN socket for receiving (car data)
     int can_socket = setupCANSocket("vcan0");
     if (can_socket < 0) {
+        return -1;
+    }
+
+    // Set up CAN socket for sending (cone data)
+    int send_can_socket = setupCANSocket("vcan0");
+    if (send_can_socket < 0) {
+        close(can_socket);
         return -1;
     }
 
@@ -105,6 +160,14 @@ int main() {
     std::normal_distribution<double> rangeNoiseDist(0.0, rangeNoiseStdDev);
     std::normal_distribution<double> bearingNoiseDist(0.0, bearingNoiseStdDev);
 
+    // Queue to hold data to send
+    std::queue<CANData> dataQueue;
+    std::mutex queueMutex;
+    std::condition_variable cv;
+
+    // Start sending thread
+    std::thread senderThread(sendCANData, send_can_socket, std::ref(dataQueue), std::ref(queueMutex), std::ref(cv));
+
     while (true) {
         int nbytes = read(can_socket, &frame, sizeof(struct can_frame));
 
@@ -118,8 +181,13 @@ int main() {
             continue;
         }
 
+        if (nbytes < sizeof(struct can_frame)) {
+            std::cerr << "Incomplete CAN frame received." << std::endl;
+            continue;
+        }
+
         if (frame.can_dlc != sizeof(float)) {
-            std::cerr << "Received CAN frame with unexpected data length" << std::endl;
+            // std::cerr << "Received CAN frame with unexpected data length" << std::endl;
             continue;
         }
 
@@ -154,7 +222,9 @@ int main() {
                       << " m, Angle=" << car_angle * 180.0 / M_PI << " degrees" << std::endl;
 
             // Compute range and bearing to each cone
-            for (const auto& cone : cones) {
+            for (size_t i = 0; i < cones.size(); ++i) {
+                const auto& cone = cones[i];
+
                 // Convert cone position from pixels to meters
                 float cone_x_m = cone.x / PIXELS_PER_METER;
                 float cone_y_m = cone.y / PIXELS_PER_METER;
@@ -184,9 +254,21 @@ int main() {
                     noisyRange = 0.0;
                 }
 
+                // Filter out cones beyond 5 meters
+                if (noisyRange > 5.0) {
+                    continue; // Skip this cone
+                }
+
                 // Output the result
                 std::cout << "Cone at (" << cone_x_m << " m, " << cone_y_m << " m): Range = "
                           << noisyRange << " m, Bearing = " << noisyBearingDeg << " degrees" << std::endl;
+
+                // Push data to the queue
+                {
+                    std::lock_guard<std::mutex> lock(queueMutex);
+                    dataQueue.push({0x400 + static_cast<int>(i), static_cast<float>(noisyRange), static_cast<float>(noisyBearingDeg)});
+                }
+                cv.notify_one();
             }
 
             std::cout << "-----\n" << std::endl;
@@ -198,8 +280,12 @@ int main() {
         }
     }
 
-    // Close CAN socket
+    // Close CAN socket (This line will only be reached if the loop breaks)
     close(can_socket);
+    close(send_can_socket);
+
+    // Join the sender thread (Not actually needed in this infinite loop, but good practice)
+    senderThread.join();
 
     return 0;
 }
