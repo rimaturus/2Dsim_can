@@ -17,9 +17,3 @@
 # 0x301 -> pedal position [units]
 
 # 0x(400 + hex(i)) -> detected cone i (4 byte: range [m] + 4 Byte: bearing [rad])
-
-
-# ToDO
-1) Implement a yaml file to load all relevant parameters (car specs, conversione pixel2meters, etc. )
-2) Add a more sophisticated vehicle model (hot swappable model option)
-3) Make a more modular code

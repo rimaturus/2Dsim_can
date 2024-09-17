@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <condition_variable>
 
-// YAML-CPP for parsing cones.yaml
+// YAML-CPP for parsing cones.yaml and config.yaml
 #include <yaml-cpp/yaml.h>
 
 // CAN headers
@@ -22,13 +22,26 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-// Constants
-const int STEERING_CAN_ID = 0x300;    // Steering angle in degrees
-const int THROTTLE_CAN_ID = 0x301;    // Throttle in arbitrary units
-const int CONE_CAN_ID_START = 0x400;  // Starting CAN ID for cones
+// Constants (will be loaded from config)
+float PIXELS_PER_METER = 10.0f;
 
-// Conversion factor: 10 pixels = 1 meter
-const float PIXELS_PER_METER = 10.0f;
+// CAN IDs
+int STEERING_CAN_ID = 0x300;    // Steering angle in degrees
+int THROTTLE_CAN_ID = 0x301;    // Throttle in arbitrary units
+int CONE_CAN_ID_START = 0x400;  // Starting CAN ID for cones
+
+// PID Controller parameters
+float Kp = 1.0f;
+float Ki = 0.0f;
+float Kd = 0.1f;
+float setpoint = 0.0f; // Desired deviation (centerline)
+
+// Control parameters
+float target_speed = 5.0f; // meters per second
+float throttle_Kp = 1.0f; // Proportional gain for throttle control
+
+// Perception parameters
+float MAX_CONE_DETECTION_RANGE = 5.0f;
 
 // PID Controller Class
 class PIDController {
@@ -154,9 +167,76 @@ void signal_handler(int signum) {
     control_cond.notify_all();
 }
 
+// Function to load configuration from config.yaml
+void loadConfig(const std::string& filename) {
+    try {
+        YAML::Node config = YAML::LoadFile(filename);
+
+        // Load PIXELS_PER_METER
+        if (config["PIXELS_PER_METER"]) {
+            PIXELS_PER_METER = config["PIXELS_PER_METER"].as<float>();
+        }
+
+        // Load CAN IDs
+        if (config["CAN_IDS"]) {
+            if (config["CAN_IDS"]["STEERING_CAN_ID"]) {
+                STEERING_CAN_ID = config["CAN_IDS"]["STEERING_CAN_ID"].as<int>();
+            }
+            if (config["CAN_IDS"]["THROTTLE_CAN_ID"]) {
+                THROTTLE_CAN_ID = config["CAN_IDS"]["THROTTLE_CAN_ID"].as<int>();
+            }
+            if (config["CAN_IDS"]["CONE_CAN_ID_START"]) {
+                CONE_CAN_ID_START = config["CAN_IDS"]["CONE_CAN_ID_START"].as<int>();
+            }
+        }
+
+        // Load PID Controller parameters
+        if (config["pid_controller"]) {
+            Kp = config["pid_controller"]["Kp"].as<float>();
+            Ki = config["pid_controller"]["Ki"].as<float>();
+            Kd = config["pid_controller"]["Kd"].as<float>();
+            setpoint = config["pid_controller"]["setpoint"].as<float>();
+        }
+
+        // Load Control parameters
+        if (config["control"]) {
+            target_speed = config["control"]["target_speed"].as<float>();
+            throttle_Kp = config["control"]["throttle_Kp"].as<float>();
+        }
+
+        // Load perception parameters
+        if (config["perception"]) {
+            if (config["perception"]["detection_range"]) {
+                MAX_CONE_DETECTION_RANGE = config["perception"]["detection_range"].as<float>();
+            }
+        }
+
+        // Optionally print out loaded values for debugging
+        std::cout << "Configuration loaded from " << filename << std::endl;
+        std::cout << "PIXELS_PER_METER: " << PIXELS_PER_METER << std::endl;
+        std::cout << "CAN IDs:" << std::endl;
+        std::cout << "  STEERING_CAN_ID: 0x" << std::hex << STEERING_CAN_ID << std::dec << std::endl;
+        std::cout << "  THROTTLE_CAN_ID: 0x" << std::hex << THROTTLE_CAN_ID << std::dec << std::endl;
+        std::cout << "  CONE_CAN_ID_START: 0x" << std::hex << CONE_CAN_ID_START << std::dec << std::endl;
+        std::cout << "PID Controller parameters:" << std::endl;
+        std::cout << "  Kp: " << Kp << ", Ki: " << Ki << ", Kd: " << Kd << ", Setpoint: " << setpoint << std::endl;
+        std::cout << "Control parameters:" << std::endl;
+        std::cout << "  Target speed: " << target_speed << " m/s" << std::endl;
+        std::cout << "  Throttle Kp: " << throttle_Kp << std::endl;
+        std::cout << "Perception parameters:" << std::endl;
+        std::cout << "  Max cone detection range: " << MAX_CONE_DETECTION_RANGE << " m" << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "[ERROR] Failed to load " << filename << ": " << e.what() << std::endl;
+        std::cerr << "Using default configuration values." << std::endl;
+    }
+}
+
 int main() {
     // Register signal handler for CTRL+C
     signal(SIGINT, signal_handler);
+
+    // Load configuration
+    loadConfig("config.yaml");
 
     // Load cones.yaml to map cone indices to colors
     std::unordered_map<int, std::string> cone_colors;
@@ -179,19 +259,11 @@ int main() {
     // Initialize CAN socket (single socket for both sending and receiving)
     int can_sock = initialize_can_socket("vcan0");
 
-    // Initialize separate send and receive sockets if necessary
-    // int recv_sock = initialize_can_socket("vcan0");
-    // int send_sock = initialize_can_socket("vcan0");
     // For simplicity, using a single socket
     int recv_sock = can_sock;
     int send_sock = can_sock;
 
-    // Initialize PID controller with sample gains
-    float Kp = 1.0f;
-    float Ki = 0.0f;
-    float Kd = 0.1f;
-    float setpoint = 0.0f; // Desired deviation (centerline)
-
+    // Initialize PID controller with loaded gains
     PIDController pid(Kp, Ki, Kd, setpoint);
 
     // Thread to receive CAN messages
@@ -211,7 +283,7 @@ int main() {
                                   << " | Range: " << range << " m | Bearing: " << bearing << " degrees" << std::endl;
 
                         // Validate range and bearing
-                        if (range < 0.0f || range > 5.0f) {
+                        if (range < 0.0f || range > MAX_CONE_DETECTION_RANGE) {
                             std::cerr << "[WARN] Invalid range for Cone " << cone_index
                                       << ": " << range << " m" << std::endl;
                             continue;
@@ -276,7 +348,7 @@ int main() {
 
                 for (const auto& [range, bearing] : left_cones) {
                     float weight = 1.0f / (range + 0.1f); // Weight inversely proportional to range
-                    weighted_centerline_bearing += weight * (bearing + 90.0f); // Assume car should be facing 90 degrees to cone
+                    weighted_centerline_bearing += weight * (bearing + 90.0f); // Adjust bearing
                     total_weight += weight;
                 }
 
@@ -330,10 +402,8 @@ int main() {
             steering = std::max(std::min(steering, 60.0f), -60.0f);
 
             // Compute throttle command (simple proportional control to maintain speed)
-            float target_speed = 5.0f; // meters per second (adjust as needed)
             float current_speed = 0.0f; // Placeholder; replace with actual speed sensor data
 
-            float throttle_Kp = 1.0f;
             float throttle = throttle_Kp * (target_speed - current_speed);
 
             // Clamp throttle to [0, 100]

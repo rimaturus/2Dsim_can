@@ -1,66 +1,85 @@
-// visualization.cpp
+#include "visualization.h"
 
-#include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
-#include <yaml-cpp/yaml.h>
-#include <vector>
-#include <string>
-#include <cmath>
-#include <cstdio>
-#include <cstring>
 #include <fcntl.h>
 #include <errno.h>
 #include <thread>
-#include <mutex>
-#include <atomic>
 #include <chrono>
-#include <iostream> // Added for std::cerr and std::cout
-
-// CAN headers
-#include <linux/can.h>
-#include <linux/can/raw.h>
-#include <net/if.h>
+#include <cstring>
+#include <iostream> // For std::cerr and std::cout
+#include <cmath>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
+#include <net/if.h>
 #include <unistd.h>
 
-const float PIXELS_PER_METER = 10.0f; // Pixels per meter
+// Constants definitions
+float PIXELS_PER_METER = 10.0f; // Default value, will be loaded from config
 
 // CAN IDs
-const int STEERING_CAN_ID = 0x300; // Steering angle in degrees
-const int THROTTLE_CAN_ID = 0x301; // Throttle in units
-const int CAR_X_CAN_ID = 0x200;    // X_car
-const int CAR_Y_CAN_ID = 0x201;    // Y_car
-const int CAR_ANGLE_CAN_ID = 0x202;// Yaw_car
+int STEERING_CAN_ID = 0x300; // Steering angle in degrees
+int THROTTLE_CAN_ID = 0x301; // Throttle in units
+int CAR_X_CAN_ID = 0x200;    // X_car
+int CAR_Y_CAN_ID = 0x201;    // Y_car
+int CAR_ANGLE_CAN_ID = 0x202;// Yaw_car
 
+double DETECTION_RANGE = 5.0;         // Default detection range in meters
 
-struct Cone {
-    float x;
-    float y;
-    std::string color;
-};
+// Load configuration from YAML file
+void loadConfig(const std::string& filename, Car& car) {
+    try {
+        YAML::Node config = YAML::LoadFile(filename);
 
-struct Car {
-    float x;              // m
-    float y;              // m
-    float angle;          // radians
-    float steeringAngle;  // degrees
-    float throttle;       // units
-};
+        // Load PIXELS_PER_METER
+        if (config["PIXELS_PER_METER"]) {
+            PIXELS_PER_METER = config["PIXELS_PER_METER"].as<float>();
+        }
+
+        // Load car parameters
+        if (config["car"]) {
+            car.params.wheelbase = config["car"]["wheelbase"].as<float>();
+            car.params.max_throttle = config["car"]["max_throttle"].as<float>();
+            car.params.max_speed = config["car"]["max_speed"].as<float>();
+        }
+
+        // Load CAN IDs
+        if (config["CAN_IDS"]) {
+            STEERING_CAN_ID = config["CAN_IDS"]["STEERING_CAN_ID"].as<int>();
+            THROTTLE_CAN_ID = config["CAN_IDS"]["THROTTLE_CAN_ID"].as<int>();
+            CAR_X_CAN_ID = config["CAN_IDS"]["CAR_X_CAN_ID"].as<int>();
+            CAR_Y_CAN_ID = config["CAN_IDS"]["CAR_Y_CAN_ID"].as<int>();
+            CAR_ANGLE_CAN_ID = config["CAN_IDS"]["CAR_ANGLE_CAN_ID"].as<int>();
+        }
+
+        if (config["perception"]) {
+            DETECTION_RANGE = config["perception"]["detection_range"].as<double>();
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Error loading configuration from " << filename << ": " << e.what() << std::endl;
+        std::cerr << "Using default configuration values." << std::endl;
+    }
+}
 
 // Load cones from YAML file
 std::vector<Cone> loadCones(const std::string& filename) {
-    YAML::Node conesNode = YAML::LoadFile(filename)["cones"];
     std::vector<Cone> cones;
-
-    for (const auto& node : conesNode) {
-        Cone cone;
-        cone.x = node["x"].as<float>();
-        cone.y = node["y"].as<float>();
-        cone.color = node["color"].as<std::string>();
-        cones.push_back(cone);
+    try {
+        YAML::Node conesNode = YAML::LoadFile(filename)["cones"];
+        if (!conesNode) {
+            std::cerr << "Error: 'cones' key not found in " << filename << std::endl;
+            return cones;
+        }
+        for (const auto& node : conesNode) {
+            Cone cone;
+            cone.x_pixels = node["x"].as<float>(); // Positions in pixels
+            cone.y_pixels = node["y"].as<float>();
+            cone.color = node["color"].as<std::string>();
+            cones.push_back(cone);
+        }
+        std::cout << "Loaded " << cones.size() << " cones from " << filename << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Error loading cones from " << filename << ": " << e.what() << std::endl;
     }
     return cones;
 }
@@ -77,22 +96,9 @@ ALLEGRO_COLOR getColor(const std::string& colorName) {
 void drawCones(const std::vector<Cone>& cones) {
     for (const auto& cone : cones) {
         ALLEGRO_COLOR color = getColor(cone.color);
-        al_draw_filled_circle(cone.x, cone.y, 5, color);
+        al_draw_filled_circle(cone.x_pixels, cone.y_pixels, 5, color);
     }
 }
-
-// Update camera position (Removed for fixed camera)
-/*
-void updateCamera(const Car& car, float displayWidth, float displayHeight) {
-    ALLEGRO_TRANSFORM transform;
-    al_identity_transform(&transform);
-
-    // Center the car on the screen
-    al_translate_transform(&transform, displayWidth / 2 - car.x, displayHeight / 2 - car.y);
-
-    al_use_transform(&transform);
-}
-*/
 
 // CAN-sender (float)
 void sendFloatCAN(int send_can_socket, int can_id, float value) {
@@ -136,8 +142,6 @@ void receiveCANMessagesThread(int can_socket, std::atomic<bool>& done, Car& car,
                     std::lock_guard<std::mutex> lock(carMutex);
                     car.steeringAngle = steeringDeg;
                 }
-                // DEBUG
-                // printf("Received Steering Angle: %.2f degrees\n", steeringDeg);
             }
         }
         else if (frame.can_id == THROTTLE_CAN_ID) {
@@ -148,8 +152,6 @@ void receiveCANMessagesThread(int can_socket, std::atomic<bool>& done, Car& car,
                     std::lock_guard<std::mutex> lock(carMutex);
                     car.throttle = throttle;
                 }
-                // DEBUG
-                // printf("Received Throttle: %.2f units\n", throttle);
             }
         }
     }
@@ -170,56 +172,82 @@ void sendCarDataThread(int send_can_socket, Car& car, std::mutex& carMutex, std:
     }
 }
 
-float calculateDistance(float x1, float y1, float x2, float y2) {
-    float dx = x2 - x1;
-    float dy = y2 - y1;
+float calculateDistance(float x1_pixels, float y1_pixels, float x2_pixels, float y2_pixels) {
+    float dx = x2_pixels - x1_pixels;
+    float dy = y2_pixels - y1_pixels;
     return sqrt(dx * dx + dy * dy);
 }
 
-int main() {
-    // Initialize Allegro
+// Initialize Allegro and related components
+bool initializeAllegro(ALLEGRO_DISPLAY*& display, ALLEGRO_FONT*& font, ALLEGRO_EVENT_QUEUE*& event_queue, ALLEGRO_TIMER*& timer) {
     if (!al_init()) {
         fprintf(stderr, "Failed to initialize Allegro.\n");
-        return -1;
+        return false;
     }
 
     if (!al_init_primitives_addon()) {
         fprintf(stderr, "Failed to initialize primitives addon.\n");
-        return -1;
+        return false;
+    } else {
+        std::cout << "Allegro primitives addon initialized successfully." << std::endl;
     }
 
     if (!al_init_font_addon()) {
         fprintf(stderr, "Failed to initialize font addon.\n");
-        return -1;
+        return false;
     }
 
     if (!al_init_ttf_addon()) {
         fprintf(stderr, "Failed to initialize TTF addon.\n");
-        return -1;
+        return false;
     }
 
     // Create display
-    ALLEGRO_DISPLAY* display = al_create_display(800, 600);
+    display = al_create_display(800, 600);
     if (!display) {
         fprintf(stderr, "Failed to create display.\n");
-        return -1;
+        return false;
     }
 
     // Load font
-    ALLEGRO_FONT* font = al_create_builtin_font();
+    font = al_create_builtin_font();
     if (!font) {
         fprintf(stderr, "Failed to create built-in font.\n");
-        return -1;
+        al_destroy_display(display);
+        return false;
     }
 
     // Event queue and timer
-    ALLEGRO_EVENT_QUEUE* event_queue = al_create_event_queue();
-    ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60); // 60 FPS
+    event_queue = al_create_event_queue();
+    timer = al_create_timer(1.0 / 60); // 60 FPS
 
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
     al_register_event_source(event_queue, al_get_display_event_source(display));
 
-    // CAN socket setup for receiving (steering and throttle)
+    return true;
+}
+
+// Cleanup Allegro components
+void cleanupAllegro(ALLEGRO_DISPLAY* display, ALLEGRO_FONT* font, ALLEGRO_TIMER* timer, ALLEGRO_EVENT_QUEUE* event_queue) {
+    if (font) {
+        al_destroy_font(font);
+    }
+    al_shutdown_ttf_addon();
+    al_shutdown_font_addon();
+
+    if (timer) {
+        al_destroy_timer(timer);
+    }
+    if (event_queue) {
+        al_destroy_event_queue(event_queue);
+    }
+    if (display) {
+        al_destroy_display(display);
+    }
+}
+
+// Setup CAN socket for receiving
+int setupCANSocket(const char* interface_name) {
     int can_socket;
     struct sockaddr_can addr;
     struct ifreq ifr;
@@ -229,7 +257,7 @@ int main() {
         return -1;
     }
 
-    strcpy(ifr.ifr_name, "vcan0");
+    strcpy(ifr.ifr_name, interface_name);
     if (ioctl(can_socket, SIOCGIFINDEX, &ifr) < 0) {
         perror("Error getting interface index");
         close(can_socket);
@@ -253,21 +281,23 @@ int main() {
         return -3;
     }
 
-    // Sending CAN socket setup
+    return can_socket;
+}
+
+// Setup CAN socket for sending
+int setupSendCANSocket(const char* interface_name) {
     int send_can_socket;
     struct sockaddr_can send_addr;
     struct ifreq send_ifr;
 
     if ((send_can_socket = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0) {
         perror("Error while opening send socket");
-        close(can_socket);
         return -1;
     }
 
-    strcpy(send_ifr.ifr_name, "vcan0");
+    strcpy(send_ifr.ifr_name, interface_name);
     if (ioctl(send_can_socket, SIOCGIFINDEX, &send_ifr) < 0) {
         perror("Error getting interface index for send socket");
-        close(can_socket);
         close(send_can_socket);
         return -1;
     }
@@ -277,7 +307,6 @@ int main() {
 
     if (bind(send_can_socket, (struct sockaddr *)&send_addr, sizeof(send_addr)) < 0) {
         perror("Error in send socket bind");
-        close(can_socket);
         close(send_can_socket);
         return -2;
     }
@@ -286,16 +315,173 @@ int main() {
     int send_flags = fcntl(send_can_socket, F_GETFL, 0);
     if (fcntl(send_can_socket, F_SETFL, send_flags | O_NONBLOCK) < 0) {
         perror("Error setting non-blocking mode for send socket");
-        close(can_socket);
         close(send_can_socket);
         return -3;
     }
 
-    // Load cones from YAML file
-    std::vector<Cone> cones = loadCones("cones.yaml");
+    return send_can_socket;
+}
+
+// Initialize car
+void initializeCar(Car& car) {
+    car.x = 40.0f; // meters
+    car.y = 30.0f; // meters
+    car.angle = 0.0f;
+    car.steeringAngle = 0.0f;
+    car.throttle = 0.0f;
+    car.speed = 0.0f;
+    // car.params will be loaded from config.yaml
+}
+
+// Update car's position (wrapper function)
+void updateCarPosition(Car& car, float deltaTime, std::mutex& carMutex) {
+    // Call the desired vehicle model function
+    updateCarPositionSingleTrackModel(car, deltaTime, carMutex);
+}
+
+// Update car's position using Single Track Model
+void updateCarPositionSingleTrackModel(Car& car, float deltaTime, std::mutex& carMutex) {
+    // Car parameters
+    const float L = car.params.wheelbase;       // Wheelbase in meters
+    const float MAX_THROTTLE = car.params.max_throttle; // Max throttle units
+    const float MAX_SPEED = car.params.max_speed;      // Max speed in m/s
+
+    std::lock_guard<std::mutex> lock(carMutex);
+
+    // Convert steering angle from degrees to radians
+    float delta = car.steeringAngle * M_PI / 180.0f;
+
+    // Compute speed based on throttle
+    float v = (car.throttle / MAX_THROTTLE) * MAX_SPEED;
+
+    // Compute slip angle beta
+    float beta = atan2(tan(delta), 2.0f); // Assuming front-wheel steering
+
+    // Update position
+    car.x += v * cos(car.angle + beta) * deltaTime;
+    car.y += v * sin(car.angle + beta) * deltaTime;
+
+    // Update orientation
+    car.angle += (v / L) * sin(delta) * deltaTime;
+
+    // Keep angle within -PI to PI
+    if (car.angle > M_PI)
+        car.angle -= 2 * M_PI;
+    else if (car.angle < -M_PI)
+        car.angle += 2 * M_PI;
+
+    // Update car speed
+    car.speed = v;
+}
+
+// Render the scene
+void renderScene(const std::vector<Cone>& cones, Car& car, ALLEGRO_FONT* font, std::mutex& carMutex) {
+    float car_x_pixels, car_y_pixels, car_angle;
+
+    {
+        std::lock_guard<std::mutex> lock(carMutex);
+        car_x_pixels = car.x * PIXELS_PER_METER;
+        car_y_pixels = car.y * PIXELS_PER_METER;
+        car_angle = car.angle;
+    }
+
+    // Apply camera transformation to center the view on the car
+    ALLEGRO_TRANSFORM camera_transform;
+    al_identity_transform(&camera_transform);
+    al_translate_transform(&camera_transform, -car_x_pixels + 400, -car_y_pixels + 300); // Adjust to center car in window
+    al_use_transform(&camera_transform);
+
+    // Clear display
+    al_clear_to_color(al_map_rgb(0, 0, 0));
+
+    // Draw cones
+    drawCones(cones);
+
+    // Draw lines to nearby cones
+    {
+        std::lock_guard<std::mutex> lock(carMutex);
+        for (const auto& cone : cones) {
+            // Calculate distance in pixels
+            float dx = cone.x_pixels - car_x_pixels;
+            float dy = cone.y_pixels - car_y_pixels;
+            float distance_pixels = sqrt(dx * dx + dy * dy);
+
+            // Convert 5 meters to pixels for comparison
+            float detection_radius_pixels = DETECTION_RANGE * PIXELS_PER_METER;
+
+            if (distance_pixels <= detection_radius_pixels) {
+                al_draw_line(car_x_pixels, car_y_pixels, cone.x_pixels, cone.y_pixels, al_map_rgb(0, 255, 0), 1);
+            }
+        }
+    }
+
+    // Draw car
+    ALLEGRO_TRANSFORM carTransform;
+    al_identity_transform(&carTransform);
+    al_rotate_transform(&carTransform, car_angle);
+    al_translate_transform(&carTransform, car_x_pixels, car_y_pixels);
+    al_compose_transform(&carTransform, &camera_transform);
+    al_use_transform(&carTransform);
+
+    // Draw car shape
+    al_draw_filled_rectangle(-10, -5, 10, 5, al_map_rgb(255, 255, 0));
+
+    // Restore transformation to camera
+    al_use_transform(&camera_transform);
+
+    // Reset to identity for UI
+    ALLEGRO_TRANSFORM identity;
+    al_identity_transform(&identity);
+    al_use_transform(&identity);
+
+    // Prepare the coordinate string (in meters)
+    char coordText[100];
+    {
+        std::lock_guard<std::mutex> lock(carMutex);
+        sprintf(coordText, "X: %.2f m, Y: %.2f m", car.x, car.y);
+    }
+
+    // Draw the text at position (10, 10)
+    al_draw_text(font, al_map_rgb(255, 255, 255), 10, 10, ALLEGRO_ALIGN_LEFT, coordText);
+
+    // Flip the display
+    al_flip_display();
+}
+
+int main() {
+    // Initialize Allegro
+    ALLEGRO_DISPLAY* display = nullptr;
+    ALLEGRO_FONT* font = nullptr;
+    ALLEGRO_EVENT_QUEUE* event_queue = nullptr;
+    ALLEGRO_TIMER* timer = nullptr;
+
+    if (!initializeAllegro(display, font, event_queue, timer)) {
+        return -1;
+    }
 
     // Initialize car
-    Car car = {400.0f, 300.0f, 0.0f, 0.0f, 0.0f}; // Starting position (pixels), angle (radians), steeringAngle (degrees), throttle
+    Car car;
+    initializeCar(car);
+
+    // Load configuration
+    loadConfig("config.yaml", car);
+
+    // Setup CAN sockets
+    int can_socket = setupCANSocket("vcan0");
+    if (can_socket < 0) {
+        cleanupAllegro(display, font, timer, event_queue);
+        return -1;
+    }
+
+    int send_can_socket = setupSendCANSocket("vcan0");
+    if (send_can_socket < 0) {
+        close(can_socket);
+        cleanupAllegro(display, font, timer, event_queue);
+        return -1;
+    }
+
+    // Load cones from YAML file
+    std::vector<Cone> cones = loadCones("cones.yaml");
 
     // Mutex for protecting car data
     std::mutex carMutex;
@@ -322,93 +508,10 @@ int main() {
             float deltaTime = 1.0f / 60.0f; // 60 FPS
 
             // Update car's position based on steering angle and throttle
-            {
-                std::lock_guard<std::mutex> lock(carMutex);
-                // Convert steering angle from degrees to radians for calculation
-                float steeringRad = car.steeringAngle * M_PI / 180.0f;
+            updateCarPosition(car, deltaTime, carMutex);
 
-                // Simple car kinematics
-                float wheelBase = 50.0f; // in pixels (1 meter)
-                float angularVelocity = (car.throttle * tan(steeringRad)) / wheelBase; // radians per second
-
-                // Update orientation
-                car.angle += angularVelocity * deltaTime;
-
-                // Keep angle within -PI to PI
-                if (car.angle > ALLEGRO_PI)
-                    car.angle -= 2 * ALLEGRO_PI;
-                else if (car.angle < -ALLEGRO_PI)
-                    car.angle += 2 * ALLEGRO_PI;
-
-                // Update position
-                car.x += car.throttle * cos(car.angle) * deltaTime;
-                car.y += car.throttle * sin(car.angle) * deltaTime;
-            }
-
-            // Render
-            al_clear_to_color(al_map_rgb(0, 0, 0));
-            drawCones(cones);
-
-            // Draw a red dot at the car's position (measurement point)
-            {
-                std::lock_guard<std::mutex> lock(carMutex);
-                al_draw_filled_circle(car.x, car.y, 5, al_map_rgb(255, 0, 0)); // Red dot
-            }
-
-            // Draw lines from the car to each cone within 5 meters
-            {
-                std::lock_guard<std::mutex> lock(carMutex);
-                for (const auto& cone : cones) {
-                    // Calculate distance in meters
-                    float dx = (cone.x - car.x) / PIXELS_PER_METER;
-                    float dy = (cone.y - car.y) / PIXELS_PER_METER;
-                    float distance = sqrt(dx * dx + dy * dy);
-
-                    if (distance <= 5.0f) { // Within 5 meters
-                        al_draw_line(car.x, car.y, cone.x, cone.y, al_map_rgb(0, 255, 0), 1); // Green line
-                    }
-                }
-            }
-
-            // Save the current transformation
-            ALLEGRO_TRANSFORM prevTransform;
-            al_copy_transform(&prevTransform, al_get_current_transform());
-
-            // Build the car transformation
-            ALLEGRO_TRANSFORM carTransform;
-            {
-                std::lock_guard<std::mutex> lock(carMutex);
-                al_identity_transform(&carTransform);
-                al_rotate_transform(&carTransform, car.angle);
-                al_translate_transform(&carTransform, car.x, car.y);
-            }
-            al_use_transform(&carTransform);
-
-            // Draw the car centered at the origin in local coordinates
-            al_draw_filled_rectangle(-10, -5, 10, 5, al_map_rgb(255, 255, 0));
-
-            // Restore the previous transformation
-            al_use_transform(&prevTransform);
-
-            // Reset to identity transform for UI elements
-            ALLEGRO_TRANSFORM identity;
-            al_identity_transform(&identity);
-            al_use_transform(&identity);
-
-            // Prepare the coordinate string (in meters)
-            char coordText[100];
-            {
-                std::lock_guard<std::mutex> lock(carMutex);
-                float car_x_m = car.x / PIXELS_PER_METER;
-                float car_y_m = car.y / PIXELS_PER_METER;
-                sprintf(coordText, "X: %.2f m, Y: %.2f m", car_x_m, car_y_m);
-            }
-
-            // Draw the text at position (10, 10)
-            al_draw_text(font, al_map_rgb(255, 255, 255), 10, 10, ALLEGRO_ALIGN_LEFT, coordText);
-
-            // Flip the display
-            al_flip_display();
+            // Render the scene
+            renderScene(cones, car, font, carMutex);
         }
         else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
             should_exit = true;
@@ -424,17 +527,8 @@ int main() {
     close(can_socket);
     close(send_can_socket);
 
-    // Destroy the font
-    al_destroy_font(font);
-
-    // Shutdown Allegro font add-ons
-    al_shutdown_ttf_addon();
-    al_shutdown_font_addon();
-
-    // Shutdown Allegro
-    al_destroy_timer(timer);
-    al_destroy_event_queue(event_queue);
-    al_destroy_display(display);
+    // Cleanup Allegro
+    cleanupAllegro(display, font, timer, event_queue);
 
     return 0;
 }

@@ -1,0 +1,37 @@
+# config.yaml
+
+# Conversion factor: Pixels per meter
+PIXELS_PER_METER: 10.0
+
+# Car parameters
+car:
+  wheelbase: 2.5          # Wheelbase in meters
+  max_throttle: 100.0     # Maximum throttle units
+  max_speed: 30.0         # Maximum speed in m/s
+
+# Noise parameters for perception
+perception:
+  range_noise_std_dev: 0.1        # Standard deviation of range noise in meters
+  bearing_noise_std_dev: 1.0      # Standard deviation of bearing noise in degrees
+  detection_range: 5.0            # Maximum detection range for cones in meters
+
+# PID Controller parameters
+pid_controller:
+  Kp: 1.0
+  Ki: 0.0
+  Kd: 0.1
+  setpoint: 0.0   # Desired deviation (centerline)
+
+# Control parameters
+control:
+  target_speed: 15.0    # Desired speed in m/s
+  throttle_Kp: 1.0     # Proportional gain for throttle control
+
+# CAN IDs (specified in hexadecimal)
+CAN_IDS:
+  STEERING_CAN_ID: 0x300      # 768 in decimal
+  THROTTLE_CAN_ID: 0x301      # 769 in decimal
+  CAR_X_CAN_ID: 0x200         # 512 in decimal
+  CAR_Y_CAN_ID: 0x201         # 513 in decimal
+  CAR_ANGLE_CAN_ID: 0x202     # 514 in decimal
+  CONE_CAN_ID_START: 0x400    # Starting CAN ID for cones
