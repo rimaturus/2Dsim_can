@@ -1,6 +1,4 @@
 // visualization.cpp
-// g++ visualization.cpp -o visualization -lallegro -lallegro_main -lallegro_font -lallegro_ttf -lallegro_primitives -lyaml-cpp -pthread
-
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
@@ -18,6 +16,7 @@
 #include <mutex>
 #include <atomic>
 #include <chrono>
+#include <iostream> // Added for std::cerr and std::cout
 
 // CAN headers
 #include <linux/can.h>
@@ -27,7 +26,16 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-// Structures
+const float PIXELS_PER_METER = 10.0f; // Pixels per meter
+
+// CAN IDs
+const int STEERING_CAN_ID = 0x300; // Steering angle in degrees
+const int THROTTLE_CAN_ID = 0x301; // Throttle in units
+const int CAR_X_CAN_ID = 0x200;    // X_car
+const int CAR_Y_CAN_ID = 0x201;    // Y_car
+const int CAR_ANGLE_CAN_ID = 0x202;// Yaw_car
+
+
 struct Cone {
     float x;
     float y;
@@ -35,21 +43,14 @@ struct Cone {
 };
 
 struct Car {
-    float x;
-    float y;
-    float angle;         // Orientation of the car in radians
-    float steeringAngle; // Current steering angle in radians
-    float speed;
-    float wheelBase;     // Distance between front and rear axles
+    float x;              // m
+    float y;              // m
+    float angle;          // radians
+    float steeringAngle;  // degrees
+    float throttle;       // units
 };
 
-// Global variables
-std::atomic<bool> keys[4] = {false, false, false, false}; // A, D, W, S
-
-// Mutex for protecting car data
-std::mutex carMutex;
-
-// Function to load cones from YAML file
+// Load cones from YAML file
 std::vector<Cone> loadCones(const std::string& filename) {
     YAML::Node conesNode = YAML::LoadFile(filename)["cones"];
     std::vector<Cone> cones;
@@ -66,13 +67,13 @@ std::vector<Cone> loadCones(const std::string& filename) {
 
 // Color mapping function
 ALLEGRO_COLOR getColor(const std::string& colorName) {
-    if (colorName == "yellow") return al_map_rgb(255, 155, 0);
+    if (colorName == "yellow") return al_map_rgb(255, 255, 0);
     if (colorName == "blue") return al_map_rgb(0, 0, 255);
-    // Add more colors as needed
+
     return al_map_rgb(255, 255, 255); // Default color
 }
 
-// Function to draw cones
+// Draw cones
 void drawCones(const std::vector<Cone>& cones) {
     for (const auto& cone : cones) {
         ALLEGRO_COLOR color = getColor(cone.color);
@@ -80,73 +81,8 @@ void drawCones(const std::vector<Cone>& cones) {
     }
 }
 
-// Update steering angle function
-void updateSteeringAngle(Car& car, float deltaTime, std::atomic<bool>* keys) {
-    const float maxSteeringAngle = ALLEGRO_PI / 4; // 45 degrees
-    const float steeringSpeed = ALLEGRO_PI;        // Radians per second
-
-    if (keys[0].load()) { // A key - turn left
-        car.steeringAngle += steeringSpeed * deltaTime;
-        if (car.steeringAngle > maxSteeringAngle)
-            car.steeringAngle = maxSteeringAngle;
-    } else if (keys[1].load()) { // D key - turn right
-        car.steeringAngle -= steeringSpeed * deltaTime;
-        if (car.steeringAngle < -maxSteeringAngle)
-            car.steeringAngle = -maxSteeringAngle;
-    } else {
-        // Gradually return steering angle to zero
-        if (car.steeringAngle > 0) {
-            car.steeringAngle -= steeringSpeed * deltaTime;
-            if (car.steeringAngle < 0)
-                car.steeringAngle = 0;
-        } else if (car.steeringAngle < 0) {
-            car.steeringAngle += steeringSpeed * deltaTime;
-            if (car.steeringAngle > 0)
-                car.steeringAngle = 0;
-        }
-    }
-}
-
-// Function to update car movement
-void updateCar(Car& car, float deltaTime, std::atomic<bool>* keys) {
-    const float acceleration = 20.0f; // Units per second squared
-    const float friction = 0.99f;      // Friction coefficient
-
-    // Update speed
-    if (keys[2].load()) // W key - accelerate
-        car.speed += acceleration * deltaTime;
-    if (keys[3].load()) // S key - decelerate
-        car.speed -= acceleration * deltaTime;
-
-    // Apply friction
-    car.speed *= friction;
-
-    // Limit speed
-    const float maxSpeed = 100.0f;
-    if (car.speed > maxSpeed) car.speed = maxSpeed;
-    if (car.speed < -maxSpeed) car.speed = -maxSpeed;
-
-    // Update steering angle
-    updateSteeringAngle(car, deltaTime, keys);
-
-    // Calculate angular velocity
-    float angularVelocity = (car.speed * tan(car.steeringAngle)) / car.wheelBase;
-
-    // Update orientation
-    car.angle += angularVelocity * deltaTime;
-
-    // Keep angle within -PI to PI
-    if (car.angle > ALLEGRO_PI)
-        car.angle -= 2 * ALLEGRO_PI;
-    else if (car.angle < -ALLEGRO_PI)
-        car.angle += 2 * ALLEGRO_PI;
-
-    // Update position
-    car.x += car.speed * cos(car.angle) * deltaTime;
-    car.y += car.speed * sin(car.angle) * deltaTime;
-}
-
-// Function to update camera
+// Update camera position (Removed for fixed camera)
+/*
 void updateCamera(const Car& car, float displayWidth, float displayHeight) {
     ALLEGRO_TRANSFORM transform;
     al_identity_transform(&transform);
@@ -156,8 +92,9 @@ void updateCamera(const Car& car, float displayWidth, float displayHeight) {
 
     al_use_transform(&transform);
 }
+*/
 
-// Function to send a float over CAN
+// CAN-sender (float)
 void sendFloatCAN(int send_can_socket, int can_id, float value) {
     struct can_frame frame;
     frame.can_id = can_id;
@@ -170,8 +107,8 @@ void sendFloatCAN(int send_can_socket, int can_id, float value) {
     }
 }
 
-// Function to receive CAN messages (thread function)
-void receiveCANMessagesThread(int can_socket, std::atomic<bool>& done, std::atomic<bool>* keys) {
+// CAN-receiver (float)
+void receiveCANMessagesThread(int can_socket, std::atomic<bool>& done, Car& car, std::mutex& carMutex) {
     while (!done) {
         struct can_frame frame;
         int nbytes = read(can_socket, &frame, sizeof(struct can_frame));
@@ -185,16 +122,34 @@ void receiveCANMessagesThread(int can_socket, std::atomic<bool>& done, std::atom
             continue;
         }
 
+        if (nbytes < sizeof(struct can_frame)) {
+            std::cerr << "Incomplete CAN frame received." << std::endl;
+            continue;
+        }
+
         // Process the received CAN frame
-        if (frame.can_id == 0x100) {
-            // Key Pressed
-            if (frame.data[0] < 4) {
-                keys[frame.data[0]] = true;
+        if (frame.can_id == STEERING_CAN_ID) {
+            if (frame.can_dlc == sizeof(float)) {
+                float steeringDeg;
+                memcpy(&steeringDeg, frame.data, sizeof(float));
+                {
+                    std::lock_guard<std::mutex> lock(carMutex);
+                    car.steeringAngle = steeringDeg;
+                }
+                // DEBUG
+                // printf("Received Steering Angle: %.2f degrees\n", steeringDeg);
             }
-        } else if (frame.can_id == 0x101) {
-            // Key Released
-            if (frame.data[0] < 4) {
-                keys[frame.data[0]] = false;
+        }
+        else if (frame.can_id == THROTTLE_CAN_ID) {
+            if (frame.can_dlc == sizeof(float)) {
+                float throttle;
+                memcpy(&throttle, frame.data, sizeof(float));
+                {
+                    std::lock_guard<std::mutex> lock(carMutex);
+                    car.throttle = throttle;
+                }
+                // DEBUG
+                // printf("Received Throttle: %.2f units\n", throttle);
             }
         }
     }
@@ -205,17 +160,24 @@ void sendCarDataThread(int send_can_socket, Car& car, std::mutex& carMutex, std:
     while (!done) {
         {
             std::lock_guard<std::mutex> lock(carMutex);
-            sendFloatCAN(send_can_socket, 0x200, car.x);       // Car's X position
-            sendFloatCAN(send_can_socket, 0x201, car.y);       // Car's Y position
-            sendFloatCAN(send_can_socket, 0x202, car.angle);   // Car's orientation (angle)
+
+            sendFloatCAN(send_can_socket, CAR_X_CAN_ID, car.x);
+            sendFloatCAN(send_can_socket, CAR_Y_CAN_ID, car.y);
+            sendFloatCAN(send_can_socket, CAR_ANGLE_CAN_ID, car.angle);
         }
-        // Sleep for a short duration to control the sending rate (e.g., 60 Hz)
+        // Sleep to control the sending rate (60 Hz)
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 }
 
+float calculateDistance(float x1, float y1, float x2, float y2) {
+    float dx = x2 - x1;
+    float dy = y2 - y1;
+    return sqrt(dx * dx + dy * dy);
+}
+
 int main() {
-    // Allegro initialization
+    // Initialize Allegro
     if (!al_init()) {
         fprintf(stderr, "Failed to initialize Allegro.\n");
         return -1;
@@ -257,7 +219,7 @@ int main() {
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
     al_register_event_source(event_queue, al_get_display_event_source(display));
 
-    // CAN socket setup for receiving (control inputs)
+    // CAN socket setup for receiving (steering and throttle)
     int can_socket;
     struct sockaddr_can addr;
     struct ifreq ifr;
@@ -268,19 +230,28 @@ int main() {
     }
 
     strcpy(ifr.ifr_name, "vcan0");
-    ioctl(can_socket, SIOCGIFINDEX, &ifr);
+    if (ioctl(can_socket, SIOCGIFINDEX, &ifr) < 0) {
+        perror("Error getting interface index");
+        close(can_socket);
+        return -1;
+    }
 
     addr.can_family = AF_CAN;
     addr.can_ifindex = ifr.ifr_ifindex;
 
     if (bind(can_socket, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         perror("Error in receive socket bind");
+        close(can_socket);
         return -2;
     }
 
     // Set CAN socket to non-blocking
     int flags = fcntl(can_socket, F_GETFL, 0);
-    fcntl(can_socket, F_SETFL, flags | O_NONBLOCK);
+    if (fcntl(can_socket, F_SETFL, flags | O_NONBLOCK) < 0) {
+        perror("Error setting non-blocking mode");
+        close(can_socket);
+        return -3;
+    }
 
     // Sending CAN socket setup
     int send_can_socket;
@@ -289,35 +260,51 @@ int main() {
 
     if ((send_can_socket = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0) {
         perror("Error while opening send socket");
+        close(can_socket);
         return -1;
     }
 
     strcpy(send_ifr.ifr_name, "vcan0");
-    ioctl(send_can_socket, SIOCGIFINDEX, &send_ifr);
+    if (ioctl(send_can_socket, SIOCGIFINDEX, &send_ifr) < 0) {
+        perror("Error getting interface index for send socket");
+        close(can_socket);
+        close(send_can_socket);
+        return -1;
+    }
 
     send_addr.can_family = AF_CAN;
     send_addr.can_ifindex = send_ifr.ifr_ifindex;
 
     if (bind(send_can_socket, (struct sockaddr *)&send_addr, sizeof(send_addr)) < 0) {
         perror("Error in send socket bind");
+        close(can_socket);
+        close(send_can_socket);
         return -2;
     }
 
     // Set send CAN socket to non-blocking (optional)
     int send_flags = fcntl(send_can_socket, F_GETFL, 0);
-    fcntl(send_can_socket, F_SETFL, send_flags | O_NONBLOCK);
+    if (fcntl(send_can_socket, F_SETFL, send_flags | O_NONBLOCK) < 0) {
+        perror("Error setting non-blocking mode for send socket");
+        close(can_socket);
+        close(send_can_socket);
+        return -3;
+    }
 
     // Load cones from YAML file
     std::vector<Cone> cones = loadCones("cones.yaml");
 
     // Initialize car
-    Car car = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 50.0f}; // Starting position and parameters
+    Car car = {400.0f, 300.0f, 0.0f, 0.0f, 0.0f}; // Starting position (pixels), angle (radians), steeringAngle (degrees), throttle
+
+    // Mutex for protecting car data
+    std::mutex carMutex;
 
     // Atomic flag for thread control
     std::atomic<bool> done(false);
 
     // Start the receive CAN messages thread
-    std::thread canReceiveThread(receiveCANMessagesThread, can_socket, std::ref(done), keys);
+    std::thread canReceiveThread(receiveCANMessagesThread, can_socket, std::ref(done), std::ref(car), std::ref(carMutex));
 
     // Start the send car data thread
     std::thread canSendThread(sendCarDataThread, send_can_socket, std::ref(car), std::ref(carMutex), std::ref(done));
@@ -325,28 +312,63 @@ int main() {
     // Start the timer
     al_start_timer(timer);
 
-    while (!done) {
+    bool should_exit = false;
+
+    while (!should_exit) {
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue, &ev);
 
         if (ev.type == ALLEGRO_EVENT_TIMER) {
-            float deltaTime = 1.0 / 60;
+            float deltaTime = 1.0f / 60.0f; // 60 FPS
 
-            // Update game state
+            // Update car's position based on steering angle and throttle
             {
                 std::lock_guard<std::mutex> lock(carMutex);
-                updateCar(car, deltaTime, keys);
-            }
+                // Convert steering angle from degrees to radians for calculation
+                float steeringRad = car.steeringAngle * M_PI / 180.0f;
 
-            // Update camera before drawing
-            {
-                std::lock_guard<std::mutex> lock(carMutex);
-                updateCamera(car, 800, 600);
+                // Simple car kinematics
+                float wheelBase = 50.0f; // in pixels (1 meter)
+                float angularVelocity = (car.throttle * tan(steeringRad)) / wheelBase; // radians per second
+
+                // Update orientation
+                car.angle += angularVelocity * deltaTime;
+
+                // Keep angle within -PI to PI
+                if (car.angle > ALLEGRO_PI)
+                    car.angle -= 2 * ALLEGRO_PI;
+                else if (car.angle < -ALLEGRO_PI)
+                    car.angle += 2 * ALLEGRO_PI;
+
+                // Update position
+                car.x += car.throttle * cos(car.angle) * deltaTime;
+                car.y += car.throttle * sin(car.angle) * deltaTime;
             }
 
             // Render
             al_clear_to_color(al_map_rgb(0, 0, 0));
             drawCones(cones);
+
+            // Draw a red dot at the car's position (measurement point)
+            {
+                std::lock_guard<std::mutex> lock(carMutex);
+                al_draw_filled_circle(car.x, car.y, 5, al_map_rgb(255, 0, 0)); // Red dot
+            }
+
+            // Draw lines from the car to each cone within 5 meters
+            {
+                std::lock_guard<std::mutex> lock(carMutex);
+                for (const auto& cone : cones) {
+                    // Calculate distance in meters
+                    float dx = (cone.x - car.x) / PIXELS_PER_METER;
+                    float dy = (cone.y - car.y) / PIXELS_PER_METER;
+                    float distance = sqrt(dx * dx + dy * dy);
+
+                    if (distance <= 5.0f) { // Within 5 meters
+                        al_draw_line(car.x, car.y, cone.x, cone.y, al_map_rgb(0, 255, 0), 1); // Green line
+                    }
+                }
+            }
 
             // Save the current transformation
             ALLEGRO_TRANSFORM prevTransform;
@@ -373,11 +395,13 @@ int main() {
             al_identity_transform(&identity);
             al_use_transform(&identity);
 
-            // Prepare the coordinate string
+            // Prepare the coordinate string (in meters)
             char coordText[100];
             {
                 std::lock_guard<std::mutex> lock(carMutex);
-                sprintf(coordText, "X: %.2f, Y: %.2f", car.x, car.y);
+                float car_x_m = car.x / PIXELS_PER_METER;
+                float car_y_m = car.y / PIXELS_PER_METER;
+                sprintf(coordText, "X: %.2f m, Y: %.2f m", car_x_m, car_y_m);
             }
 
             // Draw the text at position (10, 10)
@@ -385,7 +409,9 @@ int main() {
 
             // Flip the display
             al_flip_display();
-        } else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+        }
+        else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+            should_exit = true;
             done = true;
         }
     }
