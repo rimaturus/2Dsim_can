@@ -1,0 +1,13 @@
+name: 2DSim_CAN
+root: ./
+startup_window: sim
+# pre_window: |
+#   source ~/.bashrc;
+#   source /home/ubuntu/psd_ws/install/setup.bash
+windows:
+  - sim:     #tmux list-windows
+      panes:
+        - ./visualization
+        - ./perception
+        - python3 keyboard_control.py
+        - ./pid_control

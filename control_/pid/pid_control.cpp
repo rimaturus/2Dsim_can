@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <condition_variable>
 
-// YAML-CPP for parsing cones.yaml and config.yaml
 #include <yaml-cpp/yaml.h>
 
 // CAN headers
@@ -22,8 +21,9 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-// Constants (will be loaded from config)
+// Constants (Default values, may be changed by config.yaml)
 float PIXELS_PER_METER = 10.0f;
+float MAX_CONE_DETECTION_RANGE = 5.0f;
 
 // CAN IDs
 int STEERING_CAN_ID = 0x300;    // Steering angle in degrees
@@ -31,17 +31,17 @@ int THROTTLE_CAN_ID = 0x301;    // Throttle in arbitrary units
 int CONE_CAN_ID_START = 0x400;  // Starting CAN ID for cones
 
 // PID Controller parameters
+// Steering 
 float Kp = 1.0f;
 float Ki = 0.0f;
 float Kd = 0.1f;
-float setpoint = 0.0f; // Desired deviation (centerline)
+float setpoint = 0.0f; // Desired deviation distance from centerline
 
-// Control parameters
-float target_speed = 5.0f; // meters per second
-float throttle_Kp = 1.0f; // Proportional gain for throttle control
+// Throttle
+float target_speed = 15.0f; // meters per second
+float throttle_Kp = 1.0f;
 
-// Perception parameters
-float MAX_CONE_DETECTION_RANGE = 5.0f;
+
 
 // PID Controller Class
 class PIDController {
@@ -56,7 +56,7 @@ public:
         std::chrono::duration<float> elapsed = current_time - previous_time_;
         float delta_time = elapsed.count();
 
-        if (delta_time <= 0.0f) {
+        if (delta_time <= 1e-6f) {
             delta_time = 1e-6f; // Prevent division by zero
         }
 

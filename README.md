@@ -17,3 +17,17 @@
 # 0x301 -> pedal position [units]
 
 # 0x(400 + hex(i)) -> detected cone i (4 byte: range [m] + 4 Byte: bearing [rad])
+
+
+
+docker run -it \
+        --gpus all \
+        --user ubuntu \
+        --network=host \
+        --ipc=host \
+        -v /home/edo/test/psd24_simulator/psd_ws:/home/ubuntu/psd_ws \
+        -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+        --env=DISPLAY -v /dev:/dev \
+        --device-cgroup-rule="c *:* rmw" \
+        --name psd_test test \
+        /bin/bash

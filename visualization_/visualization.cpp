@@ -7,43 +7,43 @@
 #include <thread>
 #include <chrono>
 #include <cstring>
-#include <iostream> // For std::cerr and std::cout
+#include <iostream>
 #include <cmath>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
 #include <unistd.h>
 
-// Constants definitions
-float PIXELS_PER_METER = 10.0f; // Default value, will be loaded from config
+// Constants (Default values, may be changed by config.yaml)
+float PIXELS_PER_METER = 10.0f;
+double DETECTION_RANGE = 5.0;
 
 // CAN IDs
-int STEERING_CAN_ID = 0x300; // Steering angle in degrees
-int THROTTLE_CAN_ID = 0x301; // Throttle in units
-int CAR_X_CAN_ID = 0x200;    // X_car
-int CAR_Y_CAN_ID = 0x201;    // Y_car
-int CAR_ANGLE_CAN_ID = 0x202;// Yaw_car
-
-double DETECTION_RANGE = 5.0;         // Default detection range in meters
+int STEERING_CAN_ID = 0x300; // [degrees]
+int THROTTLE_CAN_ID = 0x301; // [units: 0-100]
+int CAR_X_CAN_ID = 0x200;    // [meters]
+int CAR_Y_CAN_ID = 0x201;    // [meters]
+int CAR_ANGLE_CAN_ID = 0x202;// [radians]
 
 // Load configuration from YAML file
 void loadConfig(const std::string& filename, Car& car) {
     try {
         YAML::Node config = YAML::LoadFile(filename);
 
-        // Load PIXELS_PER_METER
         if (config["PIXELS_PER_METER"]) {
             PIXELS_PER_METER = config["PIXELS_PER_METER"].as<float>();
         }
 
-        // Load car parameters
+        if (config["perception"]) {
+            DETECTION_RANGE = config["perception"]["detection_range"].as<double>();
+        }
+
         if (config["car"]) {
             car.params.wheelbase = config["car"]["wheelbase"].as<float>();
             car.params.max_throttle = config["car"]["max_throttle"].as<float>();
             car.params.max_speed = config["car"]["max_speed"].as<float>();
         }
 
-        // Load CAN IDs
         if (config["CAN_IDS"]) {
             STEERING_CAN_ID = config["CAN_IDS"]["STEERING_CAN_ID"].as<int>();
             THROTTLE_CAN_ID = config["CAN_IDS"]["THROTTLE_CAN_ID"].as<int>();
@@ -52,9 +52,6 @@ void loadConfig(const std::string& filename, Car& car) {
             CAR_ANGLE_CAN_ID = config["CAN_IDS"]["CAR_ANGLE_CAN_ID"].as<int>();
         }
 
-        if (config["perception"]) {
-            DETECTION_RANGE = config["perception"]["detection_range"].as<double>();
-        }
     } catch (const std::exception& e) {
         std::cerr << "Error loading configuration from " << filename << ": " << e.what() << std::endl;
         std::cerr << "Using default configuration values." << std::endl;
@@ -84,7 +81,7 @@ std::vector<Cone> loadCones(const std::string& filename) {
     return cones;
 }
 
-// Color mapping function
+// Set colors of cones
 ALLEGRO_COLOR getColor(const std::string& colorName) {
     if (colorName == "yellow") return al_map_rgb(255, 255, 0);
     if (colorName == "blue") return al_map_rgb(0, 0, 255);
@@ -167,8 +164,8 @@ void sendCarDataThread(int send_can_socket, Car& car, std::mutex& carMutex, std:
             sendFloatCAN(send_can_socket, CAR_Y_CAN_ID, car.y);
             sendFloatCAN(send_can_socket, CAR_ANGLE_CAN_ID, car.angle);
         }
-        // Sleep to control the sending rate (60 Hz)
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        // Sleep to control the sending rate (100 Hz)
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 
@@ -333,7 +330,7 @@ void initializeCar(Car& car) {
     // car.params will be loaded from config.yaml
 }
 
-// Update car's position (wrapper function)
+// Update car's position
 void updateCarPosition(Car& car, float deltaTime, std::mutex& carMutex) {
     // Call the desired vehicle model function
     updateCarPositionSingleTrackModel(car, deltaTime, carMutex);

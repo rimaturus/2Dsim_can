@@ -48,7 +48,7 @@ class FreehandDrawing:
     def get_path(self):
         return list(zip(self.xs, self.ys))
 
-def save_to_yaml(left_cones, right_cones, filename='cones.yaml'):
+def save_to_yaml(left_cones, right_cones, filename='track_cones.yaml'):
     """
     Save cone positions to a YAML file with a unified structure.
     Each cone has a color, x, and y coordinate.
