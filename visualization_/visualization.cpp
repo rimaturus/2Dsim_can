@@ -461,7 +461,7 @@ int main() {
     initializeCar(car);
 
     // Load configuration
-    loadConfig("config.yaml", car);
+    loadConfig("../config.yaml", car);
 
     // Setup CAN sockets
     int can_socket = setupCANSocket("vcan0");
@@ -478,7 +478,7 @@ int main() {
     }
 
     // Load cones from YAML file
-    std::vector<Cone> cones = loadCones("cones.yaml");
+    std::vector<Cone> cones = loadCones("../track_/cones.yaml");
 
     // Mutex for protecting car data
     std::mutex carMutex;

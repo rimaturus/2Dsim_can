@@ -239,10 +239,10 @@ void computeAndSendConeData(const std::vector<Cone>& cones, float car_x_m, float
 
 int main() {
     // Load cones from YAML file
-    std::vector<Cone> cones = loadCones("cones.yaml");
+    std::vector<Cone> cones = loadCones("../track_/cones.yaml");
 
     // Load configuration
-    loadConfig("config.yaml");
+    loadConfig("../config.yaml");
 
     // Set up CAN socket for receiving (car data)
     int can_socket = setupCANSocket("vcan0");

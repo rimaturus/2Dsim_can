@@ -1,5 +1,5 @@
 **perception:**     g++ perception.cpp -o perception -lyaml-cpp
-**pid_control:**    g++ pid_control.cpp -o pid_control lyaml-cpp -lpthread -lstdc++fs
+**pid_control:**    g++ pid_control.cpp -o pid_control -lyaml-cpp -lpthread -lstdc++fs
 **visualization:**  g++ visualization.cpp -o visualization -lallegro -lallegro_main -lallegro_font -lallegro_ttf -lallegro_primitives -lyaml-cpp -pthread
 
 **keyboard_control:**   python3 keyboard_control.py

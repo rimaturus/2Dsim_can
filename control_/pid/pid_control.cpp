@@ -236,12 +236,12 @@ int main() {
     signal(SIGINT, signal_handler);
 
     // Load configuration
-    loadConfig("config.yaml");
+    loadConfig("../../config.yaml");
 
     // Load cones.yaml to map cone indices to colors
     std::unordered_map<int, std::string> cone_colors;
     try {
-        YAML::Node config = YAML::LoadFile("cones.yaml");
+        YAML::Node config = YAML::LoadFile("../../track_/cones.yaml");
         const YAML::Node& cones = config["cones"];
         for (size_t i = 0; i < cones.size(); ++i) {
             if (cones[i]["color"]) {
