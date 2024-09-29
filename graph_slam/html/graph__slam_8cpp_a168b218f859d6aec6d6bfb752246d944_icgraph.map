@@ -1,0 +1,5 @@
+<map id="process_can_frame" name="process_can_frame">
+<area shape="rect" id="node1" title="Processes a received CAN frame and updates the SLAM graph." alt="" coords="311,5,459,32"/>
+<area shape="rect" id="node2" href="$graph__slam_8cpp.html#adbe066550ebc313d04fd60f3b8ccbb3a" title="Reads CAN messages and processes them." alt="" coords="108,5,263,32"/>
+<area shape="rect" id="node3" href="$graph__slam_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="Main function of the GraphSLAM application." alt="" coords="5,5,60,32"/>
+</map>

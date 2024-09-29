@@ -1,0 +1,28 @@
+# Doxyfile
+
+# Input files
+INPUT = graph_slam.cpp # main_page.md
+
+# Enable markdown support
+MARKDOWN_SUPPORT = YES
+
+# # Specify the main page
+# USE_MDFILE_AS_MAINPAGE = main_page.md
+
+# Graph settings
+HAVE_DOT = YES
+CALL_GRAPH = YES
+CALLER_GRAPH = YES
+CALL_GRAPH_DEPTH = 3
+CALLER_GRAPH_DEPTH = 3
+CLASS_DIAGRAMS = YES
+COLLABORATION_GRAPH = YES
+DOT_IMAGE_FORMAT = png
+DOT_CLEANUP = YES
+
+# Output settings
+GENERATE_HTML = YES
+GENERATE_LATEX = NO
+
+# Other settings
+EXTRACT_ALL = YES

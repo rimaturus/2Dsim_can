@@ -2,7 +2,12 @@
 
 /**
  * @file graph_slam.cpp
- * @brief Implementation of an advanced GraphSLAM system with posterior probability computation and information matrix construction.
+ * @brief Implementation of an enhanced GraphSLAM system with SocketCAN integration.
+ *
+ * This file contains the implementation of a GraphSLAM system that processes
+ * pose and landmark data from a CAN bus interface, constructs a graph-based
+ * representation of the environment, and performs optimization to compute
+ * the posterior probability of the robot's poses and landmark positions.
  */
 
 #include <iostream>
@@ -16,6 +21,7 @@
 #include <thread>
 #include <cstring>
 #include <mutex>
+#include <string>
 
 // SocketCAN headers
 #include <linux/can.h>
@@ -90,6 +96,15 @@ struct Config {
         uint32_t CAR_ANGLE_CAN_ID;      ///< CAN ID for car's angle.
         uint32_t CONE_CAN_ID_START;     ///< Starting CAN ID for cones.
     } can_ids;
+
+    /**
+     * @struct SensorCovariance
+     * @brief Sensor covariance parameters.
+     */
+    struct SensorCovariance {
+        double sigma_r;    ///< Standard deviation for range measurements.
+        double sigma_b;    ///< Standard deviation for bearing measurements.
+    } sensor_covariance;
 };
 
 /**
@@ -132,6 +147,10 @@ bool load_config(const std::string& filepath, Config& config) {
         config.can_ids.CAR_Y_CAN_ID = std::stoul(config_yaml["CAN_IDS"]["CAR_Y_CAN_ID"].as<std::string>(), nullptr, 16);
         config.can_ids.CAR_ANGLE_CAN_ID = std::stoul(config_yaml["CAN_IDS"]["CAR_ANGLE_CAN_ID"].as<std::string>(), nullptr, 16);
         config.can_ids.CONE_CAN_ID_START = std::stoul(config_yaml["CAN_IDS"]["CONE_CAN_ID_START"].as<std::string>(), nullptr, 16);
+
+        // Load sensor covariance parameters
+        config.sensor_covariance.sigma_r = config_yaml["LIDAR_COVARIANCE"]["SIGMA_RANGE"].as<double>();
+        config.sensor_covariance.sigma_b = config_yaml["LIDAR_COVARIANCE"]["SIGMA_BEARING"].as<double>();
 
         return true;
     }
@@ -209,22 +228,18 @@ struct Measurement {
 
 /**
  * @class GraphSLAM
- * @brief Implements an advanced GraphSLAM algorithm with posterior probability computation and information matrix construction.
+ * @brief Implements an enhanced GraphSLAM algorithm.
+ *
+ * The GraphSLAM class maintains a graph-based representation of the robot's poses
+ * and landmarks in the environment. It provides methods to add poses, landmarks,
+ * and measurements, and performs optimization to compute the posterior probability
+ * of the robot's trajectory and landmark positions.
  */
 class GraphSLAM {
 public:
     std::vector<Pose> poses;                          ///< List of robot poses
     std::unordered_map<int, Landmark> landmarks;      ///< Map of landmarks
     std::vector<Measurement> measurements;            ///< List of measurements
-
-    /**
-     * @brief Constructor for GraphSLAM.
-     * Initializes sensor covariance parameters.
-     * @param sigma_r Standard deviation of range measurements.
-     * @param sigma_b Standard deviation of bearing measurements.
-     */
-    GraphSLAM(double sigma_r = 0.1, double sigma_b = 0.05)
-        : sigma_r(sigma_r), sigma_b(sigma_b) {}
 
     /**
      * @brief Adds a new pose to the SLAM graph.
@@ -253,39 +268,33 @@ public:
     void addMeasurement(int pose_id, int landmark_id, double range, double bearing);
 
     /**
-     * @brief Performs optimization on the SLAM graph using GraphSLAM algorithm.
-     * Computes the posterior probability and updates poses and landmarks based on information matrix.
+     * @brief Performs optimization on the SLAM graph to compute posterior probability.
      */
     void optimize();
 
 private:
-    double sigma_r; ///< Standard deviation of range measurements.
-    double sigma_b; ///< Standard deviation of bearing measurements.
-
     std::mutex mtx;  ///< Mutex for thread safety
 
     /**
-     * @brief Saves the current SLAM graph to a file.
-     * @param filename Name of the file
-     */
-    void saveGraph(const std::string& filename);
-
-    /**
-     * @brief Maps pose and landmark IDs to variable indices in the state vector.
-     * @param pose_id ID of the pose
-     * @param landmark_id ID of the landmark
-     * @param index_map Reference to the map that will store variable indices
-     * @return Total number of variables after mapping
+     * @brief Maps each variable to a unique index for matrix construction.
+     * @param index_map Reference to an unordered_map to store variable-index mappings.
+     * @return Total number of variables.
      */
     int mapIndices(std::unordered_map<std::string, int>& index_map);
 
     /**
-     * @brief Computes the posterior probability of the current state.
+     * @brief Computes the posterior probability of the current SLAM graph.
      * @param A Information matrix.
-     * @param b Vector.
-     * @return Posterior probability value.
+     * @param b Information vector.
+     * @return Posterior probability.
      */
-    double computePosterior(const MatrixXd& A, const VectorXd& b);
+    double computePosterior(const MatrixXd& A, const VectorXd& b_vec);
+
+    /**
+     * @brief Saves the current SLAM graph to a file.
+     * @param filename Name of the file.
+     */
+    void saveGraph(const std::string& filename);
 };
 
 void GraphSLAM::addPose(double x, double y, double theta) {
@@ -360,27 +369,37 @@ void GraphSLAM::addMeasurement(int pose_id, int landmark_id, double range, doubl
 }
 
 int GraphSLAM::mapIndices(std::unordered_map<std::string, int>& index_map) {
-    int idx = 0;
+    int index = 0;
+
     // Map poses
     for (size_t i = 0; i < poses.size(); ++i) {
-        index_map["pose_" + to_string(i) + "_x"] = idx++;
-        index_map["pose_" + to_string(i) + "_y"] = idx++;
-        index_map["pose_" + to_string(i) + "_theta"] = idx++;
+        index_map["pose_" + to_string(i) + "_x"] = index++;
+        index_map["pose_" + to_string(i) + "_y"] = index++;
+        index_map["pose_" + to_string(i) + "_theta"] = index++;
     }
+
     // Map landmarks
     for (const auto& [id, landmark] : landmarks) {
-        index_map["landmark_" + to_string(id) + "_x"] = idx++;
-        index_map["landmark_" + to_string(id) + "_y"] = idx++;
+        index_map["landmark_" + to_string(id) + "_x"] = index++;
+        index_map["landmark_" + to_string(id) + "_y"] = index++;
     }
-    return idx;
+
+    return index;
 }
 
-double GraphSLAM::computePosterior(const MatrixXd& A, const VectorXd& b) {
-    // Assuming Gaussian distribution, posterior probability is proportional to exp(-0.5 * (Ax - b)^T (Ax - b))
-    // Since Ax = b is the optimal solution, the error is minimized.
-    // For simplicity, return the exponential of negative total error.
-    double error = b.dot(A.ldlt().solve(b));
-    return exp(-0.5 * error);
+double GraphSLAM::computePosterior(const MatrixXd& A, const VectorXd& b_vec) {
+    // Compute the posterior probability up to a normalization constant
+    // P(poses, landmarks | measurements) ~ exp(-0.5 * (A * x - b)^T * (A * x - b))
+    // Since x has been optimized to minimize this, we can compute:
+    // Exponent = 0.5 * b^T * A^-1 * b
+    // Posterior ~ exp(-Exponent)
+
+    // Compute b^T * A^-1 * b
+    VectorXd Ax = A.inverse() * b_vec;
+    double exponent = 0.5 * b_vec.dot(Ax);
+    double posterior = std::exp(-exponent);
+
+    return posterior;
 }
 
 void GraphSLAM::optimize() {
@@ -404,11 +423,10 @@ void GraphSLAM::optimize() {
 
     // Information matrix for measurements (inverse of sensor covariance)
     Matrix2d Omega;
+    double sigma_r = 1.0; // Example value, should be set based on config
+    double sigma_b = 1.0; // Example value, should be set based on config
     Omega << 1.0 / (sigma_r * sigma_r), 0,
              0, 1.0 / (sigma_b * sigma_b);
-    // Omega << 1.0 / (config.perception.range_noise_std_dev * config.perception.range_noise_std_dev), 0,
-    //          0, 1.0 / (config.perception.bearing_noise_std_dev * config.perception.bearing_noise_std_dev);
-
 
     // Loop over all measurements to build A and b
     for (const auto& m : measurements) {
@@ -516,6 +534,40 @@ void GraphSLAM::optimize() {
     saveGraph("graph_live_output.txt");
 }
 
+double GraphSLAM::computePosterior(const MatrixXd& A, const VectorXd& b_vec) {
+    // Compute the posterior probability up to a normalization constant
+    // P(poses, landmarks | measurements) ~ exp(-0.5 * (A * x - b)^T * (A * x - b))
+    // Since x has been optimized to minimize this, we can compute:
+    // Exponent = 0.5 * b^T * A^-1 * b
+    // Posterior ~ exp(-Exponent)
+
+    // Compute b^T * A^-1 * b
+    VectorXd Ax = A.inverse() * b_vec;
+    double exponent = 0.5 * b_vec.dot(Ax);
+    double posterior = std::exp(-exponent);
+
+    return posterior;
+}
+
+int GraphSLAM::mapIndices(std::unordered_map<std::string, int>& index_map) {
+    int index = 0;
+
+    // Map poses
+    for (size_t i = 0; i < poses.size(); ++i) {
+        index_map["pose_" + to_string(i) + "_x"] = index++;
+        index_map["pose_" + to_string(i) + "_y"] = index++;
+        index_map["pose_" + to_string(i) + "_theta"] = index++;
+    }
+
+    // Map landmarks
+    for (const auto& [id, landmark] : landmarks) {
+        index_map["landmark_" + to_string(id) + "_x"] = index++;
+        index_map["landmark_" + to_string(id) + "_y"] = index++;
+    }
+
+    return index;
+}
+
 void GraphSLAM::saveGraph(const std::string& filename) {
     // Assume mtx is already locked
 
@@ -548,7 +600,7 @@ void GraphSLAM::saveGraph(const std::string& filename) {
 
 /**
  * @brief Initializes a CAN socket for communication.
- * @param interface_name Name of the CAN interface (e.g., "vcan0")
+ * @param interface_name Name of the CAN interface (e.g., "vcan0").
  * @return File descriptor of the CAN socket, or -1 on error.
  */
 int init_can_socket(const std::string& interface_name) {
@@ -620,16 +672,18 @@ void process_can_frame(const struct can_frame& frame, GraphSLAM& slam, const Con
         int cone_id = -1;
         std::string cone_type;
 
-        if (can_id >= 0x400 && can_id <= 0x47F) {
+        if (can_id >= config.can_ids.CONE_CAN_ID_START &&
+            can_id < config.can_ids.CONE_CAN_ID_START + 0x80) { // Assuming 0x80 blue cones
             // Blue cones
             is_blue_cone = true;
-            cone_id = can_id - 0x400;
+            cone_id = can_id - config.can_ids.CONE_CAN_ID_START;
             cone_type = "blue";
         }
-        else if (can_id >= 0x480 && can_id <= 0x4FF) {
+        else if (can_id >= config.can_ids.CONE_CAN_ID_START + 0x80 &&
+                 can_id < config.can_ids.CONE_CAN_ID_START + 0x100) { // Assuming 0x80 yellow cones
             // Yellow cones
             is_yellow_cone = true;
-            cone_id = can_id - 0x480;
+            cone_id = can_id - (config.can_ids.CONE_CAN_ID_START + 0x80);
             cone_type = "yellow";
         }
 
@@ -648,7 +702,8 @@ void process_can_frame(const struct can_frame& frame, GraphSLAM& slam, const Con
 
                 // Add the landmark with type
                 slam.addLandmark(cone_id, landmark_x, landmark_y, cone_type);
-                std::cout << "Added " << cone_type << " Landmark: id=" << cone_id << ", x=" << landmark_x << ", y=" << landmark_y << "\n";
+                std::cout << "Added " << cone_type << " Landmark: id=" << cone_id
+                          << ", x=" << landmark_x << ", y=" << landmark_y << "\n";
 
                 // Add the measurement
                 slam.addMeasurement(slam.poses.size() - 1, cone_id, range, bearing_rad);

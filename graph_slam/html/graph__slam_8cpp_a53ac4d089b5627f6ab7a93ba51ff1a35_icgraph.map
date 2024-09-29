@@ -1,0 +1,4 @@
+<map id="init_can_socket" name="init_can_socket">
+<area shape="rect" id="node1" title="Initializes a CAN socket for communication." alt="" coords="108,5,231,32"/>
+<area shape="rect" id="node2" href="$graph__slam_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="Main function of the GraphSLAM application." alt="" coords="5,5,60,32"/>
+</map>

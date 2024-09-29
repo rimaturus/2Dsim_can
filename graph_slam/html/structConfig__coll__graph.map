@@ -1,0 +1,9 @@
+<map id="Config" name="Config">
+<area shape="rect" id="node1" title="Holds configuration parameters loaded from a YAML file." alt="" coords="367,132,429,159"/>
+<area shape="rect" id="node2" href="$structConfig_1_1SensorCovariance.html" title="Sensor covariance parameters." alt="" coords="5,5,193,32"/>
+<area shape="rect" id="node3" href="$structConfig_1_1Control.html" title="Control parameters." alt="" coords="40,56,159,83"/>
+<area shape="rect" id="node4" href="$structConfig_1_1Car.html" title="Car parameters." alt="" coords="53,107,146,133"/>
+<area shape="rect" id="node5" href="$structConfig_1_1CANIDs.html" title="CAN IDs for communication." alt="" coords="39,157,159,184"/>
+<area shape="rect" id="node6" href="$structConfig_1_1PIDController.html" title="PID controller parameters." alt="" coords="21,208,178,235"/>
+<area shape="rect" id="node7" href="$structConfig_1_1Perception.html" title="Perception noise parameters." alt="" coords="29,259,169,285"/>
+</map>

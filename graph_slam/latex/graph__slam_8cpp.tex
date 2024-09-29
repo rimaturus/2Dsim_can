@@ -1,0 +1,89 @@
+\hypertarget{graph__slam_8cpp}{}\doxysection{graph\+\_\+slam.\+cpp File Reference}
+\label{graph__slam_8cpp}\index{graph\_slam.cpp@{graph\_slam.cpp}}
+
+
+Implementation of an advanced \mbox{\hyperlink{classGraphSLAM}{Graph\+SLAM}} system with posterior probability computation and information matrix construction.  
+
+
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$fstream$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$unordered\+\_\+map$>$}\newline
+{\ttfamily \#include $<$Eigen/\+Dense$>$}\newline
+{\ttfamily \#include $<$Eigen/\+Sparse$>$}\newline
+{\ttfamily \#include $<$cmath$>$}\newline
+{\ttfamily \#include $<$chrono$>$}\newline
+{\ttfamily \#include $<$thread$>$}\newline
+{\ttfamily \#include $<$cstring$>$}\newline
+{\ttfamily \#include $<$mutex$>$}\newline
+{\ttfamily \#include $<$linux/can.\+h$>$}\newline
+{\ttfamily \#include $<$linux/can/raw.\+h$>$}\newline
+{\ttfamily \#include $<$net/if.\+h$>$}\newline
+{\ttfamily \#include $<$sys/socket.\+h$>$}\newline
+{\ttfamily \#include $<$sys/ioctl.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$yaml-\/cpp/yaml.\+h$>$}\newline
+Include dependency graph for graph\+\_\+slam.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{graph__slam_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structConfig}{Config}}
+\begin{DoxyCompactList}\small\item\em Holds configuration parameters loaded from a YAML file. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structConfig_1_1Car}{Config\+::\+Car}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{structConfig_1_1Car}{Car}} parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structConfig_1_1Perception}{Config\+::\+Perception}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{structConfig_1_1Perception}{Perception}} noise parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structConfig_1_1PIDController}{Config\+::\+PIDController}}
+\begin{DoxyCompactList}\small\item\em PID controller parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structConfig_1_1Control}{Config\+::\+Control}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{structConfig_1_1Control}{Control}} parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structConfig_1_1CANIDs}{Config\+::\+CANIDs}}
+\begin{DoxyCompactList}\small\item\em CAN IDs for communication. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structPose}{Pose}}
+\begin{DoxyCompactList}\small\item\em Represents the robot\textquotesingle{}s pose in 2D space. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structLandmark}{Landmark}}
+\begin{DoxyCompactList}\small\item\em Represents a landmark (e.\+g., cone) in the environment. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structMeasurement}{Measurement}}
+\begin{DoxyCompactList}\small\item\em Represents a measurement linking a pose to a landmark. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classGraphSLAM}{Graph\+SLAM}}
+\begin{DoxyCompactList}\small\item\em Implements an advanced \mbox{\hyperlink{classGraphSLAM}{Graph\+SLAM}} algorithm with posterior probability computation and information matrix construction. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{graph__slam_8cpp_ab88028027a3b092b87765a3648f6de47}{load\+\_\+config}} (const std\+::string \&filepath, \mbox{\hyperlink{structConfig}{Config}} \&config)
+\begin{DoxyCompactList}\small\item\em Loads configuration parameters from a YAML file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implementation of an advanced \mbox{\hyperlink{classGraphSLAM}{Graph\+SLAM}} system with posterior probability computation and information matrix construction. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{graph__slam_8cpp_ab88028027a3b092b87765a3648f6de47}\label{graph__slam_8cpp_ab88028027a3b092b87765a3648f6de47}} 
+\index{graph\_slam.cpp@{graph\_slam.cpp}!load\_config@{load\_config}}
+\index{load\_config@{load\_config}!graph\_slam.cpp@{graph\_slam.cpp}}
+\doxysubsubsection{\texorpdfstring{load\_config()}{load\_config()}}
+{\footnotesize\ttfamily bool load\+\_\+config (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{filepath,  }\item[{\mbox{\hyperlink{structConfig}{Config}} \&}]{config }\end{DoxyParamCaption})}
+
+
+
+Loads configuration parameters from a YAML file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em filepath} & Path to the YAML configuration file. \\
+\hline
+{\em config} & Reference to a \mbox{\hyperlink{structConfig}{Config}} struct to be filled. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if loading is successful, false otherwise. 
+\end{DoxyReturn}

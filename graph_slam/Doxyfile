@@ -1,0 +1,34 @@
+# Doxyfile
+
+# Project related configuration options
+PROJECT_NAME           = "Enhanced GraphSLAM System"
+PROJECT_BRIEF          = "A comprehensive GraphSLAM implementation with posterior probability computation."
+
+# Input
+INPUT                  = enhanced_graph_slam.cpp
+FILE_PATTERNS          = *.cpp 
+
+# Use markdown for documentation
+MARKDOWN_SUPPORT        = YES
+USE_MDFILE_AS_MAINPAGE  = 
+
+# Enable extraction of all entities
+EXTRACT_ALL             = YES
+
+# Output settings
+GENERATE_HTML           = YES
+GENERATE_LATEX          = NO
+
+# Graph settings
+HAVE_DOT                = YES
+CALL_GRAPH              = YES
+CALLER_GRAPH            = YES
+CALL_GRAPH_DEPTH        = 3
+CALLER_GRAPH_DEPTH      = 3
+CLASS_DIAGRAMS          = YES
+COLLABORATION_GRAPH     = YES
+DOT_IMAGE_FORMAT        = png
+DOT_CLEANUP             = YES
+
+# Other settings
+FULL_PATH_NAMES         = YES
