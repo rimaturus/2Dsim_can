@@ -118,14 +118,16 @@ struct Pose {
 struct Landmark {
     int id;
     double x, y;
+    std::string type;  // "blue" or "yellow"
 
     // Default constructor
-    Landmark() : id(0), x(0.0), y(0.0) {}
+    Landmark() : id(0), x(0.0), y(0.0), type("unknown") {}
 
     // Parameterized constructor
-    Landmark(int id, double x = 0.0, double y = 0.0)
-        : id(id), x(x), y(y) {}
+    Landmark(int id, double x = 0.0, double y = 0.0, const std::string& type = "unknown")
+        : id(id), x(x), y(y), type(type) {}
 };
+
 
 struct Measurement {
     int pose_id;
@@ -170,25 +172,27 @@ public:
         saveGraph("graph_live_output.txt");
     }
 
-    void addLandmark(int id, double x, double y) {
+    void addLandmark(int id, double x, double y, const std::string& type) {
         std::lock_guard<std::mutex> lock(mtx);
 
         // Check if the landmark already exists
         auto it = landmarks.find(id);
         if (it != landmarks.end()) {
-            // Update the existing landmark's position
+            // Update the existing landmark's position and type
             it->second.x = x;
             it->second.y = y;
-            std::cout << "Updated Landmark ID " << id << " to new position." << std::endl;
+            it->second.type = type;
+            std::cout << "Updated " << type << " Landmark ID " << id << " to new position.\n";
         } else {
             // Add a new landmark
-            landmarks[id] = Landmark(id, x, y);
-            std::cout << "Added new Landmark ID " << id << "." << std::endl;
+            landmarks[id] = Landmark(id, x, y, type);
+            std::cout << "Added new " << type << " Landmark ID " << id << ".\n";
         }
 
         // Save the updated graph
         saveGraph("graph_live_output.txt");
     }
+
 
     void addMeasurement(int pose_id, int landmark_id, double range, double bearing) {
         std::lock_guard<std::mutex> lock(mtx);
@@ -314,7 +318,7 @@ private:
         // Write landmarks
         file << "Landmarks:\n";
         for (const auto& [id, landmark] : landmarks) {
-            file << id << " " << landmark.x << " " << landmark.y << "\n";
+            file << id << " " << landmark.x << " " << landmark.y << " " << landmark.type << "\n";
         }
 
         // Write measurements
@@ -370,25 +374,38 @@ void process_can_frame(const struct can_frame& frame, GraphSLAM& slam, const Con
     // Process pose data
     static double x = 0.0, y = 0.0, theta = 0.0;
 
-    if (can_id == config.can_ids.CAR_X_CAN_ID){ // CAR_X_CAN_ID
+    if (can_id == config.can_ids.CAR_X_CAN_ID) {
         memcpy(&value, frame.data, sizeof(float));
         x = value;
-    }
-    else if (can_id == config.can_ids.CAR_Y_CAN_ID){ // CAR_Y_CAN_ID
+    } else if (can_id == config.can_ids.CAR_Y_CAN_ID) {
         memcpy(&value, frame.data, sizeof(float));
         y = value;
-    }
-    else if (can_id == config.can_ids.CAR_ANGLE_CAN_ID){ // CAR_ANGLE_CAN_ID
+    } else if (can_id == config.can_ids.CAR_ANGLE_CAN_ID) {
         memcpy(&value, frame.data, sizeof(float));
         theta = value;
         // After receiving theta, we can add a new pose
         slam.addPose(x, y, theta);
         std::cout << "Added Pose: x=" << x << ", y=" << y << ", theta=" << theta << "\n";
-    }
-    else{
+    } else {
         // Process landmark data (cones)
-        if (can_id >= config.can_ids.CONE_CAN_ID_START && can_id < (config.can_ids.CONE_CAN_ID_START + 0x100)) {
-            int cone_id = can_id - config.can_ids.CONE_CAN_ID_START;
+        bool is_blue_cone = false;
+        bool is_yellow_cone = false;
+        int cone_id = -1;
+        std::string cone_type;
+
+        if (can_id >= 0x400 && can_id <= 0x47F) {
+            // Blue cones
+            is_blue_cone = true;
+            cone_id = can_id - 0x400;
+            cone_type = "blue";
+        } else if (can_id >= 0x480 && can_id <= 0x4FF) {
+            // Yellow cones
+            is_yellow_cone = true;
+            cone_id = can_id - 0x480;
+            cone_type = "yellow";
+        }
+
+        if (is_blue_cone || is_yellow_cone) {
             float range, bearing;
             if (frame.can_dlc == 8) {
                 memcpy(&range, frame.data, sizeof(float));
@@ -401,9 +418,9 @@ void process_can_frame(const struct can_frame& frame, GraphSLAM& slam, const Con
                 double landmark_x = x + range * cos(theta + bearing_rad);
                 double landmark_y = y + range * sin(theta + bearing_rad);
 
-                // Add the landmark
-                slam.addLandmark(cone_id, landmark_x, landmark_y);
-                std::cout << "Added Landmark: id=" << cone_id << ", x=" << landmark_x << ", y=" << landmark_y << "\n";
+                // Add the landmark with type
+                slam.addLandmark(cone_id, landmark_x, landmark_y, cone_type);
+                std::cout << "Added " << cone_type << " Landmark: id=" << cone_id << ", x=" << landmark_x << ", y=" << landmark_y << "\n";
 
                 // Add the measurement
                 slam.addMeasurement(slam.poses.size() - 1, cone_id, range, bearing_rad);
