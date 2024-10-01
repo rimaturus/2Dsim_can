@@ -142,7 +142,7 @@ void sendCANData(int send_can_socket, std::queue<CANData>& dataQueue, std::mutex
                 perror("Failed to send CAN frame for cone");
             } else {
                 // Uncomment the following line for debugging
-                // std::cout << "Sent CAN frame with Range: " << data.range << " m and Bearing: " << data.bearing << " degrees." << std::endl;
+                // std::cout << "Sent CAN frame with ID: " << std::hex << data.id << ", Range: " << data.range << " m, Bearing: " << data.bearing << " degrees." << std::endl;
             }
         }
     }
@@ -184,6 +184,10 @@ void computeAndSendConeData(const std::vector<Cone>& cones, float car_x_m, float
     std::normal_distribution<double> rangeNoiseDist(0.0, RANGE_NOISE_STD_DEV);
     std::normal_distribution<double> bearingNoiseDist(0.0, BEARING_NOISE_STD_DEV);
 
+    // Initialize CAN IDs for each color
+    unsigned int yellowIndex = 0;
+    unsigned int blueIndex = 0;
+
     // Compute range and bearing to each cone
     for (size_t i = 0; i < cones.size(); ++i) {
         const auto& cone = cones[i];
@@ -217,19 +221,44 @@ void computeAndSendConeData(const std::vector<Cone>& cones, float car_x_m, float
             noisyRange = 0.0;
         }
 
-        // Filter out cones beyond 5 meters
+        // Filter out cones beyond detection range
         if (noisyRange > DETECTION_RANGE) {
             continue; // Skip this cone
         }
 
         // Output the result
         std::cout << "Cone at (" << cone_x_m << " m, " << cone_y_m << " m): Range = "
-                  << noisyRange << " m, Bearing = " << noisyBearingDeg << " degrees" << std::endl;
+                  << noisyRange << " m, Bearing = " << noisyBearingDeg << " degrees, Color = " << cone.color << std::endl;
+
+        // Determine CAN ID based on cone color
+        unsigned int canID = 0;
+
+        if (cone.color == "yellow") {
+            if (yellowIndex > 0x7F) {
+                // Handle overflow
+                std::cerr << "Warning: Too many yellow cones, exceeding CAN ID range." << std::endl;
+                continue;
+            }
+            canID = 0x400 + yellowIndex;
+            yellowIndex++;
+        } else if (cone.color == "blue") {
+            if (blueIndex > 0x7F) {
+                // Handle overflow
+                std::cerr << "Warning: Too many blue cones, exceeding CAN ID range." << std::endl;
+                continue;
+            }
+            canID = 0x480 + blueIndex;
+            blueIndex++;
+        } else {
+            // Handle other colors or unknown color
+            std::cerr << "Warning: Unknown cone color '" << cone.color << "'. Skipping cone." << std::endl;
+            continue;
+        }
 
         // Push data to the queue
         {
             std::lock_guard<std::mutex> lock(queueMutex);
-            dataQueue.push({0x400 + static_cast<int>(i), static_cast<float>(noisyRange), static_cast<float>(noisyBearingDeg)});
+            dataQueue.push({canID, static_cast<float>(noisyRange), static_cast<float>(noisyBearingDeg)});
         }
         cv.notify_one();
     }

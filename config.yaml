@@ -24,7 +24,7 @@ pid_controller:
 
 # Control parameters
 control:
-  target_speed: 15.0    # Desired speed in m/s
+  target_speed: 10.0    # Desired speed in m/s
   throttle_Kp: 1.0     # Proportional gain for throttle control
 
 # CAN IDs (specified in hexadecimal)
