@@ -1,0 +1,37 @@
+visualization:
+  PIXELS_PER_METER: 10.0
+
+car:
+  wheelbase:    2.5     # [meters]
+  weight:       100.0   # [kg]
+
+actuation:
+  max_speed:    30.0    # [m/s]
+  max_throttle: 100.0   # [units]
+  max_brake:    -100.0  # [units]
+  max_torque:   10.0    # [Nm]
+  max_brake:    10.0    # [Nm]
+  max_steering: 30.0    # [degrees]
+  min_steering: -30.0   # [degrees]
+  steer_step:   1.0     # [degrees]
+  pps_step:   1.0       # [units] {pps(pedal position) = [< 0: brake; > 0: throttle]}
+
+perception:
+  range_noise_std_dev: 0.1        # Standard deviation of range noise in meters
+  bearing_noise_std_dev: 1.0      # Standard deviation of bearing noise in degrees
+  detection_range:  5.0            # Maximum detection range for cones in meters
+
+pid_controller:
+  Kp: 1.0
+  Ki: 0.0
+  Kd: 0.1
+  setpoint: 0.0   # Desired deviation (centerline)
+
+# CAN IDs (hex)
+CAN_IDS:
+  STEERING_CAN_ID: 0x300      # 768 in decimal
+  THROTTLE_CAN_ID: 0x301      # 769 in decimal
+  CAR_X_CAN_ID: 0x200         # 512 in decimal
+  CAR_Y_CAN_ID: 0x201         # 513 in decimal
+  CAR_ANGLE_CAN_ID: 0x202     # 514 in decimal
+  CONE_CAN_ID_START: 0x400    # Starting CAN ID for cones
