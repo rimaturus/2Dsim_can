@@ -1,5 +1,4 @@
 #include "perception.h"
-
 #include <linux/can/raw.h>
 #include <net/if.h>
 #include <sys/ioctl.h>
@@ -11,343 +10,402 @@
 #include <thread>
 
 // Constants
-float PIXELS_PER_METER = 10.0f; // Default value, will be loaded from config
+float	PIXELS_PER_METER = 10.0f;  // Default value, will be loaded from config
 
 // CAN IDs
-int CAR_X_CAN_ID = 0x200;
-int CAR_Y_CAN_ID = 0x201;
-int CAR_ANGLE_CAN_ID = 0x202;
+int	CAR_X_CAN_ID     = 0x200;
+int	CAR_Y_CAN_ID     = 0x201;
+int	CAR_ANGLE_CAN_ID = 0x202;
 
 // Noise parameters
-double RANGE_NOISE_STD_DEV = 0.1;     // Default value, will be loaded from config
-double BEARING_NOISE_STD_DEV = 1.0;   // Default value, will be loaded from config
-double DETECTION_RANGE = 5.0;         // Default detection range in meters
+double	RANGE_NOISE_STD_DEV   = 0.1;  // Default value, will be loaded from config
+double	BEARING_NOISE_STD_DEV = 1.0;  // Default value, will be loaded from config
+double	DETECTION_RANGE       = 5.0;  // Default detection range in meters
 
-// Load configuration from YAML file
-void loadConfig(const std::string& filename) {
-    try {
-        YAML::Node config = YAML::LoadFile(filename);
+// Function prototypes
+void			loadConfig(const std::string &filename);
+std::vector<Cone>	loadCones(const std::string &filename);
+int			setupCANSocket(const std::string &interface_name);
+void			sendCANData(int send_can_socket, std::queue<CANData> &dataQueue, std::mutex &queueMutex, std::condition_variable &cv);
+void			processCANFrame(const struct can_frame &frame, float &car_x, float &car_y, float &car_angle, bool &has_car_x, bool &has_car_y, bool &has_car_angle);
+void			computeAndSendConeData(const std::vector<Cone> &cones, float car_x_m, float car_y_m, float car_angle, std::queue<CANData> &dataQueue, std::mutex &queueMutex, std::condition_variable &cv);
+int			main();
 
-        // Load PIXELS_PER_METER
-        if (config["PIXELS_PER_METER"]) {
-            PIXELS_PER_METER = config["PIXELS_PER_METER"].as<float>();
-        }
+// Function definitions
 
-        // Load noise parameters and detection range
-        if (config["perception"]) {
-            RANGE_NOISE_STD_DEV = config["perception"]["range_noise_std_dev"].as<double>();
-            BEARING_NOISE_STD_DEV = config["perception"]["bearing_noise_std_dev"].as<double>();
-            DETECTION_RANGE = config["perception"]["detection_range"].as<double>();
-        }
+void	loadConfig(const std::string &filename)
+{
+	YAML::Node	config;
+	try
+	{
+		config = YAML::LoadFile(filename);
 
-        // Load CAN IDs
-        if (config["CAN_IDS"]) {
-            CAR_X_CAN_ID = config["CAN_IDS"]["CAR_X_CAN_ID"].as<int>();
-            CAR_Y_CAN_ID = config["CAN_IDS"]["CAR_Y_CAN_ID"].as<int>();
-            CAR_ANGLE_CAN_ID = config["CAN_IDS"]["CAR_ANGLE_CAN_ID"].as<int>();
-        }
+		// Load PIXELS_PER_METER
+		if (config["PIXELS_PER_METER"])
+		{
+			PIXELS_PER_METER = config["PIXELS_PER_METER"].as<float>();
+		}
 
-        std::cout << "Configuration loaded from " << filename << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << "Error loading configuration from " << filename << ": " << e.what() << std::endl;
-        std::cerr << "Using default configuration values." << std::endl;
-    }
+		// Load noise parameters and detection range
+		if (config["perception"])
+		{
+			RANGE_NOISE_STD_DEV   = config["perception"]["range_noise_std_dev"].as<double>();
+			BEARING_NOISE_STD_DEV = config["perception"]["bearing_noise_std_dev"].as<double>();
+			DETECTION_RANGE       = config["perception"]["detection_range"].as<double>();
+		}
+
+		// Load CAN IDs
+		if (config["CAN_IDS"])
+		{
+			CAR_X_CAN_ID     = config["CAN_IDS"]["CAR_X_CAN_ID"].as<int>();
+			CAR_Y_CAN_ID     = config["CAN_IDS"]["CAR_Y_CAN_ID"].as<int>();
+			CAR_ANGLE_CAN_ID = config["CAN_IDS"]["CAR_ANGLE_CAN_ID"].as<int>();
+		}
+
+		std::cout << "Configuration loaded from " << filename << std::endl;
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << "Error loading configuration from " << filename << ": " << e.what() << std::endl;
+		std::cerr << "Using default configuration values." << std::endl;
+	}
 }
 
-// Load cones from YAML file
-std::vector<Cone> loadCones(const std::string& filename) {
-    std::vector<Cone> cones;
-    try {
-        YAML::Node conesNode = YAML::LoadFile(filename)["cones"];
-        if (!conesNode) {
-            std::cerr << "Error: 'cones' key not found in " << filename << std::endl;
-            return cones;
-        }
-        for (const auto& node : conesNode) {
-            Cone cone;
-            cone.x_pixels = node["x"].as<float>(); // Positions in pixels
-            cone.y_pixels = node["y"].as<float>();
-            cone.color = node["color"].as<std::string>();
-            cones.push_back(cone);
-        }
-        std::cout << "Loaded " << cones.size() << " cones from " << filename << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << "Error loading cones from " << filename << ": " << e.what() << std::endl;
-    }
-    return cones;
+std::vector<Cone>	loadCones(const std::string &filename)
+{
+	std::vector<Cone>	cones;
+	try
+	{
+		YAML::Node	conesNode = YAML::LoadFile(filename)["cones"];
+		if (!conesNode)
+		{
+			std::cerr << "Error: 'cones' key not found in " << filename << std::endl;
+			return cones;
+		}
+		for (const auto &node : conesNode)
+		{
+			Cone	cone;
+			cone.x_pixels = node["x"].as<float>();  // Positions in pixels
+			cone.y_pixels = node["y"].as<float>();
+			cone.color    = node["color"].as<std::string>();
+			cones.push_back(cone);
+		}
+		std::cout << "Loaded " << cones.size() << " cones from " << filename << std::endl;
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << "Error loading cones from " << filename << ": " << e.what() << std::endl;
+	}
+	return cones;
 }
 
-// Function to set up CAN socket
-int setupCANSocket(const std::string& interface_name) {
-    int can_socket;
-    struct sockaddr_can addr;
-    struct ifreq ifr;
+int	setupCANSocket(const std::string &interface_name)
+{
+	int			can_socket;
+	struct sockaddr_can	addr;
+	struct ifreq		ifr;
+	int			flags;
 
-    // Create a socket
-    if ((can_socket = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0) {
-        perror("Error while opening socket");
-        return -1;
-    }
+	// Create a socket
+	if ((can_socket = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0)
+	{
+		perror("Error while opening socket");
+		return -1;
+	}
 
-    strcpy(ifr.ifr_name, interface_name.c_str());
-    if (ioctl(can_socket, SIOCGIFINDEX, &ifr) < 0) {
-        perror("Error getting interface index");
-        close(can_socket);
-        return -1;
-    }
+	strcpy(ifr.ifr_name, interface_name.c_str());
+	if (ioctl(can_socket, SIOCGIFINDEX, &ifr) < 0)
+	{
+		perror("Error getting interface index");
+		close(can_socket);
+		return -1;
+	}
 
-    addr.can_family = AF_CAN;
-    addr.can_ifindex = ifr.ifr_ifindex;
+	addr.can_family  = AF_CAN;
+	addr.can_ifindex = ifr.ifr_ifindex;
 
-    // Bind the socket to the CAN interface
-    if (bind(can_socket, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        perror("Error in socket bind");
-        close(can_socket);
-        return -2;
-    }
+	// Bind the socket to the CAN interface
+	if (bind(can_socket, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+	{
+		perror("Error in socket bind");
+		close(can_socket);
+		return -2;
+	}
 
-    // Set socket to non-blocking mode
-    int flags = fcntl(can_socket, F_GETFL, 0);
-    if (fcntl(can_socket, F_SETFL, flags | O_NONBLOCK) < 0) {
-        perror("Error setting non-blocking mode");
-        close(can_socket);
-        return -3;
-    }
+	// Set socket to non-blocking mode
+	flags = fcntl(can_socket, F_GETFL, 0);
+	if (fcntl(can_socket, F_SETFL, flags | O_NONBLOCK) < 0)
+	{
+		perror("Error setting non-blocking mode");
+		close(can_socket);
+		return -3;
+	}
 
-    return can_socket;
+	return can_socket;
 }
 
-// Thread function to send CAN data
-void sendCANData(int send_can_socket, std::queue<CANData>& dataQueue, std::mutex& queueMutex, std::condition_variable& cv) {
-    while (true) {
-        std::unique_lock<std::mutex> lock(queueMutex);
-        cv.wait(lock, [&]{ return !dataQueue.empty(); });
+void	sendCANData(int send_can_socket, std::queue<CANData> &dataQueue, std::mutex &queueMutex, std::condition_variable &cv)
+{
+	struct can_frame	out_frame;
+	CANData			data;
+	int			bytes_sent;
 
-        while (!dataQueue.empty()) {
-            CANData data = dataQueue.front();
-            dataQueue.pop();
+	while (true)
+	{
+		std::unique_lock<std::mutex>	lock(queueMutex);
+		cv.wait(lock, [&] { return !dataQueue.empty(); });
 
-            // Prepare CAN frame to send
-            struct can_frame out_frame;
-            out_frame.can_id = data.id;
-            out_frame.can_dlc = 8; // 4 bytes for range, 4 bytes for bearing
+		while (!dataQueue.empty())
+		{
+			data = dataQueue.front();
+			dataQueue.pop();
 
-            // Pack range and bearing into data
-            memcpy(out_frame.data, &data.range, sizeof(float));
-            memcpy(out_frame.data + 4, &data.bearing, sizeof(float));
+			// Prepare CAN frame to send
+			out_frame.can_id  = data.id;
+			out_frame.can_dlc = 8;  // 4 bytes for range, 4 bytes for bearing
 
-            // Send the CAN frame
-            int bytes_sent = write(send_can_socket, &out_frame, sizeof(struct can_frame));
-            if (bytes_sent != sizeof(struct can_frame)) {
-                perror("Failed to send CAN frame for cone");
-            } else {
-                // Uncomment the following line for debugging
-                // std::cout << "Sent CAN frame with ID: " << std::hex << data.id << ", Range: " << data.range << " m, Bearing: " << data.bearing << " degrees." << std::endl;
-            }
-        }
-    }
+			// Pack range and bearing into data
+			memcpy(out_frame.data, &data.range, sizeof(float));
+			memcpy(out_frame.data + 4, &data.bearing, sizeof(float));
+
+			// Send the CAN frame
+			bytes_sent = write(send_can_socket, &out_frame, sizeof(struct can_frame));
+			if (bytes_sent != sizeof(struct can_frame))
+			{
+				perror("Failed to send CAN frame for cone");
+			}
+			else
+			{
+				// Uncomment the following line for debugging
+				// std::cout << "Sent CAN frame with ID: " << std::hex << data.id << ", Range: " << data.range << " m, Bearing: " << data.bearing << " degrees." << std::endl;
+			}
+		}
+	}
 }
 
-// Helper function to process received CAN frames
-void processCANFrame(const struct can_frame& frame, float& car_x, float& car_y, float& car_angle, bool& has_car_x, bool& has_car_y, bool& has_car_angle) {
-    if (frame.can_dlc != sizeof(float)) {
-        // Invalid data length
-        return;
-    }
+void	processCANFrame(const struct can_frame &frame, float &car_x, float &car_y, float &car_angle, bool &has_car_x, bool &has_car_y, bool &has_car_angle)
+{
+	float	value;
+	if (frame.can_dlc != sizeof(float))
+	{
+		// Invalid data length
+		return;
+	}
 
-    float value;
-    memcpy(&value, frame.data, sizeof(float));
+	memcpy(&value, frame.data, sizeof(float));
 
-    if (frame.can_id == CAR_X_CAN_ID) {
-        car_x = value;
-        has_car_x = true;
-    } else if (frame.can_id == CAR_Y_CAN_ID) {
-        car_y = value;
-        has_car_y = true;
-    } else if (frame.can_id == CAR_ANGLE_CAN_ID) {
-        car_angle = value;
-        has_car_angle = true;
-    } else {
-        // Unknown CAN ID
-    }
+	if (frame.can_id == CAR_X_CAN_ID)
+	{
+		car_x     = value;
+		has_car_x = true;
+	}
+	else if (frame.can_id == CAR_Y_CAN_ID)
+	{
+		car_y     = value;
+		has_car_y = true;
+	}
+	else if (frame.can_id == CAR_ANGLE_CAN_ID)
+	{
+		car_angle     = value;
+		has_car_angle = true;
+	}
+	// Unknown CAN ID is ignored
 }
 
-// Helper function to compute and send cone data
-void computeAndSendConeData(const std::vector<Cone>& cones, float car_x_m, float car_y_m, float car_angle, std::queue<CANData>& dataQueue, std::mutex& queueMutex, std::condition_variable& cv) {
-    std::cout << "Received car data: X=" << car_x_m << " m, Y=" << car_y_m
-              << " m, Angle=" << car_angle * 180.0 / M_PI << " degrees" << std::endl;
+void	computeAndSendConeData(const std::vector<Cone> &cones, float car_x_m, float car_y_m, float car_angle, std::queue<CANData> &dataQueue, std::mutex &queueMutex, std::condition_variable &cv)
+{
+	static std::default_random_engine	generator(std::random_device{}());
+	std::normal_distribution<double>	rangeNoiseDist(0.0, RANGE_NOISE_STD_DEV);
+	std::normal_distribution<double>	bearingNoiseDist(0.0, BEARING_NOISE_STD_DEV);
+	unsigned int			yellowIndex = 0;
+	unsigned int			blueIndex   = 0;
+	float					cone_x_m;
+	float					cone_y_m;
+	float					dx;
+	float					dy;
+	float					cos_angle;
+	float					sin_angle;
+	float					x_rel;
+	float					y_rel;
+	float					range;
+	float					bearing;
+	float					bearing_deg;
+	double					noisyRange;
+	double					noisyBearingDeg;
+	unsigned int			canID;
 
-    // Random number generators for Gaussian noise
-    static std::default_random_engine generator(std::random_device{}());
+	std::cout << "Received car data: X=" << car_x_m << " m, Y=" << car_y_m << " m, Angle=" << car_angle * 180.0 / M_PI << " degrees" << std::endl;
 
-    // Distributions for noise
-    std::normal_distribution<double> rangeNoiseDist(0.0, RANGE_NOISE_STD_DEV);
-    std::normal_distribution<double> bearingNoiseDist(0.0, BEARING_NOISE_STD_DEV);
+	// Compute range and bearing to each cone
+	for (const auto &cone : cones)
+	{
+		// Convert cone position from pixels to meters
+		cone_x_m = cone.x_pixels / PIXELS_PER_METER;
+		cone_y_m = cone.y_pixels / PIXELS_PER_METER;
 
-    // Initialize CAN IDs for each color
-    unsigned int yellowIndex = 0;
-    unsigned int blueIndex = 0;
+		dx = cone_x_m - car_x_m;
+		dy = cone_y_m - car_y_m;
 
-    // Compute range and bearing to each cone
-    for (size_t i = 0; i < cones.size(); ++i) {
-        const auto& cone = cones[i];
+		// Rotate into car's coordinate frame (negative angle)
+		cos_angle = cos(-car_angle);
+		sin_angle = sin(-car_angle);
+		x_rel     = dx * cos_angle - dy * sin_angle;
+		y_rel     = dx * sin_angle + dy * cos_angle;
 
-        // Convert cone position from pixels to meters
-        float cone_x_m = cone.x_pixels / PIXELS_PER_METER;
-        float cone_y_m = cone.y_pixels / PIXELS_PER_METER;
+		// Compute range and bearing
+		range   = sqrt(x_rel * x_rel + y_rel * y_rel);
+		bearing = atan2(y_rel, x_rel);  // Bearing in radians
 
-        float dx = cone_x_m - car_x_m;
-        float dy = cone_y_m - car_y_m;
+		// Convert bearing to degrees
+		bearing_deg = bearing * 180.0 / M_PI;
 
-        // Rotate into car's coordinate frame (negative angle)
-        float cos_angle = cos(-car_angle);
-        float sin_angle = sin(-car_angle);
-        float x_rel = dx * cos_angle - dy * sin_angle;
-        float y_rel = dx * sin_angle + dy * cos_angle;
+		// Add Gaussian noise to range and bearing
+		noisyRange      = range + rangeNoiseDist(generator);
+		noisyBearingDeg = bearing_deg + bearingNoiseDist(generator);
 
-        // Compute range and bearing
-        float range = sqrt(x_rel * x_rel + y_rel * y_rel);
-        float bearing = atan2(y_rel, x_rel);  // Bearing in radians
+		// Ensure range is not negative
+		if (noisyRange < 0.0)
+		{
+			noisyRange = 0.0;
+		}
 
-        // Convert bearing to degrees
-        float bearing_deg = bearing * 180.0 / M_PI;
+		// Filter out cones beyond detection range
+		if (noisyRange > DETECTION_RANGE)
+		{
+			continue;  // Skip this cone
+		}
 
-        // Add Gaussian noise to range and bearing
-        double noisyRange = range + rangeNoiseDist(generator);
-        double noisyBearingDeg = bearing_deg + bearingNoiseDist(generator);
+		// Output the result
+		std::cout << "Cone at (" << cone_x_m << " m, " << cone_y_m << " m): Range = " << noisyRange << " m, Bearing = " << noisyBearingDeg << " degrees, Color = " << cone.color << std::endl;
 
-        // Ensure range is not negative
-        if (noisyRange < 0.0) {
-            noisyRange = 0.0;
-        }
+		// Determine CAN ID based on cone color
+		if (cone.color == "yellow")
+		{
+			if (yellowIndex > 0x7F)
+			{
+				// Handle overflow
+				std::cerr << "Warning: Too many yellow cones, exceeding CAN ID range." << std::endl;
+				continue;
+			}
+			canID = 0x400 + yellowIndex;
+			yellowIndex++;
+		}
+		else if (cone.color == "blue")
+		{
+			if (blueIndex > 0x7F)
+			{
+				// Handle overflow
+				std::cerr << "Warning: Too many blue cones, exceeding CAN ID range." << std::endl;
+				continue;
+			}
+			canID = 0x480 + blueIndex;
+			blueIndex++;
+		}
+		else
+		{
+			// Handle other colors or unknown color
+			std::cerr << "Warning: Unknown cone color '" << cone.color << "'. Skipping cone." << std::endl;
+			continue;
+		}
 
-        // Filter out cones beyond detection range
-        if (noisyRange > DETECTION_RANGE) {
-            continue; // Skip this cone
-        }
+		// Push data to the queue
+		{
+			std::lock_guard<std::mutex>	lock(queueMutex);
+			dataQueue.push({canID, static_cast<float>(noisyRange), static_cast<float>(noisyBearingDeg)});
+		}
+		cv.notify_one();
+	}
 
-        // Output the result
-        std::cout << "Cone at (" << cone_x_m << " m, " << cone_y_m << " m): Range = "
-                  << noisyRange << " m, Bearing = " << noisyBearingDeg << " degrees, Color = " << cone.color << std::endl;
-
-        // Determine CAN ID based on cone color
-        unsigned int canID = 0;
-
-        if (cone.color == "yellow") {
-            if (yellowIndex > 0x7F) {
-                // Handle overflow
-                std::cerr << "Warning: Too many yellow cones, exceeding CAN ID range." << std::endl;
-                continue;
-            }
-            canID = 0x400 + yellowIndex;
-            yellowIndex++;
-        } else if (cone.color == "blue") {
-            if (blueIndex > 0x7F) {
-                // Handle overflow
-                std::cerr << "Warning: Too many blue cones, exceeding CAN ID range." << std::endl;
-                continue;
-            }
-            canID = 0x480 + blueIndex;
-            blueIndex++;
-        } else {
-            // Handle other colors or unknown color
-            std::cerr << "Warning: Unknown cone color '" << cone.color << "'. Skipping cone." << std::endl;
-            continue;
-        }
-
-        // Push data to the queue
-        {
-            std::lock_guard<std::mutex> lock(queueMutex);
-            dataQueue.push({canID, static_cast<float>(noisyRange), static_cast<float>(noisyBearingDeg)});
-        }
-        cv.notify_one();
-    }
-
-    std::cout << "-----\n" << std::endl;
+	std::cout << "-----\n" << std::endl;
 }
 
-int main() {
-    // Load cones from YAML file
-    std::vector<Cone> cones = loadCones("../track_/cones.yaml");
+int	main()
+{
+	std::vector<Cone>	cones;
+	int					can_socket;
+	int					send_can_socket;
+	float				car_x          = 0.0f;
+	float				car_y          = 0.0f;
+	float				car_angle      = 0.0f;
+	bool				has_car_x      = false;
+	bool				has_car_y      = false;
+	bool				has_car_angle  = false;
+	struct can_frame	frame;
+	std::queue<CANData>	dataQueue;
+	std::mutex			queueMutex;
+	std::condition_variable	cv;
+	std::thread			senderThread;
 
-    // Load configuration
-    loadConfig("../config.yaml");
+	// Load cones from YAML file
+	cones = loadCones("../track_/cones.yaml");
 
-    // Set up CAN socket for receiving (car data)
-    int can_socket = setupCANSocket("vcan0");
-    if (can_socket < 0) {
-        return -1;
-    }
+	// Load configuration
+	loadConfig("../config.yaml");
 
-    // Set up CAN socket for sending (cone data)
-    int send_can_socket = setupCANSocket("vcan0");
-    if (send_can_socket < 0) {
-        close(can_socket);
-        return -1;
-    }
+	// Set up CAN socket for receiving (car data)
+	can_socket = setupCANSocket("vcan0");
+	if (can_socket < 0)
+	{
+		return -1;
+	}
 
-    std::cout << "Cone sensor script is running. Listening for car data over CAN bus..." << std::endl;
+	// Set up CAN socket for sending (cone data)
+	send_can_socket = setupCANSocket("vcan0");
+	if (send_can_socket < 0)
+	{
+		close(can_socket);
+		return -1;
+	}
 
-    float car_x = 0.0f;
-    float car_y = 0.0f;
-    float car_angle = 0.0f;
+	std::cout << "Cone sensor script is running. Listening for car data over CAN bus..." << std::endl;
 
-    bool has_car_x = false;
-    bool has_car_y = false;
-    bool has_car_angle = false;
+	// Start sending thread
+	senderThread = std::thread(sendCANData, send_can_socket, std::ref(dataQueue), std::ref(queueMutex), std::ref(cv));
 
-    struct can_frame frame;
+	while (true)
+	{
+		int	nbytes = read(can_socket, &frame, sizeof(struct can_frame));
 
-    // Queue to hold data to send
-    std::queue<CANData> dataQueue;
-    std::mutex queueMutex;
-    std::condition_variable cv;
+		if (nbytes < 0)
+		{
+			if (errno != EAGAIN && errno != EWOULDBLOCK)
+			{
+				perror("CAN read error");
+				break;
+			}
+			// No data available, sleep briefly
+			usleep(1000);
+			continue;
+		}
 
-    // Start sending thread
-    std::thread senderThread(sendCANData, send_can_socket, std::ref(dataQueue), std::ref(queueMutex), std::ref(cv));
+		if (nbytes < sizeof(struct can_frame))
+		{
+			std::cerr << "Incomplete CAN frame received." << std::endl;
+			continue;
+		}
 
-    while (true) {
-        int nbytes = read(can_socket, &frame, sizeof(struct can_frame));
+		// Process the received CAN frame
+		processCANFrame(frame, car_x, car_y, car_angle, has_car_x, has_car_y, has_car_angle);
 
-        if (nbytes < 0) {
-            if (errno != EAGAIN && errno != EWOULDBLOCK) {
-                perror("CAN read error");
-                break;
-            }
-            // No data available, sleep briefly
-            usleep(1000);
-            continue;
-        }
+		// If all data received, compute range and bearing
+		if (has_car_x && has_car_y && has_car_angle)
+		{
+			// Car position is already in meters
+			computeAndSendConeData(cones, car_x, car_y, car_angle, dataQueue, queueMutex, cv);
 
-        if (nbytes < sizeof(struct can_frame)) {
-            std::cerr << "Incomplete CAN frame received." << std::endl;
-            continue;
-        }
+			// Reset flags to wait for new data
+			has_car_x     = false;
+			has_car_y     = false;
+			has_car_angle = false;
+		}
+	}
 
-        // Process the received CAN frame
-        processCANFrame(frame, car_x, car_y, car_angle, has_car_x, has_car_y, has_car_angle);
+	// Close CAN sockets (This line will only be reached if the loop breaks)
+	close(can_socket);
+	close(send_can_socket);
 
-        // If all data received, compute range and bearing
-        if (has_car_x && has_car_y && has_car_angle) {
-            // Car position is already in meters
-            float car_x_m = car_x;
-            float car_y_m = car_y;
+	// Join the sender thread (Not actually needed in this infinite loop, but good practice)
+	senderThread.join();
 
-            computeAndSendConeData(cones, car_x_m, car_y_m, car_angle, dataQueue, queueMutex, cv);
-
-            // Reset flags to wait for new data
-            has_car_x = false;
-            has_car_y = false;
-            has_car_angle = false;
-        }
-    }
-
-    // Close CAN sockets (This line will only be reached if the loop breaks)
-    close(can_socket);
-    close(send_can_socket);
-
-    // Join the sender thread (Not actually needed in this infinite loop, but good practice)
-    senderThread.join();
-
-    return 0;
+	return 0;
 }
