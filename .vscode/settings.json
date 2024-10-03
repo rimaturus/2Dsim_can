@@ -61,7 +61,8 @@
         "stop_token": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "raw.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

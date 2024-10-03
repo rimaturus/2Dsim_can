@@ -1,5 +1,3 @@
-// 2D_sim.c
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +5,7 @@
 
 #include "src/visualization/visualization.h"
 #include "src/control/keyboard_control.h"
+#include "include/configStruct.h"
 
 
 void	*visualizationThread(void *arg);
@@ -14,7 +13,7 @@ void	*controlThread(void *arg);
 
 
 typedef struct {
-	char	config_file[256];
+	Config config;
 	char	track_file[256];
 } SimParams;
 
@@ -28,8 +27,10 @@ int	main(int argc, char *argv[])
 	SimParams	simParams;
 	int		i;	// used in "for" loop
 
+	char config_file[256];
+
 	// Initialize default simulation parameters
-	strcpy(simParams.config_file, "config/config.yaml");
+	strcpy(config_file, "config/config.yaml");
 	strcpy(simParams.track_file, "config/cones.yaml");
 
 	// Take the input arguments 
@@ -37,8 +38,8 @@ int	main(int argc, char *argv[])
 	{
 		if (strcmp(argv[i], "--config") == 0 && i + 1 < argc)
 		{
-			strncpy(simParams.config_file, argv[i + 1], sizeof(simParams.config_file) - 1);
-			simParams.config_file[sizeof(simParams.config_file) - 1] = '\0';
+			strncpy(config_file, argv[i + 1], sizeof(config_file) - 1);
+			config_file[sizeof(config_file) - 1] = '\0';
 			i++;
 		}
 		else if (strcmp(argv[i], "--track") == 0 && i + 1 < argc)
@@ -54,6 +55,8 @@ int	main(int argc, char *argv[])
 		}
 	}
 
+	loadConfig(config_file, &simParams.config);
+
 	// Thread section 
 	pthread_t	visThreadId;
 	pthread_t	controlThreadId;
@@ -64,7 +67,7 @@ int	main(int argc, char *argv[])
 		return -1;
 	}
 
-	if (pthread_create(&controlThreadId, NULL, controlThread, &simParams) != 0)
+	if (pthread_create(&controlThreadId, NULL, controlThread, &simParams.config) != 0)
     {
         perror("Failed to create control thread");
         return -1;
@@ -82,7 +85,7 @@ void	*visualizationThread(void *arg)
 	SimParams	*simParams = (SimParams *)arg;
 	int		result;
 
-	result = visualization_main(simParams->config_file, simParams->track_file);
+	result = visualization_main(&simParams->config, simParams->track_file);
 
 	if (result != 0)
 	{
@@ -95,10 +98,10 @@ void	*visualizationThread(void *arg)
 
 void	*controlThread(void *arg)
 {
-	SimParams	*simParams = (SimParams *)arg;
+	Config	*config = (Config *)arg;
 	int		result;
 
-	result = keyboard_control_main(simParams->config_file);
+	result = keyboard_control_main(config);
 
 	if (result != 0)
 	{

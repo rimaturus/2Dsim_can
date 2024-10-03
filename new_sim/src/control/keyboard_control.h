@@ -1,17 +1,17 @@
-#ifndef CONTROL_H
-#define CONTROL_H
+#ifndef KEYBOARD_CONTROL_H
+#define KEYBOARD_CONTROL_H
+
+#include "configStruct.h"
+
+#include <allegro5/allegro.h>
+#include <allegro5/keyboard.h>
+#include <allegro5/events.h>
 
 void send_float(int can_socket, int can_id, float value);
-void *keyboard_listener(void *arg);
-void reset_terminal_mode();
-void set_conio_terminal_mode();
-int kbhit();
-int getch();
-void signal_handler(int sig);
-void load_config(const char *config_file);
 int setup_can_socket(const char *interface_name);
+void signal_handler(int sig);
 
-void *keyboard_control_main(const char *config_file);
+void *keyboard_control_main(Config *config);
 
 
 #endif

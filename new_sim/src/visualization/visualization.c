@@ -1,4 +1,5 @@
 #include "visualization.h"
+#include "configStruct.h"
 
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h>
@@ -33,7 +34,7 @@ int CAR_X_CAN_ID      = 0x200;  // [meters]
 int CAR_Y_CAN_ID      = 0x201;  // [meters]
 int CAR_ANGLE_CAN_ID  = 0x202;  // [radians]
 
-Car car;
+CarState car_state;
 
 // Lock for thread-safe updates
 volatile int	done = 0;
@@ -49,109 +50,6 @@ pthread_mutex_t	carMutex = PTHREAD_MUTEX_INITIALIZER;
 //		STREAM_START_TOKEN -> KEY_TOKEN -> VALUE_TOKEN -> SCALAR_TOKEN -> KEY... -> STREAM_END_TOKEN
 //	e.g.		SOF			 "wheelbase"       ":"            "2.5"     "STEER..."		 EOF
 // ---------------------------------------------------------------------
-
-void	loadConfig(const char *filename, Car *car)
-{
-	FILE		*file;
-	yaml_parser_t	parser;
-	yaml_token_t	token;
-	char		key[256];
-	char		value[256];
-	int		state = 0;  // 0: Expect key, 1: Expect value
-
-	file = fopen(filename, "r");
-	if (!file)
-	{
-		fprintf(stderr, "Failed to open config file: %s\n", filename);
-		return;
-	}
-
-	if (!yaml_parser_initialize(&parser))
-	{
-		fprintf(stderr, "Failed to initialize YAML parser\n");
-		fclose(file);
-		return;
-	}
-
-	yaml_parser_set_input_file(&parser, file);
-
-	while (1)
-	{
-		yaml_parser_scan(&parser, &token);
-		if (token.type == YAML_STREAM_END_TOKEN)
-		{
-			yaml_token_delete(&token);
-			break;
-		}
-		if (token.type == YAML_KEY_TOKEN)
-		{
-			state = 0;
-		}
-		else if (token.type == YAML_VALUE_TOKEN)
-		{
-			state = 1;
-		}
-		else if (token.type == YAML_SCALAR_TOKEN)
-		{
-			if (state == 0)
-			{
-				strncpy(key, (char *)token.data.scalar.value, sizeof(key) - 1);
-				key[sizeof(key) - 1] = '\0';
-			}
-			else if (state == 1)
-			{
-				strncpy(value, (char *)token.data.scalar.value, sizeof(value) - 1);
-				value[sizeof(value) - 1] = '\0';
-
-				// Now we have a key-value pair
-				if (strcmp(key, "PIXELS_PER_METER") == 0)
-				{
-					PIXELS_PER_METER = atof(value);
-				}
-				else if (strcmp(key, "wheelbase") == 0)
-				{
-					car->params.wheelbase = atof(value);
-				}
-				else if (strcmp(key, "max_throttle") == 0)
-				{
-					car->params.max_throttle = atof(value);
-				}
-				else if (strcmp(key, "max_speed") == 0)
-				{
-					car->params.max_speed = atof(value);
-				}
-				else if (strcmp(key, "detection_range") == 0)
-				{
-					DETECTION_RANGE = atof(value);
-				}
-				else if (strcmp(key, "STEERING_CAN_ID") == 0)
-				{
-					STEERING_CAN_ID = (int)strtol(value, NULL, 0);
-				}
-				else if (strcmp(key, "THROTTLE_CAN_ID") == 0)
-				{
-					THROTTLE_CAN_ID = (int)strtol(value, NULL, 0);
-				}
-				else if (strcmp(key, "CAR_X_CAN_ID") == 0)
-				{
-					CAR_X_CAN_ID = (int)strtol(value, NULL, 0);
-				}
-				else if (strcmp(key, "CAR_Y_CAN_ID") == 0)
-				{
-					CAR_Y_CAN_ID = (int)strtol(value, NULL, 0);
-				}
-				else if (strcmp(key, "CAR_ANGLE_CAN_ID") == 0)
-				{
-					CAR_ANGLE_CAN_ID = (int)strtol(value, NULL, 0);
-				}
-			}
-		}
-		yaml_token_delete(&token);
-	}
-
-	yaml_parser_delete(&parser);
-	fclose(file);
-}
 
 Cone	*loadCones(const char *filename, int *num_cones)
 {
@@ -379,7 +277,7 @@ void	drawCones(const Cone *cones, int num_cones)
 	}
 }
 
-void	renderScene(const Cone *cones, int num_cones, Car *car, ALLEGRO_FONT *font, pthread_mutex_t *carMutex)
+void	renderScene(const Cone *cones, int num_cones, CarState *car_state, Config* config, ALLEGRO_FONT *font, pthread_mutex_t *carMutex)
 {
 	float			car_x_pixels;
 	float			car_y_pixels;
@@ -390,10 +288,13 @@ void	renderScene(const Cone *cones, int num_cones, Car *car, ALLEGRO_FONT *font,
 	char			coordText[100];
 	int			i;
 
+	PIXELS_PER_METER = config->visualization_params.pixel_per_meter;
+	DETECTION_RANGE = config->perception_params.detection_range;
+
 	pthread_mutex_lock(carMutex);
-	car_x_pixels = car->x * PIXELS_PER_METER;
-	car_y_pixels = car->y * PIXELS_PER_METER;
-	car_angle    = car->angle;
+	car_x_pixels = car_state->x * PIXELS_PER_METER;
+	car_y_pixels = car_state->y * PIXELS_PER_METER;
+	car_angle    = car_state->angle;
 	pthread_mutex_unlock(carMutex);
 
 	// Apply camera transformation to center the view on the car
@@ -443,7 +344,7 @@ void	renderScene(const Cone *cones, int num_cones, Car *car, ALLEGRO_FONT *font,
 
 	// Prepare the coordinate string (in meters)
 	pthread_mutex_lock(carMutex);
-	snprintf(coordText, sizeof(coordText), "X: %.2f m, Y: %.2f m", car->x, car->y);
+	snprintf(coordText, sizeof(coordText), "X: %.2f m, Y: %.2f m", car_state->x, car_state->y);
 	pthread_mutex_unlock(carMutex);
 
 	// Draw the text at position (10, 10)
@@ -616,8 +517,8 @@ void	*receiveCANMessagesThread(void *arg)
 						memcpy(&steeringDeg, frame.data, sizeof(float));
 						pthread_mutex_lock(&carMutex);
 
-						extern Car	car;
-						car.steeringAngle = steeringDeg;
+						extern CarState	car_state;
+						car_state.steeringAngle = steeringDeg;
 						
 						pthread_mutex_unlock(&carMutex);
 					}
@@ -628,7 +529,7 @@ void	*receiveCANMessagesThread(void *arg)
 					{
 						memcpy(&throttle, frame.data, sizeof(float));
 						pthread_mutex_lock(&carMutex);
-						car.throttle = throttle;
+						car_state.throttle = throttle;
 						pthread_mutex_unlock(&carMutex);
 					}
 				}
@@ -658,10 +559,10 @@ void	*sendCarDataThread(void *arg)
 	{
 		pthread_mutex_lock(&carMutex);
 		// Assuming 'car' is a global variable or passed via arg
-		extern Car	car;
-		sendFloatCAN(send_can_socket, CAR_X_CAN_ID, car.x);
-		sendFloatCAN(send_can_socket, CAR_Y_CAN_ID, car.y);
-		sendFloatCAN(send_can_socket, CAR_ANGLE_CAN_ID, car.angle);
+		extern CarState	car_state;
+		sendFloatCAN(send_can_socket, CAR_X_CAN_ID, car_state.x);
+		sendFloatCAN(send_can_socket, CAR_Y_CAN_ID, car_state.y);
+		sendFloatCAN(send_can_socket, CAR_ANGLE_CAN_ID, car_state.angle);
 		pthread_mutex_unlock(&carMutex);
 		// Sleep to control the sending rate (100 Hz)
 		usleep(10000);
@@ -676,29 +577,29 @@ void	*sendCarDataThread(void *arg)
 //
 // ---------------------------------------------------------------------
 
-void	initializeCar(Car *car)
+void	initializeCar(CarState *car_state)
 {
-	car->x             = 40.0f;	// initial x-position [meters]
-	car->y             = 30.0f;	// initial y-position [meters]
-	car->angle         = 0.0f;	// inital orientation [rad]
-	car->steeringAngle = 0.0f;	
-	car->throttle      = 0.0f;
-	car->speed         = 0.0f;
+	car_state->x             = 40.0f;	// initial x-position [meters]
+	car_state->y             = 30.0f;	// initial y-position [meters]
+	car_state->angle         = 0.0f;	// inital orientation [rad]
+	car_state->steeringAngle = 0.0f;	
+	car_state->throttle      = 0.0f;
+	car_state->speed         = 0.0f;
 	// car->params will be loaded from config.yaml
 }
 
-void	updateCarPosition(Car *car, float deltaTime, pthread_mutex_t *carMutex)
+void	updateCarPosition(CarState *car_state, Config *config, float deltaTime, pthread_mutex_t *carMutex)
 {
 	// Call the desired vehicle model function
-	updateCarPositionSingleTrackModel(car, deltaTime, carMutex);
+	updateCarPositionSingleTrackModel(car_state, config, deltaTime, carMutex);
 }
 
-void	updateCarPositionSingleTrackModel(Car *car, float deltaTime, pthread_mutex_t *carMutex)
+void	updateCarPositionSingleTrackModel(CarState *car_state, Config *config, float deltaTime, pthread_mutex_t *carMutex)
 {
 	// Car parameters
-	const float	L           = car->params.wheelbase;        // Wheelbase in meters
-	const float	MAX_THROTTLE = car->params.max_throttle;    // Max throttle units
-	const float	MAX_SPEED    = car->params.max_speed;       // Max speed in m/s
+	const float	L           = config->car_params.wheelbase;        // Wheelbase in meters
+	const float	MAX_THROTTLE = config->actuation_params.max_throttle;    // Max throttle units
+	const float	MAX_SPEED    = config->actuation_params.max_speed;       // Max speed in m/s
 	float		delta;
 	float		v;
 	float		beta;
@@ -706,33 +607,33 @@ void	updateCarPositionSingleTrackModel(Car *car, float deltaTime, pthread_mutex_
 	pthread_mutex_lock(carMutex);
 
 	// Convert steering angle from degrees to radians
-	delta = car->steeringAngle * M_PI / 180.0f;
+	delta = car_state->steeringAngle * M_PI / 180.0f;
 
 	// Compute speed based on throttle
-	v = (car->throttle / MAX_THROTTLE) * MAX_SPEED;
+	v = (car_state->throttle / MAX_THROTTLE) * MAX_SPEED;
 
 	// Compute slip angle beta
 	beta = atan2f(tanf(delta), 2.0f);  // Assuming front-wheel steering
 
 	// Update position
-	car->x += v * cosf(car->angle + beta) * deltaTime;
-	car->y += v * sinf(car->angle + beta) * deltaTime;
+	car_state->x += v * cosf(car_state->angle + beta) * deltaTime;
+	car_state->y += v * sinf(car_state->angle + beta) * deltaTime;
 
 	// Update orientation
-	car->angle += (v / L) * sinf(delta) * deltaTime;
+	car_state->angle += (v / L) * sinf(delta) * deltaTime;
 
 	// Keep angle within -PI to PI
-	if (car->angle > M_PI)
+	if (car_state->angle > M_PI)
 	{
-		car->angle -= 2 * M_PI;
+		car_state->angle -= 2 * M_PI;
 	}
-	else if (car->angle < -M_PI)
+	else if (car_state->angle < -M_PI)
 	{
-		car->angle += 2 * M_PI;
+		car_state->angle += 2 * M_PI;
 	}
 
 	// Update car speed
-	car->speed = v;
+	car_state->speed = v;
 
 	pthread_mutex_unlock(carMutex);
 }
@@ -744,7 +645,7 @@ void	updateCarPositionSingleTrackModel(Car *car, float deltaTime, pthread_mutex_
 //
 // ---------------------------------------------------------------------
 
-int visualization_main(const char *config_file, const char *track_file)
+int visualization_main(Config *config, const char *track_file)
 {
 	// Initialize Allegro
 	ALLEGRO_DISPLAY     *display     = NULL;
@@ -770,9 +671,7 @@ int visualization_main(const char *config_file, const char *track_file)
 		return -1;
 	}
 
-	initializeCar(&car);
-
-	loadConfig(config_file, &car);
+	initializeCar(&car_state);
 
 	can_socket = setupCANSocket("vcan0");
 	if (can_socket < 0)
@@ -821,10 +720,10 @@ int visualization_main(const char *config_file, const char *track_file)
 			deltaTime = 1.0f / 60.0f;  // 60 FPS
 
 			// Update car's position based on steering angle and throttle
-			updateCarPosition(&car, deltaTime, &carMutex);
+			updateCarPosition(&car_state, &config, deltaTime, &carMutex);
 
 			// Render the scene
-			renderScene(cones, num_cones, &car, font, &carMutex);
+			renderScene(cones, num_cones, &car_state, &config, font, &carMutex);
 		}
 		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 		{
