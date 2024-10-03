@@ -150,6 +150,8 @@ void *keyboard_control_main(Config *config)
         {
             if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
             {
+                printf("Key Pressed\n");
+                
                 int keycode = ev.keyboard.keycode;
                 pthread_mutex_lock(&control_mutex);
                 switch (keycode)
@@ -182,6 +184,7 @@ void *keyboard_control_main(Config *config)
                         printf("Quitting control script...\n");
                         stop_flag = 1;
                         break;
+                    
                     default:
                         break;
                 }

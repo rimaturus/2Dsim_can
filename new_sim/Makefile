@@ -1,4 +1,4 @@
-CC = gcc
+CC = gcc -g
 CFLAGS = -Wall -O2 -I$(VISUALIZATION_DIR) -I$(CONTROL_DIR) -I./$(INCLUDE_DIR)
 LDFLAGS = -lallegro -lallegro_font -lallegro_ttf -lallegro_primitives -lallegro -lpthread -lyaml -lm
 
