@@ -2,7 +2,7 @@
 
 /**
  * @file graph_slam.cpp
- * @brief Implementation of an enhanced GraphSLAM system with SocketCAN integration.
+ * @brief Implementation of an GraphSLAM system with SocketCAN integration.
  *
  * This file contains the implementation of a GraphSLAM system that processes
  * pose and landmark data from a CAN bus interface, constructs a graph-based
@@ -101,6 +101,9 @@ struct Config {
     } can_ids;
 
 };
+
+const int BLUE_CONE_OFFSET = 0;          // Blue cones: 0-127
+const int YELLOW_CONE_OFFSET = 128;      // Yellow cones: 128-255
 
 /**
  * @brief Loads configuration parameters from a YAML file.
@@ -320,6 +323,13 @@ void GraphSLAM::addLandmark(int id, double x, double y, const std::string& type)
     // Check if the landmark already exists
     auto it = landmarks.find(id);
     if (it != landmarks.end()) {
+        // Ensure that the type remains consistent
+        if (it->second.type != type && it->second.type != "unknown") {
+            std::cerr << "Warning: Attempting to change landmark type from " 
+                      << it->second.type << " to " << type 
+                      << " for landmark ID " << id << ". Skipping update." << std::endl;
+            return;
+        }
         // Update the existing landmark's position and type
         it->second.x = x;
         it->second.y = y;
@@ -335,6 +345,7 @@ void GraphSLAM::addLandmark(int id, double x, double y, const std::string& type)
     // Save the updated graph
     saveGraph("graph_live_output.txt");
 }
+
 
 void GraphSLAM::addMeasurement(int pose_id, int landmark_id, double range, double bearing) {
     std::lock_guard<std::mutex> lock(mtx);
@@ -639,41 +650,52 @@ void process_can_frame(const struct can_frame& frame, GraphSLAM& slam, const Con
         // Process landmark data (cones)
         bool is_blue_cone = false;
         bool is_yellow_cone = false;
-        int cone_id = -1;
+        int raw_cone_id = -1;
         std::string cone_type;
+        int landmark_id = -1;
 
         if (can_id >= 0x400 && can_id <= 0x47F) {
             // Blue cones
             is_blue_cone = true;
-            cone_id = can_id - 0x400;
+            raw_cone_id = can_id - 0x400;
             cone_type = "blue";
+            landmark_id = BLUE_CONE_OFFSET + raw_cone_id;
         }
         else if (can_id >= 0x480 && can_id <= 0x4FF) {
             // Yellow cones
             is_yellow_cone = true;
-            cone_id = can_id - 0x480;
+            raw_cone_id = can_id - 0x480;
             cone_type = "yellow";
+            landmark_id = YELLOW_CONE_OFFSET + raw_cone_id;
         }
 
-        if (is_blue_cone || is_yellow_cone) {
+        if ((is_blue_cone || is_yellow_cone) && landmark_id >= 0) {
             float range, bearing;
             if (frame.can_dlc == 8) {
                 memcpy(&range, frame.data, sizeof(float));
                 memcpy(&bearing, frame.data + 4, sizeof(float));
 
+                // Validate range
+                if (range < 0 || range > config.perception.detection_range) {
+                    std::cerr << "Invalid range value: " << range << ". Skipping measurement." << std::endl;
+                    return;
+                }
+
                 // Convert bearing from degrees to radians if necessary
                 double bearing_rad = bearing * M_PI / 180.0;
+                bearing_rad = std::atan2(std::sin(bearing_rad), std::cos(bearing_rad));
 
                 // Convert range and bearing to landmark position
                 double landmark_x = x + range * cos(theta + bearing_rad);
                 double landmark_y = y + range * sin(theta + bearing_rad);
 
                 // Add the landmark with type
-                slam.addLandmark(cone_id, landmark_x, landmark_y, cone_type);
-                std::cout << "Added " << cone_type << " Landmark: id=" << cone_id << ", x=" << landmark_x << ", y=" << landmark_y << "\n";
+                slam.addLandmark(landmark_id, landmark_x, landmark_y, cone_type);
+                std::cout << "Added " << cone_type << " Landmark: id=" << landmark_id
+                          << ", x=" << landmark_x << ", y=" << landmark_y << "\n";
 
                 // Add the measurement
-                slam.addMeasurement(slam.poses.size() - 1, cone_id, range, bearing_rad);
+                slam.addMeasurement(slam.poses.size() - 1, landmark_id, range, bearing_rad);
             }
             else {
                 fprintf(stderr, "Invalid data length for landmark\n");

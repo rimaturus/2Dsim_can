@@ -12,4 +12,4 @@ windows:
         - ../control_/pid/pid_control
         - ../graph_slam/graph_slam ../config.yaml
         - candump vcan0
-        - python3 ../graph_slam/graph_slam_visualizer.py
+        - python3 ../graph_slam/cone_viewer.py
