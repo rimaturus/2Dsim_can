@@ -28,6 +28,12 @@
 volatile float current_steering = 0.0f; // [degrees]
 volatile float current_throttle = 0.0f; // [units]
 
+// Add at the top
+bool key_A_pressed = false;
+bool key_D_pressed = false;
+bool key_W_pressed = false;
+bool key_S_pressed = false;
+
 // Lock for thread-safe updates
 volatile int stop_flag = 0;
 pthread_mutex_t control_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -150,47 +156,93 @@ void *keyboard_control_main(Config *config)
         {
             if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
             {
-                printf("Key Pressed\n");
-                
-                int keycode = ev.keyboard.keycode;
-                pthread_mutex_lock(&control_mutex);
-                switch (keycode)
+                switch (ev.keyboard.keycode)
                 {
                     case ALLEGRO_KEY_A:
-                        current_steering -= config->actuation_params.steer_step;
-                        if (current_steering < config->actuation_params.min_steering)
-                            current_steering = config->actuation_params.min_steering;
-                        send_float(can_socket, config->ids.steer_id, current_steering);
+                        key_A_pressed = true;
                         break;
                     case ALLEGRO_KEY_D:
-                        current_steering += config->actuation_params.steer_step;
-                        if (current_steering > config->actuation_params.max_steering)
-                            current_steering = config->actuation_params.max_steering;
-                        send_float(can_socket, config->ids.steer_id, current_steering);
+                        key_D_pressed = true;
                         break;
                     case ALLEGRO_KEY_W:
-                        current_throttle += config->actuation_params.pps_step;
-                        if (current_throttle > config->actuation_params.max_throttle)
-                            current_throttle = config->actuation_params.max_throttle;
-                        send_float(can_socket, config->ids.throttle_id, current_throttle);
+                        key_W_pressed = true;
                         break;
                     case ALLEGRO_KEY_S:
-                        current_throttle -= config->actuation_params.pps_step;
-                        if (current_throttle < 0.0f)
-                            current_throttle = 0.0f;
-                        send_float(can_socket, config->ids.throttle_id, current_throttle);
+                        key_S_pressed = true;
                         break;
                     case ALLEGRO_KEY_Q:
                         printf("Quitting control script...\n");
                         stop_flag = 1;
                         break;
-                    
                     default:
                         break;
                 }
-                pthread_mutex_unlock(&control_mutex);
+            }
+            else if (ev.type == ALLEGRO_EVENT_KEY_UP)
+            {
+                switch (ev.keyboard.keycode)
+                {
+                    case ALLEGRO_KEY_A:
+                        key_A_pressed = false;
+                        break;
+                    case ALLEGRO_KEY_D:
+                        key_D_pressed = false;
+                        break;
+                    case ALLEGRO_KEY_W:
+                        key_W_pressed = false;
+                        break;
+                    case ALLEGRO_KEY_S:
+                        key_S_pressed = false;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
+
+        // Process continuous key presses
+        pthread_mutex_lock(&control_mutex);
+        bool state_changed = false;
+
+        if (key_A_pressed)
+        {
+            current_steering -= config->actuation_params.steer_step;
+            if (current_steering < config->actuation_params.min_steering)
+                current_steering = config->actuation_params.min_steering;
+            state_changed = true;
+        }
+        if (key_D_pressed)
+        {
+            current_steering += config->actuation_params.steer_step;
+            if (current_steering > config->actuation_params.max_steering)
+                current_steering = config->actuation_params.max_steering;
+            state_changed = true;
+        }
+        if (key_W_pressed)
+        {
+            current_throttle += config->actuation_params.pps_step;
+            if (current_throttle > config->actuation_params.max_throttle)
+                current_throttle = config->actuation_params.max_throttle;
+            state_changed = true;
+        }
+        if (key_S_pressed)
+        {
+            current_throttle -= config->actuation_params.pps_step;
+            if (current_throttle < 0.0f)
+                current_throttle = 0.0f;
+            state_changed = true;
+        }
+
+        if (state_changed)
+        {
+            // Send updated steering and throttle
+            send_float(can_socket, config->ids.steer_id, current_steering);
+            send_float(can_socket, config->ids.throttle_id, current_throttle);
+            printf("Steering: %.2f, Throttle: %.2f\n", current_steering, current_throttle);
+        }
+
+        pthread_mutex_unlock(&control_mutex);
+
         usleep(10000); // Sleep for 10 ms
     }
 
