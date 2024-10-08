@@ -1,4 +1,0 @@
-<map id="read_can_messages" name="read_can_messages">
-<area shape="rect" id="node1" title="Reads CAN messages and processes them." alt="" coords="108,5,263,32"/>
-<area shape="rect" id="node2" href="$enhanced__graph__slam_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="Main function of the GraphSLAM application." alt="" coords="5,5,60,32"/>
-</map>
