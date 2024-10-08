@@ -1,21 +1,34 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -O1
 
-YAML_LIB = -lyaml-cpp
+# Libraries
+YAML_LIB = -lyaml
 PTHREAD_LIB = -lpthread
 FS_LIB = -lstdc++fs
 ALLEGRO_LIBS = -lallegro -lallegro_main -lallegro_font -lallegro_ttf -lallegro_primitives
 
-all: perception pid_control visualization
+# Source files and output binaries
+PERCEPTION_SRC = perception_/perception.cpp
+PID_CONTROL_SRC = control_/pid/pid_control.cpp
+VISUALIZATION_SRC = visualization_/visualization.c
 
-perception: perception.cpp
-	$(CXX) $(CXXFLAGS) perception.cpp -o perception $(YAML_LIB)
+# Target binaries
+PERCEPTION_BIN = perception
+PID_CONTROL_BIN = pid_control
+VISUALIZATION_BIN = visualization
 
-pid_control: pid_control.cpp
-	$(CXX) $(CXXFLAGS) pid_control.cpp -o pid_control $(YAML_LIB) $(PTHREAD_LIB) $(FS_LIB)
+all: $(PERCEPTION_BIN) $(PID_CONTROL_BIN) $(VISUALIZATION_BIN)
 
-visualization: visualization.cpp
-	$(CXX) $(CXXFLAGS) visualization.cpp -o visualization $(ALLEGRO_LIBS) $(YAML_LIB) -pthread
+# Build rules
+$(PERCEPTION_BIN): $(PERCEPTION_SRC)
+	$(CXX) $(CXXFLAGS) $< -o $@ $(YAML_LIB)
+
+$(PID_CONTROL_BIN): $(PID_CONTROL_SRC)
+	$(CXX) $(CXXFLAGS) $< -o $@ $(YAML_LIB) $(PTHREAD_LIB) $(FS_LIB)
+
+$(VISUALIZATION_BIN): $(VISUALIZATION_SRC)
+	$(CXX) $(CXXFLAGS) $< -o $@ $(ALLEGRO_LIBS) $(YAML_LIB) -pthread
 
 clean:
-	rm -f perception pid_control visualization
+	rm -f $(PERCEPTION_BIN) $(PID_CONTROL_BIN) $(VISUALIZATION_BIN)
+

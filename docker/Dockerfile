@@ -28,12 +28,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zip \
     unzip \
     tar \
+    python3-pip \
     \
+    kmod \
     python3-can \
     can-utils \
     liballegro5-dev \
+    liballegro-ttf5-dev \
     libyaml-dev \
+    libyaml-cpp-dev \
     gdb \
+    tmuxinator \
     && locale-gen en_US.UTF-8 \
     && update-locale LANG=en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
@@ -42,7 +47,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV TERM=xterm-256color
 
 # Copy configuration files to the container
-COPY config/ /site_config/
 
 # Create a non-default user with sudo privileges and add to dialout group
 RUN groupadd --gid $USER_GID $USERNAME \
