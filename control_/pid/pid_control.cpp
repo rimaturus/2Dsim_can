@@ -241,7 +241,7 @@ int main() {
     // Load cones.yaml to map cone indices to colors
     std::unordered_map<int, std::string> cone_colors;
     try {
-        YAML::Node config = YAML::LoadFile("cones.yaml");
+        YAML::Node config = YAML::LoadFile("/media/edo/Volume/UNIPI/1anno/ISTR/2Dsim_can/track_/cones.yaml");
         const YAML::Node& cones = config["cones"];
         for (size_t i = 0; i < cones.size(); ++i) {
             if (cones[i]["color"]) {

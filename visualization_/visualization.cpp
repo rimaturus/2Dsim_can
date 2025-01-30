@@ -478,7 +478,7 @@ int main() {
     }
 
     // Load cones from YAML file
-    std::vector<Cone> cones = loadCones("cones.yaml");
+    std::vector<Cone> cones = loadCones("/media/edo/Volume/UNIPI/1anno/ISTR/2Dsim_can/track_/cones.yaml");
 
     // Mutex for protecting car data
     std::mutex carMutex;
