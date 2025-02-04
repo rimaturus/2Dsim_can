@@ -2,41 +2,81 @@
 #include <stdlib.h>
 #include <allegro.h>
 #include <math.h>
+
+// --------------------------------
+// YAML
+// --------------------------------
 #include <yaml.h>
 #include <string.h>
+// --------------------------------
 
-// Constants
+// --------------------------------
+// PTHREADs
+// --------------------------------
+#include <pthread.h>
+#include <sched.h>
+#include <time.h>
+#include "ptask/ptask.h" // custom functions for periodic task
+
+// TASK PERIODS (in milliseconds)
+#define PERCEPTION_PERIOD 100
+#define CONTROL_PERIOD 50
+#define DISPLAY_PERIOD 17   // ~60Hz (1000/17 ≈ 58.8 Hz)
+
+// DEADLINES (in milliseconds)
+#define PERCEPTION_DL 100
+#define CONTROL_DL 50
+#define DISPLAY_DL 17
+
+// Priorities (lower number means higher priority)
+#define PERCEPTION_PRIORITY 15
+#define CONTROL_PRIORITY 20
+#define DISPLAY_PRIORITY 25
+// --------------------------------
+
+
+#define PERCEPTION
+#define CONTROL
+// --------------------------------
+// CONSTANTS
+// --------------------------------
 #define px_per_meter 1e2 // 100 pixels = 1 meters (1 px = 1 cm)
-#define px2m_minimap 1 // pixels to meters (1 px = 1 m)
 #define deg2rad 0.0174533 // degrees to radians
 
-// Structures
+// TRACK CONES
 typedef struct {
 	float x;
 	float y;
 	int color;
 } cone;
 
+// --------------------------------
+// LiDAR CONFIGURATION
+// --------------------------------
 typedef struct {
-        int distance;
-        int color;
+    int x_px;
+    int y_px;
+    float distance;
+    int color;
 } detection;
 
-// LiDAR
-const int   angle_step = 1; // deg
-const int   MAXrange = (int)(10 * px_per_meter); // m --> 10 m
-const int   distance_resolution = (int)(0.01 * px_per_meter); // m --> 1 cm
+const int   angle_step = 1;     // deg
+const float MAXrange = 10;      //[m]
+const float distance_resolution = 0.01; // [m] = 1 cm
 
 const int   N_angles  = (int)(360 / angle_step);
 const int   distance_steps = (int)(MAXrange / distance_resolution);
+// --------------------------------
 
-// Auxiliary functions
+// --------------------------------
+// AUXILIARY FUNCTIONS
+// --------------------------------
+float angle_rotation_sprite(float angle);
 void    init_cones( cone *cones, int max_cones );
 void    load_cones_positions( const char *filename, cone *cones, int max_cones );
-
-// sensors
-void    lidar( int car_x, int car_y, detection *measures );
-
+void    lidar( float car_x, float car_y, detection *measures );
+void    keyboard_control( float *car_x, float *car_y, int *car_angle );
+void    vehicle_model( float *car_x, float *car_y, int *car_angle, float speed, float steering );
 
 int main()
 {
@@ -65,6 +105,7 @@ int main()
 	BITMAP *background;
 	BITMAP *track;
     BITMAP *car;
+    BITMAP *perception;
 
 	// background
 	background = create_bitmap(XMAX, YMAX);
@@ -102,9 +143,9 @@ int main()
     draw_sprite(screen, track, 0, 0);
 
     // Vehicle
-    int car_x = 1 * px_per_meter;
-    int car_y = 1 * px_per_meter;
-    int car_angle = 0; // deg
+    float car_x = 4.5;
+    float car_y = 3;
+    int car_angle = 27; // deg
 
     car = load_bitmap("bitmaps/f1_car_pink.bmp", NULL); // load a bitmap image
     if (car == NULL) {
@@ -132,7 +173,12 @@ int main()
 
     //blit(car, screen, 0, 0, carpos_x, carpos_y, car->w, car->h); // draw the sprite on the screen at (300, 300)
     //draw_sprite(screen, car, carpos_x, carpos_y); // draw the sprite on the screen at (300, 300)
-    stretch_sprite(screen, car, car_x, car_y, car->w/2, car->h/2); // draw the sprite on the screen at (300, 300)
+    rotate_scaled_sprite(
+        screen, car, 
+        (int)(car_x * px_per_meter), 
+        (int)(car_y * px_per_meter), 
+        ftofix(angle_rotation_sprite(car_angle)),  // deg to fixed point
+        ftofix(0.5)); // draw the sprite on the screen at (300, 300)
     // choose this one to have the transparent background
 
 
@@ -140,40 +186,110 @@ int main()
     detection     measures[N_angles]; // results
 
 
+
     // Simulation loop
     do {
         printf("Running sim...\n");
         // Update the car position
-        int center_car_x = car_x + (int)(car->w / 4);
-        int center_car_y = car_y + (int)(car->h / 4);
+        float center_car_x = car_x + (float)(car->w / 4) / px_per_meter;
+        float center_car_y = car_y + (float)(car->h / 4) / px_per_meter;
 
+        
+
+#ifdef PERCEPTION
         // Perception
         lidar(center_car_x, center_car_y, &measures);
 
-        // Normalize angles in [ -180° ,  180° ] range
-                            //   left    right
+        // Plot the detected cones
         for (int lidar_angle = 0; lidar_angle < 360; lidar_angle += angle_step)
         {   
-            int total_angle = (lidar_angle + car_angle);
-            float lidar2car_angle = total_angle > 180 ? (float)total_angle - 360.0 : (float)total_angle; // deg
+            printf("Lidar angle: %d \t %f\n", lidar_angle, measures[lidar_angle].distance);
 
             // plot lines from car to detected point
-            int x_detection = center_car_x + (int)(measures[lidar_angle].distance * px_per_meter * cos(lidar2car_angle * deg2rad));
-            int y_detection = center_car_y + (int)(measures[lidar_angle].distance * px_per_meter * sin(lidar2car_angle * deg2rad));
+            float cos_angle = cos(lidar_angle * deg2rad);
+            float sin_angle = sin(lidar_angle * deg2rad);
 
+            float ignore_distance = 0.5; // ignore the first 0.5 meters
+            float x0 = center_car_x + cos_angle * ignore_distance;
+            float y0 = center_car_y + sin_angle * ignore_distance;
+
+            float x_detection = center_car_x + (measures[lidar_angle].distance * cos_angle);
+            float y_detection = center_car_y + (measures[lidar_angle].distance * sin_angle);
+            
+            // create the perception bitmap as large as the max view range
+            perception = create_bitmap(MAXrange*px_per_meter, MAXrange*px_per_meter);
+            clear_bitmap(perception);
+            clear_to_color(perception, makecol(255, 0, 255));
+            
             if (measures[lidar_angle].color == -1) // no cone detected
             {
-                line(screen, center_car_x, center_car_y, x_detection, y_detection, makecol(255, 0, 0));
+                line(
+                    perception, 
+                    (int)(x0 * px_per_meter), 
+                    (int)(y0 * px_per_meter), 
+                    (int)(x_detection * px_per_meter), 
+                    (int)(y_detection * px_per_meter), 
+                    makecol(255, 0, 0)
+                );
             }
             else
             {
-                line(screen, center_car_x, center_car_y, x_detection, y_detection, measures[lidar_angle].color);
+                line(
+                    perception, 
+                    (int)(x0 * px_per_meter), 
+                    (int)(y0 * px_per_meter), 
+                    (int)(x_detection * px_per_meter), 
+                    (int)(y_detection * px_per_meter), 
+                    measures[lidar_angle].color);
             }
-            // printf("Lidar angle: %d, Distance: %d, Color: %d\n", lidar_angle, measures[lidar_angle].distance, measures[lidar_angle].color);
 
+            masked_blit(
+                perception, screen, 
+                0, 0, // source: center of the perception bitmap
+                0, 0,  // destination: center of the vehicle
+                perception->w, perception->h
+            );
+
+            // clear_keybuf();
+            // readkey(); // wait for a key press to close the window
+
+            if ((lidar_angle % 30) == 0){   // plot only 17 angles for better visualization at each iteration
+                printf("%d\n", (lidar_angle % 10) );
+                clear_bitmap(screen);
+
+                draw_sprite(screen, track, 0, 0);
+                rotate_scaled_sprite(
+                    screen, car, 
+                    (int)(car_x * px_per_meter), 
+                    (int)(car_y * px_per_meter), 
+                    ftofix(angle_rotation_sprite(car_angle)),  // deg to fixed point
+                    ftofix(0.5)
+                );
+            }
+
+            
         }
+#endif /* PERCEPTION */
+
+#ifdef CONTROL
+        // Control
+        keyboard_control(&car_x, &car_y, &car_angle);
+
         clear_keybuf();
-        readkey(); // wait for a key press to close the window
+	    readkey();
+
+        draw_sprite(screen, track, 0, 0);
+        rotate_scaled_sprite(
+            screen, car, 
+            (int)(car_x * px_per_meter), 
+            (int)(car_y * px_per_meter), 
+            ftofix(angle_rotation_sprite(car_angle)),  // deg to fixed point
+            ftofix(0.5)
+        );
+
+#endif /* CONTROL */
+
+
 
     } while (!key[KEY_ESC]); // exit the loop when the ESC key is pressed
 
@@ -194,49 +310,111 @@ int main()
 
 // Sensors
 // LiDAR
-void    lidar(int car_x, int car_y, detection *measures)
+void    lidar(float car_x, float car_y, detection *measures)
 {
     int stop_distance; 
 
     // Check for each angle in the range [0, 360] with a step of angle_step
-    for (int lidar_angle = 0; lidar_angle < 360; lidar_angle++)
+    for (int lidar_angle = 0; lidar_angle < 360; lidar_angle += angle_step)
     {
         int   current_distance = 0; // initialize distance at 0
 
         // Initialize the measure with the maximum range and no color
-        measures[lidar_angle].distance = MAXrange / px_per_meter;
+        measures[lidar_angle].distance = MAXrange;
         measures[lidar_angle].color = -1; // cone not detected
 
         stop_distance = 0;
 
         // Check each pixel in the range [0, MAXrange] with a step of distance_resolution
-        for (int distance = 0; distance < MAXrange; distance++)
+        for (float distance = 0; distance < MAXrange; distance += distance_resolution)
         {
             // Calculate the x and y coordinates of the pixel at the current distance and angle
-            int x = car_x + (int)( distance * cos((float)(lidar_angle) * deg2rad) );
-            int y = car_y + (int)( distance * sin((float)(lidar_angle) * deg2rad) );
+            float x = car_x + ( distance * cos((float)(lidar_angle) * deg2rad) );
+            float y = car_y + ( distance * sin((float)(lidar_angle) * deg2rad) );
 
-            putpixel(screen, x, y, makecol(255, 0, 0));
+            int x_px = x * px_per_meter;
+            int y_px = y * px_per_meter;
+
+            //putpixel(screen, x_px, y_px, makecol(255, 0, 0));
 
             if (stop_distance != 1)
             {
-                if (getpixel(screen, x, y) == makecol(254, 221, 0)) // yellow
+                if (getpixel(screen, x_px, y_px) == makecol(254, 221, 0)) // yellow
                 {
                     printf("Cone detected\n");
-                    measures[lidar_angle].distance = distance / px_per_meter; // convert to meters
+                    measures[lidar_angle].distance = distance; // convert to meters
                     measures[lidar_angle].color = makecol(254, 221, 0); // yellow
                     stop_distance = 1;  // cone detected, stop the loop
                 }
-                else if (getpixel(screen, x, y) == makecol(46, 103, 248)) // blue
+                else if (getpixel(screen, x_px, y_px) == makecol(46, 103, 248)) // blue
                 {   
                     printf("Cone detected\n");
-                    measures[lidar_angle].distance = distance / px_per_meter; // convert to meters
+                    measures[lidar_angle].distance = distance; // convert to meters
                     measures[lidar_angle].color = makecol(46, 103, 248); // blue
                     stop_distance = 1;  // cone detected, stop the loop
                 }
             }            
         }
     }
+}
+
+// Control
+void vehicle_model(float *car_x, float *car_y, int *car_angle, float speed, float steering)
+{
+// Simulation parameters
+const float     dt = 0.1;             // time step
+const float     wheelbase = 1.5;      // distance between front and rear axles [m]
+
+float theta;
+    
+    // Update vehicle position using a simple bicycle model (Ackermann steering)
+    theta = (*car_angle) * deg2rad;              // convert current heading to radians
+    *car_x += speed * cos(-theta) * dt;                   // update x position
+    *car_y += speed * sin(-theta) * dt;                   // update y position
+    theta += (speed / wheelbase) * tan(steering) * dt;   // update heading
+
+    // Store updated heading in degrees
+    *car_angle = (int)(theta / deg2rad);
+
+}
+
+void keyboard_control(float *car_x, float *car_y, int *car_angle)
+{
+const float     accel_step = 0.01;    // speed increment per key press
+const float     steering_step = 0.05; // steering increment in radians per key press
+const float     max_steering = 45 * deg2rad;     // maximum steering angle in radians
+
+// Persistent state across calls
+static float    speed = 0.0;         // current speed in m per step
+static float    steering = 0.0;      // current steering angle in radians
+
+    // Adjust speed
+    if (key[KEY_UP])
+    {
+        speed += accel_step;
+    }
+    if (key[KEY_DOWN])
+    {
+        speed -= accel_step;
+        //if (speed < 0) speed = 0; // prevent going backwards
+    }
+
+    // Adjust steering angle
+    if (key[KEY_LEFT])
+    {
+        steering += steering_step;
+        if (steering > max_steering)
+            steering = max_steering;
+    }
+    if (key[KEY_RIGHT])
+    {
+        steering -= steering_step;
+        if (steering < -max_steering)
+            steering = -max_steering;
+    }
+
+    // Motion model of the vehicle
+    vehicle_model(car_x, car_y, car_angle, speed, steering);
 }
 
 
