@@ -76,15 +76,19 @@ typedef struct {
 	int color;
 } cone;
 
+const float cone_radius = 0.05; // [m] = 5 cm 
+
 // --------------------------------
 // LiDAR CONFIGURATION
 // --------------------------------
 typedef struct {
-	int x_px;
-	int y_px;
+	float point_x;
+	float point_y;
 	float distance;
 	int color;
-} detection;
+} pointcloud;
+
+pointcloud measures[N_angles]; // contain measurements of the LiDAR corresponding to each angle
 
 const int   angle_step	= 1;		// deg
 const float MAXrange	= 5;		//[m]
@@ -99,12 +103,26 @@ const float	ignore_distance = 0.2; // ignore cones closer than this distance [m]
 // --------------------------------
 
 // --------------------------------
+// CONE DETECTION
+// --------------------------------
+#define MAX_DETECTED_CONES 	128
+#define MAX_POINTS_PER_CONE 180
+
+typedef struct {
+	int angles[180]; // possible points viewed by the LiDAR for each cones (180 == WORST CASE with the vehicle in contact with the cone on one side)
+	int color;
+} cone_border;
+// the cone border contain the index of the points of the pointcloud that are closer each other so they are part of the same cone
+
+
+// --------------------------------
 // AUXILIARY FUNCTIONS
 // --------------------------------
 float 	angle_rotation_sprite( float angle );
 void	init_cones( cone *cones, int max_cones );
 void	load_cones_positions( const char *filename, cone *cones, int max_cones );
-void	lidar( float car_x, float car_y, detection *measures );
+void	lidar( float car_x, float car_y, pointcloud *measures );
+void 	trajectory_planner( float *car_x, float *car_y, int *car_angle ); 
 void	keyboard_control( float *car_x, float *car_y, int *car_angle );
 void	vehicle_model( float *car_x, float *car_y, int *car_angle, float speed, float steering );
 
@@ -114,170 +132,170 @@ void	vehicle_model( float *car_x, float *car_y, int *car_angle, float speed, flo
 // --------------------------------
 int main()
 {
-	printf("Starting sim...\n");
+		printf("Starting sim...\n");
 
-	// Initializing Allegro
-	allegro_init(); // initialize graphics data structures
-	install_keyboard(); // initialize the keyboard
-	install_mouse(); // initialize the mouse
-	
-	// Initialize the graphics mode
-	set_color_depth(32); // set the color depth to 8 bits for each of the RGB channels and 8 bits for the alpha channel (faster than 24 bit since it is aligned to 32 bits)
-
-// Colors
-const int grass_green = makecol(78,91,49); // army_green
-const int asphalt_gray = makecol(128,126,120); // asphalt
-const int white = makecol(255, 255, 255); // white
-const int pink = makecol(255, 0, 255); // pink
-	
-	set_gfx_mode(GFX_AUTODETECT_WINDOWED, XMAX, YMAX, 0, 0); // enters the graphics mode (windowed) with resolution 1920x1080
-	clear_to_color(screen, white); // clear the screen making all pixels to white
-
-	// Create the off-screen display buffer
-display_buffer = create_bitmap(XMAX, YMAX);
-	clear_to_color(display_buffer, pink);
-
-	draw_sprite(screen, display_buffer, 0, 0);
-	clear_keybuf();
-	readkey();
-
-	// background
-background = create_bitmap(XMAX, YMAX); 
-	clear_bitmap(background);
-	clear_to_color(background, grass_green);
-
-	draw_sprite(screen, background, 0, 0);
-	clear_keybuf();
-	readkey();
-
-	// track
-track = create_bitmap(XMAX, YMAX);
-	clear_bitmap(track);
-	clear_to_color(track, asphalt_gray);
-	
-const int 	max_cones = 1000;
-cone		cones[max_cones];
-const char	filename[100] = "track/cones.yaml";
-
-	init_cones( &cones, max_cones );
-	load_cones_positions( &filename, &cones, max_cones );
-	printf("Cones loaded\n");
-
-	// plot cones
-	for (int i = 0; i < 1000; i++)
-	{
-		if (cones[i].color != -1) // plot only track cones
-		{
-			circlefill(
-				track, 
-				cones[i].x, 
-				cones[i].y, 
-				0.05 * px_per_meter, // radius = 5 cm
-				cones[i].color
-			);
-		}
-	}
-
-	draw_sprite(screen, track, 0, 0);
-	clear_keybuf();
-	readkey();
-
-	car = load_bitmap("bitmaps/f1_car_05x.bmp", NULL); // load a bitmap image
-	if (car == NULL) {
-		printf("Error loading sprite\n");
-		exit(1);
-	}  	
-
-	// car_x and car_y are the center of the car
-	// so the top-left corner of the car bitmap is at (car_x - car->w/2, car_y - car->h/2)
-	// those are needed to make the center of the sprite coincide with the car position
-int car_x_px = (int)(car_x * px_per_meter);
-int car_y_px = (int)(car_y * px_per_meter);
-
-int car_bitmap_x = car_x_px - (car->w / 2);
-int car_bitmap_y = car_y_px - (car->h / 2);
-
-
-	rotate_scaled_sprite(
-		screen, car, 
-		(int)(car_bitmap_x), 
-		(int)(car_bitmap_y), 
-		ftofix(angle_rotation_sprite(car_angle)),  // deg to fixed point
-		ftofix(1)
-	);
-
-	circlefill(screen, car_x_px, car_y_px, 3, makecol(0,255,0));
-	circlefill(screen, (int)(car_bitmap_x), (int)(car_bitmap_y), 3, makecol(0,255,255));
-	clear_keybuf();
-	readkey();
-
-
-	// Perception bitmap 
-	// the bitmap size need to be 2x the max range of the LiDAR to 
-	// contain all the possible detections
-perception = create_bitmap(2*MAXrange*px_per_meter, 2*MAXrange*px_per_meter);
-	clear_bitmap(perception);
-	clear_to_color(perception, pink); // pink color to make it transparent (True color notation)
-	
-	// Drawing initial simulation
-	pthread_mutex_lock(&draw_mutex);
-		clear_to_color(display_buffer, white);
+		// Initializing Allegro
+		allegro_init(); // initialize graphics data structures
+		install_keyboard(); // initialize the keyboard
+		install_mouse(); // initialize the mouse
 		
-		draw_sprite(display_buffer, background, 0, 0);
-		draw_sprite(display_buffer, track, 0, 0);
+		// Initialize the graphics mode
+		set_color_depth(32); // set the color depth to 8 bits for each of the RGB channels and 8 bits for the alpha channel (faster than 24 bit since it is aligned to 32 bits)
 
-		// draw the car (use rotate_scaled_sprite to make the background transparent,
-		// and to rotate the car according to the car_angle)
+	// Colors
+	const int grass_green = makecol(78,91,49); // army_green
+	const int asphalt_gray = makecol(128,126,120); // asphalt
+	const int white = makecol(255, 255, 255); // white
+	const int pink = makecol(255, 0, 255); // pink
+		
+		set_gfx_mode(GFX_AUTODETECT_WINDOWED, XMAX, YMAX, 0, 0); // enters the graphics mode (windowed) with resolution 1920x1080
+		clear_to_color(screen, white); // clear the screen making all pixels to white
+
+		// Create the off-screen display buffer
+	display_buffer = create_bitmap(XMAX, YMAX);
+		clear_to_color(display_buffer, pink);
+
+		draw_sprite(screen, display_buffer, 0, 0);
+		clear_keybuf();
+		readkey();
+
+		// background
+	background = create_bitmap(XMAX, YMAX); 
+		clear_bitmap(background);
+		clear_to_color(background, grass_green);
+
+		draw_sprite(screen, background, 0, 0);
+		clear_keybuf();
+		readkey();
+
+		// track
+	track = create_bitmap(XMAX, YMAX);
+		clear_bitmap(track);
+		clear_to_color(track, asphalt_gray);
+		
+	const int 	max_cones = 1000;
+	cone		cones[max_cones];
+	const char	filename[100] = "track/cones.yaml";
+
+		init_cones( &cones, max_cones );
+		load_cones_positions( &filename, &cones, max_cones );
+		printf("Cones loaded\n");
+
+		// plot cones
+		for (int i = 0; i < 1000; i++)
+		{
+			if (cones[i].color != -1) // plot only track cones
+			{
+				circlefill(
+					track, 
+					cones[i].x, 
+					cones[i].y, 
+					cone_radius * px_per_meter, // radius = 5 cm
+					cones[i].color
+				);
+			}
+		}
+
+		draw_sprite(screen, track, 0, 0);
+		clear_keybuf();
+		readkey();
+
+		car = load_bitmap("bitmaps/f1_car_05x.bmp", NULL); // load a bitmap image
+		if (car == NULL) {
+			printf("Error loading sprite\n");
+			exit(1);
+		}  	
+
+		// car_x and car_y are the center of the car
+		// so the top-left corner of the car bitmap is at (car_x - car->w/2, car_y - car->h/2)
+		// those are needed to make the center of the sprite coincide with the car position
+	int car_x_px = (int)(car_x * px_per_meter);
+	int car_y_px = (int)(car_y * px_per_meter);
+
+	int car_bitmap_x = car_x_px - (car->w / 2);
+	int car_bitmap_y = car_y_px - (car->h / 2);
+
+
 		rotate_scaled_sprite(
 			screen, car, 
-			car_bitmap_x, 
-			car_bitmap_y, 
+			(int)(car_bitmap_x), 
+			(int)(car_bitmap_y), 
 			ftofix(angle_rotation_sprite(car_angle)),  // deg to fixed point
 			ftofix(1)
 		);
 
-		draw_sprite(
-			display_buffer, 
-			perception, 
-			car_x_px - MAXrange*px_per_meter,
-			car_y_px - MAXrange*px_per_meter
-		);
-	pthread_mutex_unlock(&draw_mutex);
+		circlefill(screen, car_x_px, car_y_px, 3, makecol(0,255,0));
+		circlefill(screen, (int)(car_bitmap_x), (int)(car_bitmap_y), 3, makecol(0,255,255));
+		clear_keybuf();
+		readkey();
 
-	// Initialize the periodic task system (using SCHED_OTHER)
-	// [TODO] Maybe we need to change the scheduling policy 
-	ptask_init(SCHED_OTHER);
 
-	// Create periodic tasks:
-	// Task 1: Perception task
-	// Task 2: Control task
-	// Task 3: Display task
+		// Perception bitmap 
+		// the bitmap size need to be 2x the max range of the LiDAR to 
+		// contain all the possible detections
+	perception = create_bitmap(2*MAXrange*px_per_meter, 2*MAXrange*px_per_meter);
+		clear_bitmap(perception);
+		clear_to_color(perception, pink); // pink color to make it transparent (True color notation)
+		
+		// Drawing initial simulation
+		pthread_mutex_lock(&draw_mutex);
+			clear_to_color(display_buffer, white);
+			
+			draw_sprite(display_buffer, background, 0, 0);
+			draw_sprite(display_buffer, track, 0, 0);
 
-	if (task_create(1, perception_task, PERCEPTION_PERIOD, PERCEPTION_DEADLINE, PERCEPTION_PRIORITY, ACT) != 0) {
-		fprintf(stderr, "Failed to create Perception Task\n");
-		exit(EXIT_FAILURE);
-	}
+			// draw the car (use rotate_scaled_sprite to make the background transparent,
+			// and to rotate the car according to the car_angle)
+			rotate_scaled_sprite(
+				screen, car, 
+				car_bitmap_x, 
+				car_bitmap_y, 
+				ftofix(angle_rotation_sprite(car_angle)),  // deg to fixed point
+				ftofix(1)
+			);
 
-	if (task_create(2, control_task, CONTROL_PERIOD, CONTROL_DEADLINE, CONTROL_PRIORITY, ACT) != 0) {
-		fprintf(stderr, "Failed to create Control Task\n");
-		exit(EXIT_FAILURE);
-	}
+			draw_sprite(
+				display_buffer, 
+				perception, 
+				car_x_px - MAXrange*px_per_meter,
+				car_y_px - MAXrange*px_per_meter
+			);
+		pthread_mutex_unlock(&draw_mutex);
 
-	if (task_create(3, display_task, DISPLAY_PERIOD, DISPLAY_DEADLINE, DISPLAY_PRIORITY, ACT) != 0) {
-		fprintf(stderr, "Failed to create Display Task\n");
-		exit(EXIT_FAILURE);
-	}
+		// Initialize the periodic task system (using SCHED_OTHER)
+		// [TODO] Maybe we need to change the scheduling policy 
+		ptask_init(SCHED_OTHER);
 
-	// Wait for tasks to terminate (they will exit when ESC is pressed)
-	wait_for_task_end(1);
-	wait_for_task_end(2);
-	wait_for_task_end(3);
+		// Create periodic tasks:
+		// Task 1: Perception task
+		// Task 2: Control task
+		// Task 3: Display task
 
-    printf("Exiting simulation...\n");
-    clear_keybuf();
-    readkey();
-    allegro_exit();
-    return 0;
+		if (task_create(1, perception_task, PERCEPTION_PERIOD, PERCEPTION_DEADLINE, PERCEPTION_PRIORITY, ACT) != 0) {
+			fprintf(stderr, "Failed to create Perception Task\n");
+			exit(EXIT_FAILURE);
+		}
+
+		if (task_create(2, control_task, CONTROL_PERIOD, CONTROL_DEADLINE, CONTROL_PRIORITY, ACT) != 0) {
+			fprintf(stderr, "Failed to create Control Task\n");
+			exit(EXIT_FAILURE);
+		}
+
+		if (task_create(3, display_task, DISPLAY_PERIOD, DISPLAY_DEADLINE, DISPLAY_PRIORITY, ACT) != 0) {
+			fprintf(stderr, "Failed to create Display Task\n");
+			exit(EXIT_FAILURE);
+		}
+
+		// Wait for tasks to terminate (they will exit when ESC is pressed)
+		wait_for_task_end(1);
+		wait_for_task_end(2);
+		wait_for_task_end(3);
+
+		printf("Exiting simulation...\n");
+		clear_keybuf();
+		readkey();
+		allegro_exit();
+		return 0;
 }
 
 
@@ -287,7 +305,6 @@ void *perception_task(void *arg)
 	int task_id = get_task_index(arg);
 	wait_for_activation(task_id);
 	
-	detection measures[N_angles]; // contain measurements of the LiDAR corresponding to each angle
 	static	int start_angle = 0; // start angle for the sliding window
 
 	while (!key[KEY_ESC])
@@ -440,7 +457,7 @@ void *display_task(void *arg)
 
 // Sensors
 // LiDAR
-void    lidar(float car_x, float car_y, detection *measures)
+void    lidar(float car_x, float car_y, pointcloud *measures)
 {
 	int stop_distance; 
 
@@ -474,6 +491,9 @@ void    lidar(float car_x, float car_y, detection *measures)
 					// printf("Cone detected\n");
 					measures[lidar_angle].distance = distance; // convert to meters
 					measures[lidar_angle].color = makecol(254, 221, 0); // yellow
+					measures[lidar_angle].point_x = x;
+					measures[lidar_angle].point_y = y;
+
 					stop_distance = 1;  // cone detected, stop the loop
 				}
 				else if (getpixel(track, x_px, y_px) == makecol(46, 103, 248)) // blue
@@ -481,6 +501,9 @@ void    lidar(float car_x, float car_y, detection *measures)
 					// printf("Cone detected\n");
 					measures[lidar_angle].distance = distance; // convert to meters
 					measures[lidar_angle].color = makecol(46, 103, 248); // blue
+					measures[lidar_angle].point_x = x;
+					measures[lidar_angle].point_y = y;
+
 					stop_distance = 1;  // cone detected, stop the loop
 				}
 			}            
@@ -493,7 +516,7 @@ void vehicle_model(float *car_x, float *car_y, int *car_angle, float speed, floa
 {
 // Simulation parameters
 const float     dt = 0.1;             // time step
-const float     wheelbase = 1.5;      // distance between front and rear axles [m]
+const float     wheelbase = 1.0;      // distance between front and rear axles [m]
 
 float theta;
 	
@@ -512,7 +535,7 @@ void keyboard_control(float *car_x, float *car_y, int *car_angle)
 {
 const float     accel_step = 0.01;    // speed increment per key press
 const float     steering_step = 0.05; // steering increment in radians per key press
-const float     max_steering = 45 * deg2rad;     // maximum steering angle in radians
+const float     max_steering = 30 * deg2rad;     // maximum steering angle in radians
 
 // Persistent state across calls
 static float    speed = 0.0;         // current speed in m per step
@@ -545,6 +568,229 @@ static float    steering = 0.0;      // current steering angle in radians
 
 	// Motion model of the vehicle
 	vehicle_model(car_x, car_y, car_angle, speed, steering);
+}
+
+
+void trajectory_planner(float *car_x, float *car_y, int *car_angle)
+{
+#define KNOWN_RADIUS
+cone_border cone_borders[MAX_DETECTED_CONES]; // maximum number of cones viewed at each position
+
+// init cone borders
+for (int i = 0; i < MAX_DETECTED_CONES; i++){
+	for (int j = 0; j < MAX_POINTS_PER_CONE; j++){
+		cone_borders[i].angles[j] = -1;
+	}
+	cone_borders[i].color = -1;
+}
+
+
+	// Circle Hough transformation of viewed points
+#ifdef KNOWN_RADIUS
+	for (int angle = 0; angle < 360; angle += angle_step)
+	{
+		// Group similar points
+		if (measures[angle].color != -1)
+		{
+			// no cone seen at this angle, PASS
+			continue;
+		}
+		else // a cone is detected at this angle
+		{
+			check_nearest_point(angle, measures[angle].point_x, measures[angle].point_y, measures[angle].color, cone_borders);
+		}
+
+	}
+
+	// at this step the cone_borders contain the points of the pointcloud that are closer each other
+	// classified by cone
+	// now we need to calculate the center of the cones
+
+int cone_idx = 0;
+
+typedef struct {
+	float x;
+	float y;
+	float distance;
+	int color;
+} Hough_circle_point;
+	
+	while((cone_borders[cone_idx].color != -1) && (cone_idx < MAX_DETECTED_CONES-1)){	// for each cone detected
+		int cone_cx = 0;
+		int cone_cy = 0;
+
+		int point_idx = 0;
+
+		int count_border_points = 0;
+
+		// count the number of points in the border of the cone
+		while ((cone_borders[cone_idx].angles[point_idx] != -1) && (count_border_points < MAX_POINTS_PER_CONE-1)){
+			count_border_points++;
+		}
+
+		if (count_border_points > 2) // we need at least 3 points to calculate the center of the cone
+		{
+			Hough_circle_point possible_cone_centers[(count_border_points-1)*2]; // store the solution (w.c.s.: 2 intersection for each pair of circle referred to points)
+
+			// The first point give us all the 360 possible centers of the cone (the circle that pass through the point)
+			cone first_point_circle[360];
+
+			for (int i = 0; i < 360; i++){
+				first_point_circle[i].x = measures[cone_borders[0].angles[point_idx]].point_x + cone_radius * cos(i * deg2rad);
+				first_point_circle[i].y = measures[cone_borders[0].angles[point_idx]].point_y + cone_radius * sin(i * deg2rad);
+				first_point_circle[i].color = measures[cone_borders[0].angles[point_idx]].color;
+			}
+
+			// for each point of the detected cone border 
+			while ( (cone_borders[cone_idx].angles[point_idx] != -1) || (point_idx < MAX_POINTS_PER_CONE-1) ){
+				// Calculate the center of the cone
+				// for all the angles that corresponds to a cone we need to calculate the center of the cone
+				float new_x, new_y, new_distance;
+
+				Hough_circle_point possible_points[360]; // store all the points of the second circumference that are closer to the first one
+				for (int i = 0; i < 360; i++){ // initialize the possible points
+					possible_points[i].distance = 2*MAXrange;
+					possible_points[i].x = 0;
+					possible_points[i].y = 0;
+				}
+
+				for (int i = 0; i < 360; i++){
+					new_x = measures[cone_borders[cone_idx].angles[point_idx]].point_x + cone_radius * cos(i * deg2rad);
+					new_y = measures[cone_borders[cone_idx].angles[point_idx]].point_y + cone_radius * sin(i * deg2rad);
+
+					for (int j = 0; j < 360; j++){
+						new_distance = sqrt(pow(new_x - first_point_circle[j].x, 2) + pow(new_y - first_point_circle[j].y, 2));
+
+						if (new_distance < possible_points[i].distance){
+							possible_points[i].distance = new_distance;
+							possible_points[i].x = new_x;
+							possible_points[i].y = new_y;
+						}
+					}
+				}
+
+				// at this point, we have a 3rd order function that represent the min distances 
+				// of each point of the new circumference from the first one while they intersecate
+				// we need to find the two local minima of this function to find the two possible centers of the cone
+				float LMS_prev_dist, LMS_actual_dist;
+				float LMS_first_min_idx = -1, LMS_second_min_idx = -1;
+				float LMS_first_max_idx = -1, LMS_second_max_idx = -1; // LMS == Local Minima Search
+
+				int prev_trend = 0, actual_trend = 0; // check the trend of the function [1: if crescent, 0: if constant, -1: if decrescent]
+				
+				for (int k = 1; k < 360; k++){
+					if (possible_points[k].distance < possible_points[k-1].distance){
+						actual_trend = -1; // decrescent
+					}
+					else if ( possible_points[k].distance > possible_points[k-1].distance){
+						actual_trend = 1; // crescent
+					}
+					else{
+						actual_trend = 0; // constant
+					}
+
+					// now we know the trend of the function
+					// we can search for the local minima
+					if (prev_trend == actual_trend){
+						// we are in the same regione of the function
+						continue;
+					}
+					else if (prev_trend == -1 && actual_trend == 1){
+						// we are in a local minima
+						if (LMS_first_min_idx == -1){
+							LMS_first_min_idx = k-1;
+						}
+						else if (LMS_second_min_idx == -1){
+							LMS_second_min_idx = k-1;
+						}
+					}
+					else if (prev_trend == 1 && actual_trend == -1){
+						// we are in a local maxima
+						if (LMS_first_max_idx == -1){
+							LMS_first_max_idx = k-1;
+						}
+						else if (LMS_second_max_idx == -1){
+							LMS_second_max_idx = k-1;
+						}
+					}
+
+					if (actual_trend == 0){
+						// we are in a constant region (not update the state of the trend)
+						continue;
+					}
+					else {	// we are in a region of the function that is not a local minima or maxima
+						prev_trend = actual_trend;
+					}
+				} // [TODO] Mitigate the possible errors of bouncing of the function near the local minima or maxima
+
+				// at this point we have the two local minima of the function stored in LMS_first_min_idx and LMS_second_min_idx
+				
+
+
+
+
+
+
+
+
+
+				point_idx++;
+			}
+		}
+
+		cone_idx++;
+	}
+
+
+
+#endif /* KNOWN_RADIUS */
+	
+}
+
+void check_nearest_point(int angle, float new_point_x, float new_point_y, int color, cone_border *cone_borders)
+{
+	// check if the point is near to a cone
+	for (int i = 0; i < MAX_DETECTED_CONES; i++)
+	{
+		if (cone_borders[i].color == -1)
+		{
+			// no cone detected at this position
+			int insertion_point = 0;
+			while ((cone_borders[i].angles[insertion_point] != -1) || (insertion_point < MAX_POINTS_PER_CONE-1)) insertion_point++;
+
+			// populate the new cone border
+			cone_borders[i].angles[insertion_point] = angle;
+			cone_borders[i].color = color;
+			break;
+		}
+		else // a cone is detected at this position
+		{
+			int insertion_point = 0;	// find the first free position to put this new point in the border array
+			float distance = 2*MAXrange;	// max distance between two points detected
+
+			int isPointOnCone = 0;		// flag to check if the point is near to a cone
+
+			while ((cone_borders[i].angles[insertion_point] != -1) || (insertion_point > 179)){
+				float cone_point_x = measures[cone_borders[i].angles[insertion_point]].point_x;
+				float cone_point_y = measures[cone_borders[i].angles[insertion_point]].point_y;
+
+				float distance = sqrt(pow(new_point_x - cone_point_x, 2) + pow(new_point_y - cone_point_y, 2));
+
+				if (distance < 2*cone_radius){
+					// the point is near to the i-th cone
+					isPointOnCone = 1;
+				}
+
+				insertion_point++; 
+			}
+
+			if (isPointOnCone){	// if the point is next to the i-th cone
+				cone_borders[i].angles[insertion_point] = angle;
+				break;
+			}
+		}
+
+	}
 }
 
 
