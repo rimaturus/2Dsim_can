@@ -88,14 +88,14 @@ typedef struct {
 	int color;
 } pointcloud;
 
-pointcloud measures[N_angles]; // contain measurements of the LiDAR corresponding to each angle
-
 const int   angle_step	= 1;		// deg
 const float MAXrange	= 5;		//[m]
 const float distance_resolution = 0.01; // [m] = 1 cm
 
 const int   N_angles  = (int)(360 / angle_step);
 const int   distance_steps = (int)(MAXrange / distance_resolution);
+
+pointcloud measures[360]; // contain measurements of the LiDAR corresponding to each angle
 
 // Visualization parameters (perception view)
 const int 	sliding_window 	= 30; // number of rays to plot in the perception view
@@ -109,7 +109,7 @@ const float	ignore_distance = 0.2; // ignore cones closer than this distance [m]
 #define MAX_POINTS_PER_CONE 180
 
 typedef struct {
-	int angles[180]; // possible points viewed by the LiDAR for each cones (180 == WORST CASE with the vehicle in contact with the cone on one side)
+	int angles[MAX_POINTS_PER_CONE]; // possible points viewed by the LiDAR for each cones (180 == WORST CASE with the vehicle in contact with the cone on one side)
 	int color;
 } cone_border;
 // the cone border contain the index of the points of the pointcloud that are closer each other so they are part of the same cone
@@ -122,7 +122,7 @@ float 	angle_rotation_sprite( float angle );
 void	init_cones( cone *cones, int max_cones );
 void	load_cones_positions( const char *filename, cone *cones, int max_cones );
 void	lidar( float car_x, float car_y, pointcloud *measures );
-void 	trajectory_planner( float *car_x, float *car_y, int *car_angle ); 
+void 	mapping( float *car_x, float *car_y, int *car_angle, cone *detected_cones ); 
 void	keyboard_control( float *car_x, float *car_y, int *car_angle );
 void	vehicle_model( float *car_x, float *car_y, int *car_angle, float speed, float steering );
 
@@ -313,10 +313,19 @@ void *perception_task(void *arg)
 		// detection measures[N_angles];
 		lidar(car_x, car_y, &measures);
 
+		cone detected_cones[MAX_DETECTED_CONES]; // maximum number of cones viewed at each position
+		
+		for (int i = 0; i < MAX_DETECTED_CONES; i++){
+			detected_cones[i].x = -1;
+			detected_cones[i].y = -1;
+			detected_cones[i].color = -1;
+		}
+		mapping(&car_x, &car_y, &car_angle, detected_cones);
+
 		// render the perception view
 		pthread_mutex_lock(&draw_mutex);
 			clear_to_color(perception, makecol(255, 0, 255)); // pink color to make it transparent (True color notation)
-			
+
 			circlefill(
 				perception, 
 				perception->w / 2, 
@@ -377,6 +386,21 @@ void *perception_task(void *arg)
 						measures[lidar_angle].color
 					);
 				}
+			}
+
+			int detected_cone_idx = 0;
+			//while (detected_cones[detected_cone_idx].color != -1){
+			printf("\n\n\n\n -----------\n");
+			while (detected_cone_idx < 10 && detected_cones[detected_cone_idx].color != -1){
+				printf("Detected cone at: %f, %f\n", detected_cones[detected_cone_idx].x, detected_cones[detected_cone_idx].y);
+				circlefill(
+					perception, 
+					(int)(detected_cones[detected_cone_idx].x * px_per_meter), 
+					(int)(detected_cones[detected_cone_idx].y * px_per_meter), 
+					3, 
+					detected_cones[detected_cone_idx].color
+				);
+				detected_cone_idx++;	
 			}
 		pthread_mutex_unlock(&draw_mutex);
 
@@ -571,7 +595,7 @@ static float    steering = 0.0;      // current steering angle in radians
 }
 
 
-void trajectory_planner(float *car_x, float *car_y, int *car_angle)
+void mapping(float *car_x, float *car_y, int *car_angle, cone *detected_cones)
 {
 #define KNOWN_RADIUS
 cone_border cone_borders[MAX_DETECTED_CONES]; // maximum number of cones viewed at each position
@@ -584,20 +608,19 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 	cone_borders[i].color = -1;
 }
 
-
 	// Circle Hough transformation of viewed points
 #ifdef KNOWN_RADIUS
 	for (int angle = 0; angle < 360; angle += angle_step)
 	{
 		// Group similar points
-		if (measures[angle].color != -1)
+		if (measures[angle].color == -1)
 		{
 			// no cone seen at this angle, PASS
 			continue;
 		}
 		else // a cone is detected at this angle
 		{
-			check_nearest_point(angle, measures[angle].point_x, measures[angle].point_y, measures[angle].color, cone_borders);
+			check_nearest_point(angle, measures[angle].point_x, measures[angle].point_y, measures[angle].color, &cone_borders);
 		}
 
 	}
@@ -606,83 +629,145 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 	// classified by cone
 	// now we need to calculate the center of the cones
 
-int cone_idx = 0;
+	int cone_idx = 0;
 
-typedef struct {
-	float x;
-	float y;
-	float distance;
-	int color;
-} Hough_circle_point;
+	typedef struct {
+		float x;
+		float y;
+		float distance;
+		int color;
+	} Hough_circle_point;
 	
-	while((cone_borders[cone_idx].color != -1) && (cone_idx < MAX_DETECTED_CONES-1)){	// for each cone detected
-		int cone_cx = 0;
+	// for each cone detected
+	while( (cone_idx < MAX_DETECTED_CONES-1) && (cone_borders[cone_idx].color != -1) ){
+		int cone_cx = 0; // center of the cone
 		int cone_cy = 0;
 
-		int point_idx = 0;
+			// count the number of points in the border of the cone
+			int N_border_points = 0;
 
-		int count_border_points = 0;
-
-		// count the number of points in the border of the cone
-		while ((cone_borders[cone_idx].angles[point_idx] != -1) && (count_border_points < MAX_POINTS_PER_CONE-1)){
-			count_border_points++;
-		}
-
-		if (count_border_points > 2) // we need at least 3 points to calculate the center of the cone
-		{
-			Hough_circle_point possible_cone_centers[(count_border_points-1)*2]; // store the solution (w.c.s.: 2 intersection for each pair of circle referred to points)
-
-			// The first point give us all the 360 possible centers of the cone (the circle that pass through the point)
-			cone first_point_circle[360];
-
-			for (int i = 0; i < 360; i++){
-				first_point_circle[i].x = measures[cone_borders[0].angles[point_idx]].point_x + cone_radius * cos(i * deg2rad);
-				first_point_circle[i].y = measures[cone_borders[0].angles[point_idx]].point_y + cone_radius * sin(i * deg2rad);
-				first_point_circle[i].color = measures[cone_borders[0].angles[point_idx]].color;
+			// count the number of points in the border of the cone
+			while ( (N_border_points < MAX_POINTS_PER_CONE-1) && (cone_borders[cone_idx].angles[N_border_points] != -1) ){
+				N_border_points++;
 			}
 
-			// for each point of the detected cone border 
-			while ( (cone_borders[cone_idx].angles[point_idx] != -1) || (point_idx < MAX_POINTS_PER_CONE-1) ){
-				// Calculate the center of the cone
-				// for all the angles that corresponds to a cone we need to calculate the center of the cone
-				float new_x, new_y, new_distance;
+		if (N_border_points > 2) // we need at least 3 points to calculate the center of the cone
+		{
+			// ----------------- LOCAL MINIMA VARIABLE -----------------
+			// 			necessary to find the center of the cone
+			float LMS_prev_dist, LMS_actual_dist;
+			int LMS_first_min_idx = -1, LMS_second_min_idx = -1;
+			int LMS_first_max_idx = -1, LMS_second_max_idx = -1; // LMS == Local Minima Search
+			// ---------------------------------------------------------
 
-				Hough_circle_point possible_points[360]; // store all the points of the second circumference that are closer to the first one
-				for (int i = 0; i < 360; i++){ // initialize the possible points
-					possible_points[i].distance = 2*MAXrange;
-					possible_points[i].x = 0;
-					possible_points[i].y = 0;
+
+ 			// store the solution (w.c.s.: 2 intersection for each pair of circle referred to points)	
+			Hough_circle_point possible_cone_centers[(N_border_points-1)*2];
+			int possible_center_idx = 0;
+
+
+			// for each points of the border of the cone
+			for (int point_idx = 0; point_idx < N_border_points; point_idx++){
+				/* Starting... [POINT_IDX == 0] */
+				if (point_idx == 0){	// skip the first point (we need at least two point to compute intersection)
+					point_idx++; 
+					continue; 
 				}
+				/* Endig... [POINT_IDX == 0] */
 
-				for (int i = 0; i < 360; i++){
-					new_x = measures[cone_borders[cone_idx].angles[point_idx]].point_x + cone_radius * cos(i * deg2rad);
-					new_y = measures[cone_borders[cone_idx].angles[point_idx]].point_y + cone_radius * sin(i * deg2rad);
+				// store all the points of the second circumference with the distance of the closest point of the first circumference/set of points
+				Hough_circle_point circumference_points[360]; 
 
-					for (int j = 0; j < 360; j++){
-						new_distance = sqrt(pow(new_x - first_point_circle[j].x, 2) + pow(new_y - first_point_circle[j].y, 2));
+				/* Starting... [POINT_IDX == 1] */
+				if (point_idx == 1){	// first iteration (second point)
+										// consider all the 360 points of both the circumference to find the 2 intersections
 
-						if (new_distance < possible_points[i].distance){
-							possible_points[i].distance = new_distance;
-							possible_points[i].x = new_x;
-							possible_points[i].y = new_y;
+					// The first point give us all the 360 possible centers of the cone (the circle that pass through the point)
+					cone first_point_circle[360];
+
+					for (int i = 0; i < 360; i++){
+						first_point_circle[i].x = measures[cone_borders[cone_idx].angles[0]].point_x + cone_radius * cos(i * deg2rad);
+						first_point_circle[i].y = measures[cone_borders[cone_idx].angles[0]].point_y + cone_radius * sin(i * deg2rad);
+						first_point_circle[i].color = measures[cone_borders[cone_idx].angles[0]].color;
+					}
+
+					// for each point of the detected cone border 
+					while ( (point_idx < MAX_POINTS_PER_CONE-1) && (cone_borders[cone_idx].angles[point_idx] != -1) ){ // can be substituted with N_border_points
+						// Calculate the center of the cone
+						// for all the angles that corresponds to a cone we need to calculate the center of the cone
+						float new_x, new_y, new_distance;
+
+						for (int i = 0; i < 360; i++){ // initialize the possible points
+							circumference_points[i].distance = 2*MAXrange;
+							circumference_points[i].x = 0;
+							circumference_points[i].y = 0;
+						}
+
+						for (int i = 0; i < 360; i++){
+							new_x = measures[cone_borders[cone_idx].angles[point_idx]].point_x + cone_radius * cos(i * deg2rad);
+							new_y = measures[cone_borders[cone_idx].angles[point_idx]].point_y + cone_radius * sin(i * deg2rad);
+
+							for (int j = 0; j < 360; j++){
+								new_distance = sqrt(pow(new_x - first_point_circle[j].x, 2) + pow(new_y - first_point_circle[j].y, 2));
+
+								if (new_distance < circumference_points[i].distance){
+									circumference_points[i].distance = new_distance;
+									circumference_points[i].x = new_x;
+									circumference_points[i].y = new_y;
+								}
+							}
 						}
 					}
+				} 
+				// at the end of this iteration we have the distance of each point of the second circumference that is closer to the first one
+				// all of this points are stored in the possible_points array (Hough circle points type)
+
+				/* Ending... [POINT_IDX == 1] */
+				
+				/* Starting... [POINT_IDX >= 2] */
+				if (point_idx >= 2){	
+					// we have 3 or more points so we can compute the min distance of each point of the circumference
+					// from the points of intersection found in the previous iteration (less overhead)
+					float new_x, new_y, new_distance;
+
+					for (int i = 0; i < 360; i++){ // initialize the possible points
+						circumference_points[i].distance = 2*MAXrange;
+						circumference_points[i].x = 0;
+						circumference_points[i].y = 0;
+					}
+
+					for (int i = 0; i < 360; i++){
+						new_x = measures[cone_borders[cone_idx].angles[point_idx]].point_x + cone_radius * cos(i * deg2rad);
+						new_y = measures[cone_borders[cone_idx].angles[point_idx]].point_y + cone_radius * sin(i * deg2rad);
+
+						for (int j = 0; j < 360; j++){
+							new_distance = sqrt(pow(new_x - possible_cone_centers[j].x, 2) + pow(new_y - possible_cone_centers[j].y, 2));
+
+							if (new_distance < circumference_points[i].distance){
+								circumference_points[i].distance = new_distance;
+								circumference_points[i].x = new_x;
+								circumference_points[i].y = new_y;
+							}
+						}
+					}
+
 				}
+				/* Ending... [POINT_IDX >= 2] */
 
 				// at this point, we have a 3rd order function that represent the min distances 
 				// of each point of the new circumference from the first one while they intersecate
 				// we need to find the two local minima of this function to find the two possible centers of the cone
-				float LMS_prev_dist, LMS_actual_dist;
-				float LMS_first_min_idx = -1, LMS_second_min_idx = -1;
-				float LMS_first_max_idx = -1, LMS_second_max_idx = -1; // LMS == Local Minima Search
+				// float LMS_prev_dist, LMS_actual_dist;
+				// int LMS_first_min_idx = -1, LMS_second_min_idx = -1;
+				// int LMS_first_max_idx = -1, LMS_second_max_idx = -1; // LMS == Local Minima Search
 
 				int prev_trend = 0, actual_trend = 0; // check the trend of the function [1: if crescent, 0: if constant, -1: if decrescent]
 				
 				for (int k = 1; k < 360; k++){
-					if (possible_points[k].distance < possible_points[k-1].distance){
+					if (circumference_points[k].distance < circumference_points[k-1].distance){
 						actual_trend = -1; // decrescent
 					}
-					else if ( possible_points[k].distance > possible_points[k-1].distance){
+					else if ( circumference_points[k].distance > circumference_points[k-1].distance){
 						actual_trend = 1; // crescent
 					}
 					else{
@@ -721,27 +806,74 @@ typedef struct {
 					else {	// we are in a region of the function that is not a local minima or maxima
 						prev_trend = actual_trend;
 					}
-				} // [TODO] Mitigate the possible errors of bouncing of the function near the local minima or maxima
+				} // [TODO] Mitigate the possible errors of bouncing of the function near the local minima or maxima			
 
 				// at this point we have the two local minima of the function stored in LMS_first_min_idx and LMS_second_min_idx
-				
+				possible_cone_centers[possible_center_idx].x = circumference_points[LMS_first_min_idx].x;
+				possible_cone_centers[possible_center_idx].y = circumference_points[LMS_first_min_idx].y;
 
+				possible_cone_centers[possible_center_idx + 1].x = circumference_points[LMS_second_min_idx].x;
+				possible_cone_centers[possible_center_idx + 1].y = circumference_points[LMS_second_min_idx].y;
 
+				possible_center_idx += 2;
+			}
 
+			/* 
+			At this point we have the possible centers of the cone.
+			
+			We need to choose the one that stays inside the cone 
+			(the two intersection are one on the center of the cone and the other outside).
+			*/
+	
+			// Cluster the candidate centers to select those that are closest
+			// and compute their mean.
+			const float CLUSTER_THRESHOLD = 0.01f; // distance threshold in meters
+			int best_cluster_size = 0;
+			float best_sum_x = 0.0f, best_sum_y = 0.0f;
 
+			// Iterate over all candidate centers stored in possible_cone_centers
+			for (int i = 0; i < possible_center_idx; i++) {
+				int cluster_size = 1;
+				float cluster_sum_x = possible_cone_centers[i].x;
+				float cluster_sum_y = possible_cone_centers[i].y;
 
+				for (int j = i + 1; j < possible_center_idx; j++) {
+					float dx = possible_cone_centers[i].x - possible_cone_centers[j].x;
+					float dy = possible_cone_centers[i].y - possible_cone_centers[j].y;
+					float dist = sqrt(dx * dx + dy * dy);
 
+					if (dist < CLUSTER_THRESHOLD) {
+						cluster_sum_x += possible_cone_centers[j].x;
+						cluster_sum_y += possible_cone_centers[j].y;
+						cluster_size++;
+					}
+				}
+				if (cluster_size > best_cluster_size) {
+					best_cluster_size = cluster_size;
+					best_sum_x = cluster_sum_x;
+					best_sum_y = cluster_sum_y;
+				}
+			}
 
+			if (best_cluster_size > 0) {
+				float center_x = best_sum_x / best_cluster_size;
+				float center_y = best_sum_y / best_cluster_size;
 
-
-				point_idx++;
+				detected_cones[cone_idx].x = center_x;
+				detected_cones[cone_idx].y = center_y;
+				detected_cones[cone_idx].color = cone_borders[cone_idx].color;
 			}
 		}
 
 		cone_idx++;
 	}
 
+#ifdef UNKNOWN_RADIUS
+	// [TODO] Implement the trajectory planner for the case of unknown radius with the Hough transform
+#endif /* UNKNOWN_RADIUS */	
 
+	// Now I have the center of the cones in the detected_cones array
+	// I can use this information to plan the trajectory
 
 #endif /* KNOWN_RADIUS */
 	
@@ -756,7 +888,7 @@ void check_nearest_point(int angle, float new_point_x, float new_point_y, int co
 		{
 			// no cone detected at this position
 			int insertion_point = 0;
-			while ((cone_borders[i].angles[insertion_point] != -1) || (insertion_point < MAX_POINTS_PER_CONE-1)) insertion_point++;
+			while ((insertion_point < MAX_POINTS_PER_CONE-1) && (cone_borders[i].angles[insertion_point] != -1)) insertion_point++;
 
 			// populate the new cone border
 			cone_borders[i].angles[insertion_point] = angle;
@@ -770,7 +902,7 @@ void check_nearest_point(int angle, float new_point_x, float new_point_y, int co
 
 			int isPointOnCone = 0;		// flag to check if the point is near to a cone
 
-			while ((cone_borders[i].angles[insertion_point] != -1) || (insertion_point > 179)){
+			while ((insertion_point < MAX_POINTS_PER_CONE-1) && (cone_borders[i].angles[insertion_point] != -1)){
 				float cone_point_x = measures[cone_borders[i].angles[insertion_point]].point_x;
 				float cone_point_y = measures[cone_borders[i].angles[insertion_point]].point_y;
 
