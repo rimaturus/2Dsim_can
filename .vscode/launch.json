@@ -1,0 +1,26 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+	  {
+		"name": "Debug C Program",
+		"type": "cppdbg",
+		"request": "launch",
+		"program": "${workspaceFolder}/2Dsim_can",
+		"args": [],
+		"stopAtEntry": true,
+		"cwd": "${workspaceFolder}",
+		"environment": [],
+		"externalConsole": false,
+		"MIMode": "gdb",
+		"miDebuggerPath": "/usr/bin/gdb", // adjust as needed
+		"setupCommands": [
+		  {
+			"description": "Enable pretty-printing",
+			"text": "-enable-pretty-printing",
+			"ignoreFailures": true
+		  }
+		]
+	  }
+	]
+  }
+  

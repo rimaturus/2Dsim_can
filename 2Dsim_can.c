@@ -19,7 +19,7 @@
 #include "ptask/ptask.h" // custom functions for periodic task
 
 // TASK PERIODS (in milliseconds)
-#define PERCEPTION_PERIOD 1
+#define PERCEPTION_PERIOD 5
 #define CONTROL_PERIOD 50
 #define DISPLAY_PERIOD 34   // ~30Hz (1000/34 ≈ 29.41 Hz)
 
@@ -29,7 +29,7 @@
 #define DISPLAY_DEADLINE 17
 
 // Priorities (lower number means higher priority)
-#define PERCEPTION_PRIORITY 15
+#define PERCEPTION_PRIORITY 5
 #define CONTROL_PRIORITY 20
 #define DISPLAY_PRIORITY 25
 
@@ -47,7 +47,7 @@ pthread_mutex_t draw_mutex = PTHREAD_MUTEX_INITIALIZER;
 // --------------------------------
 // CONSTANTS
 // --------------------------------
-#define px_per_meter 1e2 // 100 pixels = 1 meters (1 px = 1 cm)
+#define px_per_meter 100 // 100 pixels = 1 meters (1 px = 1 cm)
 #define deg2rad 0.0174533 // degrees to radians
 
 // Screen resolution (in pixels) == Window size
@@ -105,8 +105,10 @@ const float	ignore_distance = 0.2; // ignore cones closer than this distance [m]
 // --------------------------------
 // CONE DETECTION
 // --------------------------------
-#define MAX_DETECTED_CONES 	128
+#define MAX_DETECTED_CONES 	360 //128
 #define MAX_POINTS_PER_CONE 180
+
+cone detected_cones[MAX_DETECTED_CONES]; // maximum number of cones viewed at each position
 
 typedef struct {
 	int angles[MAX_POINTS_PER_CONE]; // possible points viewed by the LiDAR for each cones (180 == WORST CASE with the vehicle in contact with the cone on one side)
@@ -122,10 +124,10 @@ float 	angle_rotation_sprite( float angle );
 void	init_cones( cone *cones, int max_cones );
 void	load_cones_positions( const char *filename, cone *cones, int max_cones );
 void	lidar( float car_x, float car_y, pointcloud *measures );
-void 	mapping( float *car_x, float *car_y, int *car_angle, cone *detected_cones ); 
+void 	mapping( float car_x, float car_y, int car_angle, cone *detected_cones ); 
 void	keyboard_control( float *car_x, float *car_y, int *car_angle );
 void	vehicle_model( float *car_x, float *car_y, int *car_angle, float speed, float steering );
-
+void 	check_nearest_point(int angle, float new_point_x, float new_point_y, int color, cone_border *cone_borders);
 
 // --------------------------------
 // MAIN FUNCTION
@@ -157,7 +159,7 @@ int main()
 
 		draw_sprite(screen, display_buffer, 0, 0);
 		clear_keybuf();
-		readkey();
+		//readkey();
 
 		// background
 	background = create_bitmap(XMAX, YMAX); 
@@ -166,7 +168,7 @@ int main()
 
 		draw_sprite(screen, background, 0, 0);
 		clear_keybuf();
-		readkey();
+		//readkey();
 
 		// track
 	track = create_bitmap(XMAX, YMAX);
@@ -177,8 +179,8 @@ int main()
 	cone		cones[max_cones];
 	const char	filename[100] = "track/cones.yaml";
 
-		init_cones( &cones, max_cones );
-		load_cones_positions( &filename, &cones, max_cones );
+		init_cones(cones, max_cones);
+		load_cones_positions(filename, cones, max_cones);
 		printf("Cones loaded\n");
 
 		// plot cones
@@ -198,7 +200,7 @@ int main()
 
 		draw_sprite(screen, track, 0, 0);
 		clear_keybuf();
-		readkey();
+		//readkey();
 
 		car = load_bitmap("bitmaps/f1_car_05x.bmp", NULL); // load a bitmap image
 		if (car == NULL) {
@@ -227,7 +229,7 @@ int main()
 		circlefill(screen, car_x_px, car_y_px, 3, makecol(0,255,0));
 		circlefill(screen, (int)(car_bitmap_x), (int)(car_bitmap_y), 3, makecol(0,255,255));
 		clear_keybuf();
-		readkey();
+		//readkey();
 
 
 		// Perception bitmap 
@@ -311,16 +313,16 @@ void *perception_task(void *arg)
 	{
 		// LiDAR simulation
 		// detection measures[N_angles];
-		lidar(car_x, car_y, &measures);
+		lidar(car_x, car_y, measures);
 
-		cone detected_cones[MAX_DETECTED_CONES]; // maximum number of cones viewed at each position
-		
+
 		for (int i = 0; i < MAX_DETECTED_CONES; i++){
 			detected_cones[i].x = -1;
 			detected_cones[i].y = -1;
 			detected_cones[i].color = -1;
 		}
-		mapping(&car_x, &car_y, &car_angle, detected_cones);
+
+		mapping(car_x, car_y, car_angle, detected_cones); // Pass the address of first element
 
 		// render the perception view
 		pthread_mutex_lock(&draw_mutex);
@@ -377,30 +379,28 @@ void *perception_task(void *arg)
 						(int)(x_detection * px_per_meter), 
 						(int)(y_detection * px_per_meter), 
 						measures[lidar_angle].color);
-
-					circle(
-						perception, 
-						(int)(x_detection * px_per_meter), 
-						(int)(y_detection * px_per_meter), 
-						3, 
-						measures[lidar_angle].color
-					);
 				}
 			}
 
 			int detected_cone_idx = 0;
 			//while (detected_cones[detected_cone_idx].color != -1){
 			printf("\n\n\n\n -----------\n");
-			while (detected_cone_idx < 10 && detected_cones[detected_cone_idx].color != -1){
-				printf("Detected cone at: %f, %f\n", detected_cones[detected_cone_idx].x, detected_cones[detected_cone_idx].y);
-				circlefill(
-					perception, 
-					(int)(detected_cones[detected_cone_idx].x * px_per_meter), 
-					(int)(detected_cones[detected_cone_idx].y * px_per_meter), 
-					3, 
-					detected_cones[detected_cone_idx].color
-				);
-				detected_cone_idx++;	
+			while (detected_cone_idx < MAX_DETECTED_CONES-1){
+				if (detected_cones[detected_cone_idx].color == -1){
+					detected_cone_idx++;
+					continue;
+				}
+				else {
+					printf("Detected cone at: %f, %f\n", detected_cones[detected_cone_idx].x, detected_cones[detected_cone_idx].y);
+					circlefill(
+						perception, 
+						(int)(detected_cones[detected_cone_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter), 
+						(int)(detected_cones[detected_cone_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter), 
+						3, 
+						makecol(255, 0, 0) //detected_cones[detected_cone_idx].color
+					);
+					detected_cone_idx++;	
+				}
 			}
 		pthread_mutex_unlock(&draw_mutex);
 
@@ -595,7 +595,7 @@ static float    steering = 0.0;      // current steering angle in radians
 }
 
 
-void mapping(float *car_x, float *car_y, int *car_angle, cone *detected_cones)
+void mapping(float car_x, float car_y, int car_angle, cone *detected_cones)
 {
 #define KNOWN_RADIUS
 cone_border cone_borders[MAX_DETECTED_CONES]; // maximum number of cones viewed at each position
@@ -620,7 +620,7 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 		}
 		else // a cone is detected at this angle
 		{
-			check_nearest_point(angle, measures[angle].point_x, measures[angle].point_y, measures[angle].color, &cone_borders);
+			check_nearest_point(angle, measures[angle].point_x, measures[angle].point_y, measures[angle].color, cone_borders);
 		}
 
 	}
@@ -670,7 +670,6 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 			for (int point_idx = 0; point_idx < N_border_points; point_idx++){
 				/* Starting... [POINT_IDX == 0] */
 				if (point_idx == 0){	// skip the first point (we need at least two point to compute intersection)
-					point_idx++; 
 					continue; 
 				}
 				/* Endig... [POINT_IDX == 0] */
@@ -692,29 +691,28 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 					}
 
 					// for each point of the detected cone border 
-					while ( (point_idx < MAX_POINTS_PER_CONE-1) && (cone_borders[cone_idx].angles[point_idx] != -1) ){ // can be substituted with N_border_points
-						// Calculate the center of the cone
-						// for all the angles that corresponds to a cone we need to calculate the center of the cone
-						float new_x, new_y, new_distance;
+				
+					// Calculate the center of the cone
+					// for all the angles that corresponds to a cone we need to calculate the center of the cone
+					float new_x, new_y, new_distance;
 
-						for (int i = 0; i < 360; i++){ // initialize the possible points
-							circumference_points[i].distance = 2*MAXrange;
-							circumference_points[i].x = 0;
-							circumference_points[i].y = 0;
-						}
+					for (int i = 0; i < 360; i++){ // initialize the possible points
+						circumference_points[i].distance = 2*MAXrange;
+						circumference_points[i].x = 0;
+						circumference_points[i].y = 0;
+					}
 
-						for (int i = 0; i < 360; i++){
-							new_x = measures[cone_borders[cone_idx].angles[point_idx]].point_x + cone_radius * cos(i * deg2rad);
-							new_y = measures[cone_borders[cone_idx].angles[point_idx]].point_y + cone_radius * sin(i * deg2rad);
+					for (int i = 0; i < 360; i++){
+						new_x = measures[cone_borders[cone_idx].angles[point_idx]].point_x + cone_radius * cos(i * deg2rad);
+						new_y = measures[cone_borders[cone_idx].angles[point_idx]].point_y + cone_radius * sin(i * deg2rad);
 
-							for (int j = 0; j < 360; j++){
-								new_distance = sqrt(pow(new_x - first_point_circle[j].x, 2) + pow(new_y - first_point_circle[j].y, 2));
+						for (int j = 0; j < 360; j++){
+							new_distance = sqrt(pow(new_x - first_point_circle[j].x, 2) + pow(new_y - first_point_circle[j].y, 2));
 
-								if (new_distance < circumference_points[i].distance){
-									circumference_points[i].distance = new_distance;
-									circumference_points[i].x = new_x;
-									circumference_points[i].y = new_y;
-								}
+							if (new_distance < circumference_points[i].distance){
+								circumference_points[i].distance = new_distance;
+								circumference_points[i].x = new_x;
+								circumference_points[i].y = new_y;
 							}
 						}
 					}
@@ -938,7 +936,7 @@ void init_cones(cone* cones, int max_cones)
 	}
 }
 
-#define tmp_scale  1.5 
+#define tmp_scale  1.5/100 //1.5 
 // [TODO] Need to be substituted with corrected px_per_meter
 // Load cone positions (the YAML file must contain x,y in meters considering that
 // the vehicle is 2 x 1 meters and the cones are 0.1 x 0.1 meters)
@@ -1004,10 +1002,10 @@ void load_cones_positions(const char *filename, cone *cones, int max_cones)
 					else {
 						// Expecting a value corresponding to the current key
 						if (strcmp(current_key, "x") == 0) {
-							cones[i].x = ( atof((char *)event.data.scalar.value) ) * tmp_scale;
+							cones[i].x = ( atof((char *)event.data.scalar.value) ) * tmp_scale * px_per_meter;
 						} 
 						else if (strcmp(current_key, "y") == 0) { 
-							cones[i].y = ( atof((char *)event.data.scalar.value) ) * tmp_scale;
+							cones[i].y = ( atof((char *)event.data.scalar.value) ) * tmp_scale * px_per_meter;
 						} 
 						else if (strcmp(current_key, "color") == 0) {
 							if (strcmp((char *)event.data.scalar.value, "yellow") == 0) {
