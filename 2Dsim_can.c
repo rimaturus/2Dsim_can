@@ -69,7 +69,7 @@
 
 /* TASK PERIODS (in milliseconds) */
 #define PERCEPTION_PERIOD    1   /**< Period of Perception Task [ms] */
-#define CONTROL_PERIOD       5  /**< Period of Control Task [ms] */
+#define CONTROL_PERIOD       25  /**< Period of Control Task [ms] */
 #define DISPLAY_PERIOD       16  /**< Period of Display Task [ms] (~30 Hz) */
 
 /* DEADLINES (in milliseconds) */
@@ -167,6 +167,9 @@ typedef struct {
 
 const float cone_radius = 0.05f; /**< Cone radius in meters (5 cm) */
 
+int grass_green, asphalt_gray, white, pink;
+int yellow, blue;
+
 /* --------------------------------
  * LiDAR CONFIGURATION
  * -------------------------------- */
@@ -197,7 +200,7 @@ pointcloud measures[360]; /**< Global array storing the current LiDAR scan data 
  * avoid clutter and reduce rendering cost.
  */
 int start_angle = 0;
-const int   sliding_window  = 30;  /**< Number of LiDAR rays to plot in the perception view */
+const int   sliding_window  = 360;  /**< Number of LiDAR rays to plot in the perception view */
 const float ignore_distance = 0.2f; /**< Ignore cones closer than this distance [m] */
 
 /* --------------------------------
@@ -207,6 +210,13 @@ const float ignore_distance = 0.2f; /**< Ignore cones closer than this distance 
 #define MAX_POINTS_PER_CONE 180 /**< Maximum number of LiDAR hits that can belong to one cone's border */
 
 cone detected_cones[MAX_DETECTED_CONES]; /**< Global array for storing detected cones */
+
+typedef struct {
+	float x;
+	float y;
+} waypoint;
+
+waypoint trajectory[MAX_DETECTED_CONES]; // trajectory
 
 /** 
  * \struct cone_border
@@ -286,7 +296,17 @@ void vehicle_model(float *car_x, float *car_y, int *car_angle, float speed, floa
  * \param color Color of the detected cone (Allegro format).
  * \param cone_borders Array of `cone_border` structures to update.
  */
-void check_nearest_point(int angle, float new_point_x, float new_point_y, int color, cone_border *cone_borders);
+void 	check_nearest_point(int angle, float new_point_x, float new_point_y, int color, cone_border *cone_borders);
+
+/**
+ * \brief Update trajectory planned based on detected cones.
+ * \param car_x Pointer to car's X coordinate.
+ * \param car_y Pointer to car's Y coordinate.
+ * \param car_angle Pointer to car's heading (in degrees).
+ * \param detected_cones Array of `cone` structures to store the newly detected cones.
+ * \param trajectory Array of `waypoints` that represents trajectory.
+ */
+void	trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory);
 
 /* --------------------------------
  * MAIN FUNCTION
@@ -314,10 +334,12 @@ int main()
 		set_color_depth(32); // set the color depth to 8 bits for each of the RGB channels and 8 bits for the alpha channel (faster than 24 bit since it is aligned to 32 bits)
 
 	// Colors
-	const int grass_green = makecol(78,91,49); // army_green
-	const int asphalt_gray = makecol(128,126,120); // asphalt
-	const int white = makecol(255, 255, 255); // white
-	const int pink = makecol(255, 0, 255); // pink
+	grass_green = makecol(78,91,49); // army_green
+	asphalt_gray = makecol(128,126,120); // asphalt
+	white = makecol(255, 255, 255); // white
+	pink = makecol(255, 0, 255); // pink
+	yellow = makecol(254, 221, 0); // yellow for cones
+	blue = makecol(46, 103, 248); // blue for cones
 		
 		set_gfx_mode(GFX_AUTODETECT_WINDOWED, XMAX, YMAX, 0, 0); // enters the graphics mode (windowed) with resolution 1920x1080
 		clear_to_color(screen, white); // clear the screen making all pixels to white
@@ -493,6 +515,8 @@ void *perception_task(void *arg)
 
 		mapping(car_x, car_y, car_angle, detected_cones); // Pass the address of first element
 
+		trajectory_planning(car_x, car_y, car_angle, detected_cones, trajectory);
+
 		// render the perception view
 		pthread_mutex_lock(&draw_mutex);
 			clear_to_color(perception, makecol(255, 0, 255)); // pink color to make it transparent (True color notation)
@@ -557,7 +581,7 @@ void *perception_task(void *arg)
 			while (detected_cone_idx < MAX_DETECTED_CONES-1){
 				if (detected_cones[detected_cone_idx].color == -1){
 					detected_cone_idx++;
-					continue;
+					break;
 				}
 				else {
 					printf("Detected cone at: %f, %f\n", detected_cones[detected_cone_idx].x, detected_cones[detected_cone_idx].y);
@@ -568,6 +592,15 @@ void *perception_task(void *arg)
 						3, 
 						makecol(255, 0, 0) //detected_cones[detected_cone_idx].color
 					);
+
+					circlefill(
+						perception,
+						(int)(trajectory[detected_cone_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter),
+						(int)(trajectory[detected_cone_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter),
+						3,
+						makecol(0, 255, 0)
+					);
+
 					detected_cone_idx++;	
 				}
 			}
@@ -680,21 +713,21 @@ void    lidar(float car_x, float car_y, pointcloud *measures)
 
 			if (stop_distance != 1)
 			{
-				if (getpixel(track, x_px, y_px) == makecol(254, 221, 0)) // yellow
+				if (getpixel(track, x_px, y_px) == yellow) // yellow
 				{
 					// printf("Cone detected\n");
 					measures[lidar_angle].distance = distance; // convert to meters
-					measures[lidar_angle].color = makecol(254, 221, 0); // yellow
+					measures[lidar_angle].color = yellow; // makecol(254, 221, 0); // yellow
 					measures[lidar_angle].point_x = x;
 					measures[lidar_angle].point_y = y;
 
 					stop_distance = 1;  // cone detected, stop the loop
 				}
-				else if (getpixel(track, x_px, y_px) == makecol(46, 103, 248)) // blue
+				else if (getpixel(track, x_px, y_px) == blue) // blue
 				{   
 					// printf("Cone detected\n");
 					measures[lidar_angle].distance = distance; // convert to meters
-					measures[lidar_angle].color = makecol(46, 103, 248); // blue
+					measures[lidar_angle].color = blue; // blue
 					measures[lidar_angle].point_x = x;
 					measures[lidar_angle].point_y = y;
 
@@ -800,6 +833,7 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 	// now we need to calculate the center of the cones
 
 	int cone_idx = 0;
+	int detected_cone_idx = 0; // index where insert the new detected cone center
 
 	typedef struct {
 		float x;
@@ -1027,9 +1061,11 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 				float center_x = best_sum_x / best_cluster_size;
 				float center_y = best_sum_y / best_cluster_size;
 
-				detected_cones[cone_idx].x = center_x;
-				detected_cones[cone_idx].y = center_y;
-				detected_cones[cone_idx].color = cone_borders[cone_idx].color;
+				detected_cones[detected_cone_idx].x = center_x;
+				detected_cones[detected_cone_idx].y = center_y;
+				detected_cones[detected_cone_idx].color = cone_borders[cone_idx].color;
+
+				detected_cone_idx++;
 			}
 		}
 
@@ -1047,7 +1083,148 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 	
 }
 
-void check_nearest_point(int angle, float new_point_x, float new_point_y, int color, cone_border *cone_borders)
+void trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory)
+{
+	int N_detected_cones = 0;
+	while (detected_cones[N_detected_cones].color != -1) N_detected_cones++; // count detected cones
+
+	if (N_detected_cones < 3){
+		return; // not enough cones to plan the trajectory
+	}
+	else {
+		int connected_indices[N_detected_cones][2];
+		const int B_idx = 0;
+		const int Y_idx = 1;
+
+		for (int i = 0; i < N_detected_cones; i++){
+			for (int j = 0; j < 2; j++){
+				connected_indices[i][j] = -1;
+			}
+		}
+
+		for (int focus_idx = 0; focus_idx < N_detected_cones; focus_idx++)
+		{
+			float mDist_Y = 1000;
+			float mDist_B = 1000;
+
+			int mDist_Y_idx = -1;
+			int mDist_B_idx = -1;
+
+			// [TODO] Add a condition to check if the candidate index is free to be connected
+			int focusColor = -1;
+
+			if (detected_cones[focus_idx].color == yellow) 
+				focusColor = Y_idx;
+			else 
+				focusColor = B_idx;
+
+			if (connected_indices[focus_idx][B_idx] != -1 && connected_indices[focus_idx][Y_idx] != -1)
+			{ 	// full connected
+				continue;
+			}
+			
+			if (connected_indices[focus_idx][Y_idx] == -1)
+			{	// so search for the nearest yellow cone
+				for (int candidate_idx = 0; candidate_idx < N_detected_cones; candidate_idx++){
+					if (candidate_idx == focus_idx){
+						continue;
+					}
+					
+					if ((detected_cones[candidate_idx].color == yellow))// && (connected_indices[candidate_idx][focusColor] == -1))
+					{
+						float distance = sqrt(pow(detected_cones[candidate_idx].x - detected_cones[focus_idx].x, 2) + pow(detected_cones[candidate_idx].y - detected_cones[focus_idx].y, 2));
+						
+						if (distance < mDist_Y){
+							mDist_Y = distance;
+							mDist_Y_idx = candidate_idx;
+						}
+					}
+				}
+				// found the yellow one
+				connected_indices[focus_idx][Y_idx] = mDist_Y_idx; 
+				connected_indices[mDist_Y_idx][focusColor] = focus_idx;
+			}
+
+			if (connected_indices[focus_idx][B_idx] == -1)
+			{	// so search for the nearest blue cone
+				for (int candidate_idx = 0; candidate_idx < N_detected_cones; candidate_idx++){
+					if (candidate_idx == focus_idx){
+						continue;
+					}
+
+					if ((detected_cones[candidate_idx].color == blue))// && (connected_indices[candidate_idx][focusColor] == -1))
+					{
+						float distance = sqrt(pow(detected_cones[candidate_idx].x - detected_cones[focus_idx].x, 2) + pow(detected_cones[candidate_idx].y - detected_cones[focus_idx].y, 2));
+						
+						if (distance < mDist_B){
+							mDist_B = distance;
+							mDist_B_idx = candidate_idx;
+						}
+					}
+				}
+				// found the blue one
+				connected_indices[focus_idx][B_idx] = mDist_B_idx; 
+				connected_indices[mDist_B_idx][focusColor] = focus_idx;
+			}
+
+		}
+
+		for (int i = 0; i < N_detected_cones; i++){
+			if (connected_indices[i][B_idx] != -1 && connected_indices[i][Y_idx] != -1){
+				line(
+					display_buffer,
+					detected_cones[i].x * px_per_meter,
+					detected_cones[i].y * px_per_meter,
+					detected_cones[connected_indices[i][B_idx]].x * px_per_meter,
+					detected_cones[connected_indices[i][B_idx]].y * px_per_meter,
+					blue
+				);
+				line(
+					display_buffer,
+					detected_cones[i].x * px_per_meter,
+					detected_cones[i].y * px_per_meter,
+					detected_cones[connected_indices[i][Y_idx]].x * px_per_meter,
+					detected_cones[connected_indices[i][Y_idx]].y * px_per_meter,
+					yellow
+				);
+				line(
+					display_buffer,
+					detected_cones[connected_indices[i][B_idx]].x * px_per_meter,
+					detected_cones[connected_indices[i][B_idx]].y * px_per_meter,
+					detected_cones[connected_indices[i][Y_idx]].x * px_per_meter,
+					detected_cones[connected_indices[i][Y_idx]].y * px_per_meter,
+					makecol(0, 255, 0)
+				);
+			}
+		}
+
+#ifdef DEBUG
+		for (int i = 0; i < N_detected_cones; i++){
+			char c = detected_cones[i].color == yellow ? 'Y' : 'B';
+			printf("\nCone %d (%c): ", i, c);
+			for (int j = 0; j < 2; j++){
+				char c = detected_cones[j].color == yellow ? 'Y' : 'B';
+				printf("%d (%c)\t", connected_indices[i][j], c);
+			}
+		}
+#endif /* DEBUG */
+
+		// Now I have in the connected_indices matrix the inidices of the connected cones
+		// I have to use only the connection made by cones of different color 
+		for (int i = 0; i < N_detected_cones; i++){
+			int opposite_color_idx = detected_cones[i].color == yellow ? B_idx : Y_idx;
+
+			trajectory[i].x = (detected_cones[i].x + detected_cones[connected_indices[i][opposite_color_idx]].x) / 2;
+			trajectory[i].y = (detected_cones[i].y + detected_cones[connected_indices[i][opposite_color_idx]].y) / 2;
+
+		}
+
+ 	}
+}
+
+
+
+void 	check_nearest_point(int angle, float new_point_x, float new_point_y, int color, cone_border *cone_borders)
 {
 	// check if the point is near to a cone
 	for (int i = 0; i < MAX_DETECTED_CONES; i++)
@@ -1179,10 +1356,10 @@ void load_cones_positions(const char *filename, cone *cones, int max_cones)
 						} 
 						else if (strcmp(current_key, "color") == 0) {
 							if (strcmp((char *)event.data.scalar.value, "yellow") == 0) {
-								cones[i].color = makecol(254, 221, 0); // Yellow color
+								cones[i].color = yellow; //makecol(254, 221, 0); // Yellow color
 							} 
 							else if (strcmp((char *)event.data.scalar.value, "blue") == 0) {
-								cones[i].color = makecol(46, 103, 248); // Blue color
+								cones[i].color = blue; //makecol(46, 103, 248); // Blue color
 							}
 							// Add more colors as needed
 						}
