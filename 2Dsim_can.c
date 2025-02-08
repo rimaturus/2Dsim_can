@@ -1,137 +1,306 @@
+/**
+ * \file 2Dsim_can.c
+ * \brief 2D simulation of a full autonomous driving FSAE vehicle with Allegro, PThreads, and YAML parsing.
+ *
+ * This file contains the main entry point of a small simulation program. It
+ * uses Allegro for graphics, YAML for loading track cone data, and a
+ * ptask library for periodic tasks created during the RTS course. The code simulates a simple FSAE vehicle (car)
+ * that drives around a track populated with cones that delimits the track limits. Some tasks (Perception,
+ * Control, Display) run periodically at a quasi-realistic rate.
+ *
+ * \author Edoardo Caciorgna
+ * \date 2025-02-07
+ */
+
+/**
+ * \mainpage "2Dsim_can"
+ *
+ * \section intro_sec Introduction
+ * This documentation describes a small car simulation that uses:
+ * - [Allegro](https://liballeg.org/) for graphics
+ * - [LibYAML](https://github.com/yaml/libyaml) for parsing configuration files
+ * - [pthread](https://man7.org/linux/man-pages/man7/pthreads.7.html) for concurrency
+ * - A custom periodic tasks library (`ptask`)
+ *
+ * \section build_sec Build
+ * Typical compilation might look like:
+ * \code{.sh}
+ * gcc -g -O3 -o 2Dsim_can 2Dsim_can.c ptask/ptask.c `allegro-config --libs` -lyaml -lm -lpthread
+ * \endcode
+ *
+ * \section usage_sec Usage
+ * Run the resulting executable using `sudo` to enable RT clock. Use arrow keys to control the car, and ESC to quit.
+ *
+ * \dot
+ * digraph call_graph {
+ *   rankdir=LR;
+ *   "main()" -> "task_create()";
+ *   "main()" -> "wait_for_task_end()";
+ *   "task_create()" -> "perception_task()";
+ *   "task_create()" -> "control_task()";
+ *   "task_create()" -> "display_task()";
+ *   "perception_task()" -> "lidar()";
+ *   "perception_task()" -> "mapping()";
+ *   "control_task()" -> "keyboard_control()";
+ *   "keyboard_control()" -> "vehicle_model()";
+ *   "display_task()" -> "Update screen";
+ * }
+ * \enddot
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro.h>
 #include <math.h>
 
-// --------------------------------
-// YAML
-// --------------------------------
+/* --------------------------------
+ * YAML
+ * -------------------------------- */
 #include <yaml.h>
 #include <string.h>
-// --------------------------------
 
-// --------------------------------
-// PTHREADs
-// --------------------------------
+/* --------------------------------
+ * PTHREADs
+ * -------------------------------- */
 #include <pthread.h>
 #include <sched.h>
 #include <time.h>
-#include "ptask/ptask.h" // custom functions for periodic task
+#include "ptask/ptask.h" // Custom functions for periodic task
 
-// TASK PERIODS (in milliseconds)
-#define PERCEPTION_PERIOD 5
-#define CONTROL_PERIOD 50
-#define DISPLAY_PERIOD 34   // ~30Hz (1000/34 ≈ 29.41 Hz)
+/* TASK PERIODS (in milliseconds) */
+#define PERCEPTION_PERIOD    1   /**< Period of Perception Task [ms] */
+#define CONTROL_PERIOD       5  /**< Period of Control Task [ms] */
+#define DISPLAY_PERIOD       16  /**< Period of Display Task [ms] (~30 Hz) */
 
-// DEADLINES (in milliseconds)
-#define PERCEPTION_DEADLINE PERCEPTION_PERIOD
-#define CONTROL_DEADLINE 50
-#define DISPLAY_DEADLINE 17
+/* DEADLINES (in milliseconds) */
+#define PERCEPTION_DEADLINE  PERCEPTION_PERIOD  /**< Deadline = Period for Perception Task */
+#define CONTROL_DEADLINE     CONTROL_PERIOD * 2 /**< Deadline = 2 * Period for Control Task */
+#define DISPLAY_DEADLINE     DISPLAY_PERIOD * 2	/**< Deadline = 2 * Period for Display Task */
 
-// Priorities (lower number means higher priority)
-#define PERCEPTION_PRIORITY 5
-#define CONTROL_PRIORITY 20
-#define DISPLAY_PRIORITY 25
+/* PRIORITIES (lower number = higher priority) */
+#define PERCEPTION_PRIORITY 15
+#define CONTROL_PRIORITY    20
+#define DISPLAY_PRIORITY    25
 
-// TASKs (using ptask.h notation)
-void *perception_task(void *arg);   // LiDAR simulation
-void *control_task(void *arg);      // Keyboard control
-void *display_task(void *arg);      // View simulation
+/** 
+ * \brief Perception task (LiDAR simulation).
+ *
+ * This function simulates a LiDAR by periodically scanning the environment
+ * around the car. It populates global arrays with the detected cone positions
+ * and updates an off-screen bitmap that shows the perception view.
+ *
+ * \param arg Pointer to the task ID or any user-defined data (unused here).
+ * \return A NULL pointer (no specific return value).
+ */
+void *perception_task(void *arg);
 
-// Mutex for synchronizing access to shared bitmaps and state
+/**
+ * \brief Control task (keyboard input).
+ *
+ * This function periodically reads the keyboard to adjust the speed and
+ * steering of the car. It updates global state variables representing
+ * the car's position and orientation.
+ *
+ * \param arg Pointer to the task ID or any user-defined data (unused here).
+ * \return A NULL pointer (no specific return value).
+ */
+void *control_task(void *arg);
+
+/**
+ * \brief Display task (View simulation).
+ *
+ * This function periodically renders the scene to the screen by compositing
+ * a background, track, the car sprite, and a LiDAR/perception overlay.
+ *
+ * \param arg Pointer to the task ID or any user-defined data (unused here).
+ * \return A NULL pointer (no specific return value).
+ */
+void *display_task(void *arg);
+
+/** 
+ * \brief Global mutex for synchronizing drawing operations.
+ *
+ * Multiple tasks (Perception, Display) might attempt to draw at the same
+ * time, so this mutex helps prevent race conditions and partial updates.
+ */
 pthread_mutex_t draw_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-// --------------------------------
+/* --------------------------------
+ * CONSTANTS
+ * -------------------------------- */
+#define px_per_meter 100       /**< Conversion scale: 100 px = 1 meter (1 px = 1 cm) */
+#define deg2rad 0.0174533      /**< Conversion factor from degrees to radians */
 
+/** 
+ * \brief Screen resolution (in pixels).
+ *
+ * The window size is set to 10 meters x 10 meters in simulation coordinates.
+ */
+const int XMAX = (10 * px_per_meter); /**< 10 m in x-direction, scaled */
+const int YMAX = (10 * px_per_meter); /**< 10 m in y-direction, scaled */
 
-// --------------------------------
-// CONSTANTS
-// --------------------------------
-#define px_per_meter 100 // 100 pixels = 1 meters (1 px = 1 cm)
-#define deg2rad 0.0174533 // degrees to radians
+/* CAR initial position */
+float  car_x        = 4.5f;   /**< Car's initial X position [m] */
+float  car_y        = 3.0f;   /**< Car's initial Y position [m] */
+int    car_angle    = 90;     /**< Car's initial heading [deg] */
 
-// Screen resolution (in pixels) == Window size
-const int XMAX = ( 10 * px_per_meter ); // == 2000 px
-const int YMAX = ( 10 * px_per_meter ); // == 1000 px
+/** \brief Global bitmap for background (grass). */
+BITMAP *background      = NULL;
+/** \brief Global bitmap for track (asphalt + cones). */
+BITMAP *track           = NULL;
+/** \brief Global bitmap for car sprite. */
+BITMAP *car             = NULL;
+/** \brief Global bitmap for perception (LiDAR) view. */
+BITMAP *perception      = NULL;
+/** \brief Off-screen buffer for final compositing. */
+BITMAP *display_buffer  = NULL;
 
-// CAR initial position
-float 	car_x		= 4.5;      // in meters
-float 	car_y		= 3.0;      // in meters
-int		car_angle	= 90; 		// in degrees
-
-// Global bitmaps
-BITMAP	*background		= NULL;
-BITMAP	*track      	= NULL;
-BITMAP	*car			= NULL;
-
-BITMAP	*perception		= NULL; // off-screen buffer for sensor view
-BITMAP	*display_buffer	= NULL; // off-screen buffer for final compositing
-// --------------------------------
-
-
-// TRACK CONES
+/** 
+ * \struct cone
+ * \brief Represents a track cone on the field.
+ */
 typedef struct {
-	float x;
-	float y;
-	int color;
+    float x;      /**< X position of the cone (in meters, converted to px when drawn) */
+    float y;      /**< Y position of the cone */
+    int   color;  /**< Color (in Allegro color format) */
 } cone;
 
-const float cone_radius = 0.05; // [m] = 5 cm 
+const float cone_radius = 0.05f; /**< Cone radius in meters (5 cm) */
 
-// --------------------------------
-// LiDAR CONFIGURATION
-// --------------------------------
+/* --------------------------------
+ * LiDAR CONFIGURATION
+ * -------------------------------- */
+
+/** 
+ * \struct pointcloud
+ * \brief Represents a single LiDAR measurement for a particular angle.
+ */
 typedef struct {
-	float point_x;
-	float point_y;
-	float distance;
-	int color;
+    float point_x;   /**< X coordinate of the detected point */
+    float point_y;   /**< Y coordinate of the detected point */
+    float distance;  /**< Detected distance in meters */
+    int   color;     /**< Allegro color if a cone is detected, -1 otherwise */
 } pointcloud;
 
-const int   angle_step	= 1;		// deg
-const float MAXrange	= 5;		//[m]
-const float distance_resolution = 0.01; // [m] = 1 cm
+const int   angle_step           = 1;        /**< Angular resolution of LiDAR [deg] */
+const float MAXrange             = 5.0f;     /**< Maximum LiDAR range [m] */
+const float distance_resolution  = 0.01f;    /**< Distance step for LiDAR [m] */
+const int   N_angles             = 360;      /**< Number of possible angles [0..359] */
+const int   distance_steps       = 500;      /**< Discrete steps in the range (MAXrange / distance_resolution) */
 
-const int   N_angles  = (int)(360 / angle_step);
-const int   distance_steps = (int)(MAXrange / distance_resolution);
+pointcloud measures[360]; /**< Global array storing the current LiDAR scan data */
 
-pointcloud measures[360]; // contain measurements of the LiDAR corresponding to each angle
+/**
+ * \brief Starting angle for the "sliding window" of LiDAR visualization.
+ *
+ * Only a subset of rays near this angle are drawn in the perception view to
+ * avoid clutter and reduce rendering cost.
+ */
+int start_angle = 0;
+const int   sliding_window  = 30;  /**< Number of LiDAR rays to plot in the perception view */
+const float ignore_distance = 0.2f; /**< Ignore cones closer than this distance [m] */
 
-// Visualization parameters (perception view)
-const int 	sliding_window 	= 30; // number of rays to plot in the perception view
-const float	ignore_distance = 0.2; // ignore cones closer than this distance [m]
-// --------------------------------
+/* --------------------------------
+ * CONE DETECTION
+ * -------------------------------- */
+#define MAX_DETECTED_CONES  360 /**< Maximum number of cones that can be detected in one LiDAR pass */
+#define MAX_POINTS_PER_CONE 180 /**< Maximum number of LiDAR hits that can belong to one cone's border */
 
-// --------------------------------
-// CONE DETECTION
-// --------------------------------
-#define MAX_DETECTED_CONES 	360 //128
-#define MAX_POINTS_PER_CONE 180
+cone detected_cones[MAX_DETECTED_CONES]; /**< Global array for storing detected cones */
 
-cone detected_cones[MAX_DETECTED_CONES]; // maximum number of cones viewed at each position
-
+/** 
+ * \struct cone_border
+ * \brief Keeps track of LiDAR angles that belong to the same cone border.
+ */
 typedef struct {
-	int angles[MAX_POINTS_PER_CONE]; // possible points viewed by the LiDAR for each cones (180 == WORST CASE with the vehicle in contact with the cone on one side)
-	int color;
+    int angles[MAX_POINTS_PER_CONE]; /**< Indices (angles) in the LiDAR scan that map to the same cone border */
+    int color;                       /**< Color of the cone */
 } cone_border;
-// the cone border contain the index of the points of the pointcloud that are closer each other so they are part of the same cone
 
+/* --------------------------------
+ * AUXILIARY FUNCTIONS
+ * -------------------------------- */
 
-// --------------------------------
-// AUXILIARY FUNCTIONS
-// --------------------------------
-float 	angle_rotation_sprite( float angle );
-void	init_cones( cone *cones, int max_cones );
-void	load_cones_positions( const char *filename, cone *cones, int max_cones );
-void	lidar( float car_x, float car_y, pointcloud *measures );
-void 	mapping( float car_x, float car_y, int car_angle, cone *detected_cones ); 
-void	keyboard_control( float *car_x, float *car_y, int *car_angle );
-void	vehicle_model( float *car_x, float *car_y, int *car_angle, float speed, float steering );
-void 	check_nearest_point(int angle, float new_point_x, float new_point_y, int color, cone_border *cone_borders);
+/**
+ * \brief Converts a car angle from degrees to an Allegro fixed point for sprite rotation.
+ * \param angle The angle in degrees.
+ * \return The fixed-point angle for Allegro's `rotate_scaled_sprite` function.
+ */
+float angle_rotation_sprite(float angle);
 
-// --------------------------------
-// MAIN FUNCTION
-// --------------------------------
+/**
+ * \brief Initializes a list of cones with default values (-1 color).
+ * \param cones Array of `cone` structures to initialize.
+ * \param max_cones Size of the array.
+ */
+void init_cones(cone *cones, int max_cones);
+
+/**
+ * \brief Loads cone positions from a YAML file.
+ * \param filename Path to the YAML file.
+ * \param cones Array of `cone` structures to store the loaded data.
+ * \param max_cones Size of the array.
+ */
+void load_cones_positions(const char *filename, cone *cones, int max_cones);
+
+/**
+ * \brief Performs a LiDAR scan around the car and updates global `measures`.
+ * \param car_x Car's X position in meters.
+ * \param car_y Car's Y position in meters.
+ * \param measures Global array that will be populated with measurement data.
+ */
+void lidar(float car_x, float car_y, pointcloud *measures);
+
+/**
+ * \brief Identifies cone borders from LiDAR `measures` and computes cone centers.
+ * \param car_x Car's X position in meters.
+ * \param car_y Car's Y position in meters.
+ * \param car_angle Car's heading in degrees.
+ * \param detected_cones Array of `cone` structures to store the newly detected cones.
+ */
+void mapping(float car_x, float car_y, int car_angle, cone *detected_cones);
+
+/**
+ * \brief Reads the current state of the keyboard and updates the car's position/orientation.
+ * \param car_x Pointer to the car's X position.
+ * \param car_y Pointer to the car's Y position.
+ * \param car_angle Pointer to the car's heading in degrees.
+ */
+void keyboard_control(float *car_x, float *car_y, int *car_angle);
+
+/**
+ * \brief Updates the vehicle's position based on speed and steering, using a simple bicycle model.
+ * \param car_x Pointer to car's X coordinate.
+ * \param car_y Pointer to car's Y coordinate.
+ * \param car_angle Pointer to car's heading (in degrees).
+ * \param speed Current speed of the vehicle.
+ * \param steering Current steering angle (in radians).
+ */
+void vehicle_model(float *car_x, float *car_y, int *car_angle, float speed, float steering);
+
+/**
+ * \brief Helper function to classify a newly detected LiDAR point into an existing cone or create a new cone.
+ * \param angle The LiDAR angle index.
+ * \param new_point_x X coordinate of the detected point.
+ * \param new_point_y Y coordinate of the detected point.
+ * \param color Color of the detected cone (Allegro format).
+ * \param cone_borders Array of `cone_border` structures to update.
+ */
+void check_nearest_point(int angle, float new_point_x, float new_point_y, int color, cone_border *cone_borders);
+
+/* --------------------------------
+ * MAIN FUNCTION
+ * -------------------------------- */
+
+/**
+ * \brief Entry point of the simulation.
+ *
+ * Initializes Allegro, loads resources (background, track, cones, car sprite),
+ * creates periodic tasks for Perception, Control, and Display, and waits
+ * until the user presses ESC to exit.
+ *
+ * \return 0 on success, non-zero otherwise.
+ */
 int main()
 {
 		printf("Starting sim...\n");
@@ -307,7 +476,7 @@ void *perception_task(void *arg)
 	int task_id = get_task_index(arg);
 	wait_for_activation(task_id);
 	
-	static	int start_angle = 0; // start angle for the sliding window
+	// static	int start_angle = 0; // start angle for the sliding window
 
 	while (!key[KEY_ESC])
 	{
@@ -486,9 +655,10 @@ void    lidar(float car_x, float car_y, pointcloud *measures)
 	int stop_distance; 
 
 	// Check for each angle in the range [0, 360] with a step of angle_step
-	for (int lidar_angle = 0; lidar_angle < 360; lidar_angle += angle_step)
+	for (int i = 0; i < sliding_window; i += angle_step)
 	{
-		int   current_distance = 0; // initialize distance at 0
+		int		lidar_angle = (start_angle + i)%360;
+		int 	current_distance = 0; // initialize distance at 0
 
 		// Initialize the measure with the maximum range and no color
 		measures[lidar_angle].distance = MAXrange;

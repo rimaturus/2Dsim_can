@@ -1,0 +1,651 @@
+\hypertarget{2Dsim__can_8c}{}\doxysection{2Dsim\+\_\+can.\+c File Reference}
+\label{2Dsim__can_8c}\index{2Dsim\_can.c@{2Dsim\_can.c}}
+
+
+2D simulation of a full autonomous driving FSAE vehicle with Allegro, PThreads, and YAML parsing.  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$allegro.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$yaml.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$pthread.\+h$>$}\newline
+{\ttfamily \#include $<$sched.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}ptask/ptask.\+h\char`\"{}}\newline
+Include dependency graph for 2Dsim\+\_\+can.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{2Dsim__can_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structcone}{cone}}
+\begin{DoxyCompactList}\small\item\em Represents a track cone on the field. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structpointcloud}{pointcloud}}
+\begin{DoxyCompactList}\small\item\em Represents a single Li\+DAR measurement for a particular angle. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcone__border}{cone\+\_\+border}}
+\begin{DoxyCompactList}\small\item\em Keeps track of Li\+DAR angles that belong to the same cone border. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_af16fdb17c97af7858f199089c651840d}{PERCEPTION\+\_\+\+PERIOD}}~1
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_af36dcc5b8d483f93687711244b6a11ef}{CONTROL\+\_\+\+PERIOD}}~5
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_aa7a9aa177dfa0114e2c9ce16ae874e35}{DISPLAY\+\_\+\+PERIOD}}~16
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_ae6da475af3e420b75d8734fd499c0cde}{PERCEPTION\+\_\+\+DEADLINE}}~\mbox{\hyperlink{2Dsim__can_8c_af16fdb17c97af7858f199089c651840d}{PERCEPTION\+\_\+\+PERIOD}}
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_a6366da988fdd981274049f70aecb9646}{CONTROL\+\_\+\+DEADLINE}}~\mbox{\hyperlink{2Dsim__can_8c_af36dcc5b8d483f93687711244b6a11ef}{CONTROL\+\_\+\+PERIOD}} $\ast$ 2
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_a55ba14442ba004f7b62c928275243491}{DISPLAY\+\_\+\+DEADLINE}}~\mbox{\hyperlink{2Dsim__can_8c_aa7a9aa177dfa0114e2c9ce16ae874e35}{DISPLAY\+\_\+\+PERIOD}} $\ast$ 2
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_a6fa79a0953f9c779e36d454b588cf8a7}{PERCEPTION\+\_\+\+PRIORITY}}~15
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_af1e970e49915c36967fbd8acd7fa07c0}{CONTROL\+\_\+\+PRIORITY}}~20
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_ae27f7e9a9f2fa45c338e25d8a2a6e74d}{DISPLAY\+\_\+\+PRIORITY}}~25
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}}~100
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_a3a59eceae22ca8dfae7e5255e8836083}{deg2rad}}~0.\+0174533
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}~360
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_afad93aca604f7ebdbe7874bd2b117991}{MAX\+\_\+\+POINTS\+\_\+\+PER\+\_\+\+CONE}}~180
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_a2805bc7eecece0d46687a78071f75e27}{KNOWN\+\_\+\+RADIUS}}
+\item 
+\#define \mbox{\hyperlink{2Dsim__can_8c_a8e1307b958c8dc31c26fc3b1dc6b5665}{tmp\+\_\+scale}}~1.\+5/100
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void $\ast$ \mbox{\hyperlink{2Dsim__can_8c_accdefced672b3881f904166ea6b411ec}{perception\+\_\+task}} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Perception task (Li\+DAR simulation). \end{DoxyCompactList}\item 
+void $\ast$ \mbox{\hyperlink{2Dsim__can_8c_aeb95616920bf0abeb39b8a9d00e3fbb6}{control\+\_\+task}} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Control task (keyboard input). \end{DoxyCompactList}\item 
+void $\ast$ \mbox{\hyperlink{2Dsim__can_8c_a64e19a2198c62acfa0641d3bd7ed9896}{display\+\_\+task}} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em Display task (View simulation). \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{2Dsim__can_8c_a33090597864cdfd30d87ff99c14eeecb}{angle\+\_\+rotation\+\_\+sprite}} (float angle)
+\begin{DoxyCompactList}\small\item\em Converts a car angle from degrees to an Allegro fixed point for sprite rotation. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{2Dsim__can_8c_a8afb319a368d3c2aa29bf2b17eac8843}{init\+\_\+cones}} (\mbox{\hyperlink{structcone}{cone}} $\ast$cones, int max\+\_\+cones)
+\begin{DoxyCompactList}\small\item\em Initializes a list of cones with default values (-\/1 color). \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{2Dsim__can_8c_a77d50bbb4a4844ce7ddab4a7b3d52d24}{load\+\_\+cones\+\_\+positions}} (const char $\ast$filename, \mbox{\hyperlink{structcone}{cone}} $\ast$cones, int max\+\_\+cones)
+\begin{DoxyCompactList}\small\item\em Loads cone positions from a YAML file. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{2Dsim__can_8c_a0a58816cf55f62a6493658f446087d50}{lidar}} (float \mbox{\hyperlink{2Dsim__can_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{2Dsim__can_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, \mbox{\hyperlink{structpointcloud}{pointcloud}} $\ast$\mbox{\hyperlink{2Dsim__can_8c_a1fea8d29b77e6193da2f4fd20610626d}{measures}})
+\begin{DoxyCompactList}\small\item\em Performs a Li\+DAR scan around the car and updates global {\ttfamily measures}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{2Dsim__can_8c_a9c68a3d545ebb7bb3092f88b7e10084a}{mapping}} (float \mbox{\hyperlink{2Dsim__can_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{2Dsim__can_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int \mbox{\hyperlink{2Dsim__can_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, \mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{2Dsim__can_8c_aab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}})
+\begin{DoxyCompactList}\small\item\em Identifies cone borders from Li\+DAR {\ttfamily measures} and computes cone centers. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{2Dsim__can_8c_aa7d41004f6e6355c5dd871a9a8c8a59d}{keyboard\+\_\+control}} (float $\ast$\mbox{\hyperlink{2Dsim__can_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{2Dsim__can_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{2Dsim__can_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}})
+\begin{DoxyCompactList}\small\item\em Reads the current state of the keyboard and updates the car\textquotesingle{}s position/orientation. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{2Dsim__can_8c_ab27389d452f1b19d4e23ce7149ec9670}{vehicle\+\_\+model}} (float $\ast$\mbox{\hyperlink{2Dsim__can_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{2Dsim__can_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{2Dsim__can_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, float speed, float steering)
+\begin{DoxyCompactList}\small\item\em Updates the vehicle\textquotesingle{}s position based on speed and steering, using a simple bicycle model. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{2Dsim__can_8c_af16a2babc7e4a480309f889a0e848c72}{check\+\_\+nearest\+\_\+point}} (int angle, float new\+\_\+point\+\_\+x, float new\+\_\+point\+\_\+y, int color, \mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$cone\+\_\+borders)
+\begin{DoxyCompactList}\small\item\em Helper function to classify a newly detected Li\+DAR point into an existing cone or create a new cone. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{2Dsim__can_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\begin{DoxyCompactList}\small\item\em Entry point of the simulation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+pthread\+\_\+mutex\+\_\+t \mbox{\hyperlink{2Dsim__can_8c_ad4db8311e07824b47f416a7485ebfa31}{draw\+\_\+mutex}} = PTHREAD\+\_\+\+MUTEX\+\_\+\+INITIALIZER
+\begin{DoxyCompactList}\small\item\em Global mutex for synchronizing drawing operations. \end{DoxyCompactList}\item 
+const int \mbox{\hyperlink{2Dsim__can_8c_a3a54b60206b996b38ab94fe1fa619da6}{XMAX}} = (10 $\ast$ \mbox{\hyperlink{2Dsim__can_8c_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})
+\begin{DoxyCompactList}\small\item\em Screen resolution (in pixels). \end{DoxyCompactList}\item 
+const int \mbox{\hyperlink{2Dsim__can_8c_a689b73289e27812fea68db3702a4cb82}{YMAX}} = (10 $\ast$ \mbox{\hyperlink{2Dsim__can_8c_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})
+\item 
+float \mbox{\hyperlink{2Dsim__can_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}} = 4.\+5f
+\item 
+float \mbox{\hyperlink{2Dsim__can_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}} = 3.\+0f
+\item 
+int \mbox{\hyperlink{2Dsim__can_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}} = 90
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{2Dsim__can_8c_a435f6810c39ce9f18cdf4a8e36da3b0d}{background}} = NULL
+\begin{DoxyCompactList}\small\item\em Global bitmap for background (grass). \end{DoxyCompactList}\item 
+BITMAP $\ast$ \mbox{\hyperlink{2Dsim__can_8c_a912f1519711b3b217d14888948962e3b}{track}} = NULL
+\begin{DoxyCompactList}\small\item\em Global bitmap for track (asphalt + cones). \end{DoxyCompactList}\item 
+BITMAP $\ast$ \mbox{\hyperlink{2Dsim__can_8c_a7880081e0337661e36ecdecbb26157b2}{car}} = NULL
+\begin{DoxyCompactList}\small\item\em Global bitmap for car sprite. \end{DoxyCompactList}\item 
+BITMAP $\ast$ \mbox{\hyperlink{2Dsim__can_8c_a99560cbcada94239c16ac20b88dfd9cf}{perception}} = NULL
+\begin{DoxyCompactList}\small\item\em Global bitmap for perception (Li\+DAR) view. \end{DoxyCompactList}\item 
+BITMAP $\ast$ \mbox{\hyperlink{2Dsim__can_8c_a9a4eb9ed171e76eef809cd4148645bd2}{display\+\_\+buffer}} = NULL
+\begin{DoxyCompactList}\small\item\em Off-\/screen buffer for final compositing. \end{DoxyCompactList}\item 
+const float \mbox{\hyperlink{2Dsim__can_8c_aee7b5f297a1877e9b4a1995379ea5dff}{cone\+\_\+radius}} = 0.\+05f
+\item 
+const int \mbox{\hyperlink{2Dsim__can_8c_aed5140a00a2ccfa91dd757fd8232f5df}{angle\+\_\+step}} = 1
+\item 
+const float \mbox{\hyperlink{2Dsim__can_8c_a34b64c3118b1f0977c11c2917a3299c8}{MAXrange}} = 5.\+0f
+\item 
+const float \mbox{\hyperlink{2Dsim__can_8c_a47a64f73ba5947b88299164853564b5a}{distance\+\_\+resolution}} = 0.\+01f
+\item 
+const int \mbox{\hyperlink{2Dsim__can_8c_aa1a91d9f4974e36f2dd729f10d51635c}{N\+\_\+angles}} = 360
+\item 
+const int \mbox{\hyperlink{2Dsim__can_8c_a013bdc57dbc2273eb9f584711e40b115}{distance\+\_\+steps}} = 500
+\item 
+\mbox{\hyperlink{structpointcloud}{pointcloud}} \mbox{\hyperlink{2Dsim__can_8c_a1fea8d29b77e6193da2f4fd20610626d}{measures}} \mbox{[}360\mbox{]}
+\item 
+int \mbox{\hyperlink{2Dsim__can_8c_ac53039214d075800d8b4f87ebd760ef5}{start\+\_\+angle}} = 0
+\begin{DoxyCompactList}\small\item\em Starting angle for the \char`\"{}sliding window\char`\"{} of Li\+DAR visualization. \end{DoxyCompactList}\item 
+const int \mbox{\hyperlink{2Dsim__can_8c_afa8ca48959313e0aac2a594db9142263}{sliding\+\_\+window}} = 30
+\item 
+const float \mbox{\hyperlink{2Dsim__can_8c_ac7a26ea1e9d968ec27c79a692c3eae5d}{ignore\+\_\+distance}} = 0.\+2f
+\item 
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{2Dsim__can_8c_aab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}} \mbox{[}\mbox{\hyperlink{2Dsim__can_8c_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+2D simulation of a full autonomous driving FSAE vehicle with Allegro, PThreads, and YAML parsing. 
+
+This file contains the main entry point of a small simulation program. It uses Allegro for graphics, YAML for loading track cone data, and a ptask library for periodic tasks created during the RTS course. The code simulates a simple FSAE vehicle (car) that drives around a track populated with cones that delimits the track limits. Some tasks (Perception, Control, Display) run periodically at a quasi-\/realistic rate.
+
+\begin{DoxyAuthor}{Author}
+Edoardo Caciorgna 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2025-\/02-\/07 
+\end{DoxyDate}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{2Dsim__can_8c_a6366da988fdd981274049f70aecb9646}\label{2Dsim__can_8c_a6366da988fdd981274049f70aecb9646}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!CONTROL\_DEADLINE@{CONTROL\_DEADLINE}}
+\index{CONTROL\_DEADLINE@{CONTROL\_DEADLINE}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{CONTROL\_DEADLINE}{CONTROL\_DEADLINE}}
+{\footnotesize\ttfamily \#define CONTROL\+\_\+\+DEADLINE~\mbox{\hyperlink{2Dsim__can_8c_af36dcc5b8d483f93687711244b6a11ef}{CONTROL\+\_\+\+PERIOD}} $\ast$ 2}
+
+Deadline = 2 $\ast$ Period for Control Task \mbox{\Hypertarget{2Dsim__can_8c_af36dcc5b8d483f93687711244b6a11ef}\label{2Dsim__can_8c_af36dcc5b8d483f93687711244b6a11ef}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!CONTROL\_PERIOD@{CONTROL\_PERIOD}}
+\index{CONTROL\_PERIOD@{CONTROL\_PERIOD}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{CONTROL\_PERIOD}{CONTROL\_PERIOD}}
+{\footnotesize\ttfamily \#define CONTROL\+\_\+\+PERIOD~5}
+
+Period of Control Task \mbox{[}ms\mbox{]} \mbox{\Hypertarget{2Dsim__can_8c_af1e970e49915c36967fbd8acd7fa07c0}\label{2Dsim__can_8c_af1e970e49915c36967fbd8acd7fa07c0}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!CONTROL\_PRIORITY@{CONTROL\_PRIORITY}}
+\index{CONTROL\_PRIORITY@{CONTROL\_PRIORITY}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{CONTROL\_PRIORITY}{CONTROL\_PRIORITY}}
+{\footnotesize\ttfamily \#define CONTROL\+\_\+\+PRIORITY~20}
+
+\mbox{\Hypertarget{2Dsim__can_8c_a3a59eceae22ca8dfae7e5255e8836083}\label{2Dsim__can_8c_a3a59eceae22ca8dfae7e5255e8836083}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!deg2rad@{deg2rad}}
+\index{deg2rad@{deg2rad}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{deg2rad}{deg2rad}}
+{\footnotesize\ttfamily \#define deg2rad~0.\+0174533}
+
+Conversion factor from degrees to radians \mbox{\Hypertarget{2Dsim__can_8c_a55ba14442ba004f7b62c928275243491}\label{2Dsim__can_8c_a55ba14442ba004f7b62c928275243491}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!DISPLAY\_DEADLINE@{DISPLAY\_DEADLINE}}
+\index{DISPLAY\_DEADLINE@{DISPLAY\_DEADLINE}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{DISPLAY\_DEADLINE}{DISPLAY\_DEADLINE}}
+{\footnotesize\ttfamily \#define DISPLAY\+\_\+\+DEADLINE~\mbox{\hyperlink{2Dsim__can_8c_aa7a9aa177dfa0114e2c9ce16ae874e35}{DISPLAY\+\_\+\+PERIOD}} $\ast$ 2}
+
+Deadline = 2 $\ast$ Period for Display Task \mbox{\Hypertarget{2Dsim__can_8c_aa7a9aa177dfa0114e2c9ce16ae874e35}\label{2Dsim__can_8c_aa7a9aa177dfa0114e2c9ce16ae874e35}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!DISPLAY\_PERIOD@{DISPLAY\_PERIOD}}
+\index{DISPLAY\_PERIOD@{DISPLAY\_PERIOD}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{DISPLAY\_PERIOD}{DISPLAY\_PERIOD}}
+{\footnotesize\ttfamily \#define DISPLAY\+\_\+\+PERIOD~16}
+
+Period of Display Task \mbox{[}ms\mbox{]} ($\sim$30 Hz) \mbox{\Hypertarget{2Dsim__can_8c_ae27f7e9a9f2fa45c338e25d8a2a6e74d}\label{2Dsim__can_8c_ae27f7e9a9f2fa45c338e25d8a2a6e74d}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!DISPLAY\_PRIORITY@{DISPLAY\_PRIORITY}}
+\index{DISPLAY\_PRIORITY@{DISPLAY\_PRIORITY}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{DISPLAY\_PRIORITY}{DISPLAY\_PRIORITY}}
+{\footnotesize\ttfamily \#define DISPLAY\+\_\+\+PRIORITY~25}
+
+\mbox{\Hypertarget{2Dsim__can_8c_a2805bc7eecece0d46687a78071f75e27}\label{2Dsim__can_8c_a2805bc7eecece0d46687a78071f75e27}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!KNOWN\_RADIUS@{KNOWN\_RADIUS}}
+\index{KNOWN\_RADIUS@{KNOWN\_RADIUS}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{KNOWN\_RADIUS}{KNOWN\_RADIUS}}
+{\footnotesize\ttfamily \#define KNOWN\+\_\+\+RADIUS}
+
+\mbox{\Hypertarget{2Dsim__can_8c_ac5ffab41ad229777dae06978b9a7bc15}\label{2Dsim__can_8c_ac5ffab41ad229777dae06978b9a7bc15}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!MAX\_DETECTED\_CONES@{MAX\_DETECTED\_CONES}}
+\index{MAX\_DETECTED\_CONES@{MAX\_DETECTED\_CONES}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{MAX\_DETECTED\_CONES}{MAX\_DETECTED\_CONES}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+DETECTED\+\_\+\+CONES~360}
+
+Maximum number of cones that can be detected in one Li\+DAR pass \mbox{\Hypertarget{2Dsim__can_8c_afad93aca604f7ebdbe7874bd2b117991}\label{2Dsim__can_8c_afad93aca604f7ebdbe7874bd2b117991}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!MAX\_POINTS\_PER\_CONE@{MAX\_POINTS\_PER\_CONE}}
+\index{MAX\_POINTS\_PER\_CONE@{MAX\_POINTS\_PER\_CONE}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{MAX\_POINTS\_PER\_CONE}{MAX\_POINTS\_PER\_CONE}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+POINTS\+\_\+\+PER\+\_\+\+CONE~180}
+
+Maximum number of Li\+DAR hits that can belong to one cone\textquotesingle{}s border \mbox{\Hypertarget{2Dsim__can_8c_ae6da475af3e420b75d8734fd499c0cde}\label{2Dsim__can_8c_ae6da475af3e420b75d8734fd499c0cde}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!PERCEPTION\_DEADLINE@{PERCEPTION\_DEADLINE}}
+\index{PERCEPTION\_DEADLINE@{PERCEPTION\_DEADLINE}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{PERCEPTION\_DEADLINE}{PERCEPTION\_DEADLINE}}
+{\footnotesize\ttfamily \#define PERCEPTION\+\_\+\+DEADLINE~\mbox{\hyperlink{2Dsim__can_8c_af16fdb17c97af7858f199089c651840d}{PERCEPTION\+\_\+\+PERIOD}}}
+
+Deadline = Period for Perception Task \mbox{\Hypertarget{2Dsim__can_8c_af16fdb17c97af7858f199089c651840d}\label{2Dsim__can_8c_af16fdb17c97af7858f199089c651840d}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!PERCEPTION\_PERIOD@{PERCEPTION\_PERIOD}}
+\index{PERCEPTION\_PERIOD@{PERCEPTION\_PERIOD}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{PERCEPTION\_PERIOD}{PERCEPTION\_PERIOD}}
+{\footnotesize\ttfamily \#define PERCEPTION\+\_\+\+PERIOD~1}
+
+Period of Perception Task \mbox{[}ms\mbox{]} \mbox{\Hypertarget{2Dsim__can_8c_a6fa79a0953f9c779e36d454b588cf8a7}\label{2Dsim__can_8c_a6fa79a0953f9c779e36d454b588cf8a7}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!PERCEPTION\_PRIORITY@{PERCEPTION\_PRIORITY}}
+\index{PERCEPTION\_PRIORITY@{PERCEPTION\_PRIORITY}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{PERCEPTION\_PRIORITY}{PERCEPTION\_PRIORITY}}
+{\footnotesize\ttfamily \#define PERCEPTION\+\_\+\+PRIORITY~15}
+
+\mbox{\Hypertarget{2Dsim__can_8c_a55bd5f5c909901931b7a03caa2ed75a8}\label{2Dsim__can_8c_a55bd5f5c909901931b7a03caa2ed75a8}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!px\_per\_meter@{px\_per\_meter}}
+\index{px\_per\_meter@{px\_per\_meter}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{px\_per\_meter}{px\_per\_meter}}
+{\footnotesize\ttfamily \#define px\+\_\+per\+\_\+meter~100}
+
+Conversion scale\+: 100 px = 1 meter (1 px = 1 cm) \mbox{\Hypertarget{2Dsim__can_8c_a8e1307b958c8dc31c26fc3b1dc6b5665}\label{2Dsim__can_8c_a8e1307b958c8dc31c26fc3b1dc6b5665}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!tmp\_scale@{tmp\_scale}}
+\index{tmp\_scale@{tmp\_scale}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{tmp\_scale}{tmp\_scale}}
+{\footnotesize\ttfamily \#define tmp\+\_\+scale~1.\+5/100}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{2Dsim__can_8c_a33090597864cdfd30d87ff99c14eeecb}\label{2Dsim__can_8c_a33090597864cdfd30d87ff99c14eeecb}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!angle\_rotation\_sprite@{angle\_rotation\_sprite}}
+\index{angle\_rotation\_sprite@{angle\_rotation\_sprite}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{angle\_rotation\_sprite()}{angle\_rotation\_sprite()}}
+{\footnotesize\ttfamily float angle\+\_\+rotation\+\_\+sprite (\begin{DoxyParamCaption}\item[{float}]{angle }\end{DoxyParamCaption})}
+
+
+
+Converts a car angle from degrees to an Allegro fixed point for sprite rotation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em angle} & The angle in degrees. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The fixed-\/point angle for Allegro\textquotesingle{}s {\ttfamily rotate\+\_\+scaled\+\_\+sprite} function. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{2Dsim__can_8c_af16a2babc7e4a480309f889a0e848c72}\label{2Dsim__can_8c_af16a2babc7e4a480309f889a0e848c72}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!check\_nearest\_point@{check\_nearest\_point}}
+\index{check\_nearest\_point@{check\_nearest\_point}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{check\_nearest\_point()}{check\_nearest\_point()}}
+{\footnotesize\ttfamily void check\+\_\+nearest\+\_\+point (\begin{DoxyParamCaption}\item[{int}]{angle,  }\item[{float}]{new\+\_\+point\+\_\+x,  }\item[{float}]{new\+\_\+point\+\_\+y,  }\item[{int}]{color,  }\item[{\mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$}]{cone\+\_\+borders }\end{DoxyParamCaption})}
+
+
+
+Helper function to classify a newly detected Li\+DAR point into an existing cone or create a new cone. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em angle} & The Li\+DAR angle index. \\
+\hline
+{\em new\+\_\+point\+\_\+x} & X coordinate of the detected point. \\
+\hline
+{\em new\+\_\+point\+\_\+y} & Y coordinate of the detected point. \\
+\hline
+{\em color} & Color of the detected cone (Allegro format). \\
+\hline
+{\em cone\+\_\+borders} & Array of {\ttfamily \mbox{\hyperlink{structcone__border}{cone\+\_\+border}}} structures to update. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{2Dsim__can_8c_aeb95616920bf0abeb39b8a9d00e3fbb6}\label{2Dsim__can_8c_aeb95616920bf0abeb39b8a9d00e3fbb6}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!control\_task@{control\_task}}
+\index{control\_task@{control\_task}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{control\_task()}{control\_task()}}
+{\footnotesize\ttfamily void $\ast$ control\+\_\+task (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+
+
+Control task (keyboard input). 
+
+This function periodically reads the keyboard to adjust the speed and steering of the car. It updates global state variables representing the car\textquotesingle{}s position and orientation.
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & Pointer to the task ID or any user-\/defined data (unused here). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A NULL pointer (no specific return value). 
+\end{DoxyReturn}
+\mbox{\Hypertarget{2Dsim__can_8c_a64e19a2198c62acfa0641d3bd7ed9896}\label{2Dsim__can_8c_a64e19a2198c62acfa0641d3bd7ed9896}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!display\_task@{display\_task}}
+\index{display\_task@{display\_task}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{display\_task()}{display\_task()}}
+{\footnotesize\ttfamily void $\ast$ display\+\_\+task (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+
+
+Display task (View simulation). 
+
+This function periodically renders the scene to the screen by compositing a background, track, the car sprite, and a Li\+DAR/perception overlay.
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & Pointer to the task ID or any user-\/defined data (unused here). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A NULL pointer (no specific return value). 
+\end{DoxyReturn}
+\mbox{\Hypertarget{2Dsim__can_8c_a8afb319a368d3c2aa29bf2b17eac8843}\label{2Dsim__can_8c_a8afb319a368d3c2aa29bf2b17eac8843}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!init\_cones@{init\_cones}}
+\index{init\_cones@{init\_cones}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{init\_cones()}{init\_cones()}}
+{\footnotesize\ttfamily void init\+\_\+cones (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{cones,  }\item[{int}]{max\+\_\+cones }\end{DoxyParamCaption})}
+
+
+
+Initializes a list of cones with default values (-\/1 color). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cones} & Array of {\ttfamily cone} structures to initialize. \\
+\hline
+{\em max\+\_\+cones} & Size of the array. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{2Dsim__can_8c_aa7d41004f6e6355c5dd871a9a8c8a59d}\label{2Dsim__can_8c_aa7d41004f6e6355c5dd871a9a8c8a59d}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!keyboard\_control@{keyboard\_control}}
+\index{keyboard\_control@{keyboard\_control}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{keyboard\_control()}{keyboard\_control()}}
+{\footnotesize\ttfamily void keyboard\+\_\+control (\begin{DoxyParamCaption}\item[{float $\ast$}]{car\+\_\+x,  }\item[{float $\ast$}]{car\+\_\+y,  }\item[{int $\ast$}]{car\+\_\+angle }\end{DoxyParamCaption})}
+
+
+
+Reads the current state of the keyboard and updates the car\textquotesingle{}s position/orientation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & Pointer to the car\textquotesingle{}s X position. \\
+\hline
+{\em car\+\_\+y} & Pointer to the car\textquotesingle{}s Y position. \\
+\hline
+{\em car\+\_\+angle} & Pointer to the car\textquotesingle{}s heading in degrees. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{2Dsim__can_8c_a0a58816cf55f62a6493658f446087d50}\label{2Dsim__can_8c_a0a58816cf55f62a6493658f446087d50}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!lidar@{lidar}}
+\index{lidar@{lidar}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{lidar()}{lidar()}}
+{\footnotesize\ttfamily void lidar (\begin{DoxyParamCaption}\item[{float}]{car\+\_\+x,  }\item[{float}]{car\+\_\+y,  }\item[{\mbox{\hyperlink{structpointcloud}{pointcloud}} $\ast$}]{measures }\end{DoxyParamCaption})}
+
+
+
+Performs a Li\+DAR scan around the car and updates global {\ttfamily measures}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & Car\textquotesingle{}s X position in meters. \\
+\hline
+{\em car\+\_\+y} & Car\textquotesingle{}s Y position in meters. \\
+\hline
+{\em measures} & Global array that will be populated with measurement data. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{2Dsim__can_8c_a77d50bbb4a4844ce7ddab4a7b3d52d24}\label{2Dsim__can_8c_a77d50bbb4a4844ce7ddab4a7b3d52d24}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!load\_cones\_positions@{load\_cones\_positions}}
+\index{load\_cones\_positions@{load\_cones\_positions}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{load\_cones\_positions()}{load\_cones\_positions()}}
+{\footnotesize\ttfamily void load\+\_\+cones\+\_\+positions (\begin{DoxyParamCaption}\item[{const char $\ast$}]{filename,  }\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{cones,  }\item[{int}]{max\+\_\+cones }\end{DoxyParamCaption})}
+
+
+
+Loads cone positions from a YAML file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & Path to the YAML file. \\
+\hline
+{\em cones} & Array of {\ttfamily cone} structures to store the loaded data. \\
+\hline
+{\em max\+\_\+cones} & Size of the array. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{2Dsim__can_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}\label{2Dsim__can_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!main@{main}}
+\index{main@{main}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Entry point of the simulation. 
+
+Initializes Allegro, loads resources (background, track, cones, car sprite), creates periodic tasks for Perception, Control, and Display, and waits until the user presses ESC to exit.
+
+\begin{DoxyReturn}{Returns}
+0 on success, non-\/zero otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{2Dsim__can_8c_a9c68a3d545ebb7bb3092f88b7e10084a}\label{2Dsim__can_8c_a9c68a3d545ebb7bb3092f88b7e10084a}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!mapping@{mapping}}
+\index{mapping@{mapping}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{mapping()}{mapping()}}
+{\footnotesize\ttfamily void mapping (\begin{DoxyParamCaption}\item[{float}]{car\+\_\+x,  }\item[{float}]{car\+\_\+y,  }\item[{int}]{car\+\_\+angle,  }\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{detected\+\_\+cones }\end{DoxyParamCaption})}
+
+
+
+Identifies cone borders from Li\+DAR {\ttfamily measures} and computes cone centers. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & Car\textquotesingle{}s X position in meters. \\
+\hline
+{\em car\+\_\+y} & Car\textquotesingle{}s Y position in meters. \\
+\hline
+{\em car\+\_\+angle} & Car\textquotesingle{}s heading in degrees. \\
+\hline
+{\em detected\+\_\+cones} & Array of {\ttfamily cone} structures to store the newly detected cones. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{2Dsim__can_8c_accdefced672b3881f904166ea6b411ec}\label{2Dsim__can_8c_accdefced672b3881f904166ea6b411ec}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!perception\_task@{perception\_task}}
+\index{perception\_task@{perception\_task}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{perception\_task()}{perception\_task()}}
+{\footnotesize\ttfamily void $\ast$ perception\+\_\+task (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+
+
+Perception task (Li\+DAR simulation). 
+
+This function simulates a Li\+DAR by periodically scanning the environment around the car. It populates global arrays with the detected cone positions and updates an off-\/screen bitmap that shows the perception view.
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & Pointer to the task ID or any user-\/defined data (unused here). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A NULL pointer (no specific return value). 
+\end{DoxyReturn}
+\mbox{\Hypertarget{2Dsim__can_8c_ab27389d452f1b19d4e23ce7149ec9670}\label{2Dsim__can_8c_ab27389d452f1b19d4e23ce7149ec9670}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!vehicle\_model@{vehicle\_model}}
+\index{vehicle\_model@{vehicle\_model}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{vehicle\_model()}{vehicle\_model()}}
+{\footnotesize\ttfamily void vehicle\+\_\+model (\begin{DoxyParamCaption}\item[{float $\ast$}]{car\+\_\+x,  }\item[{float $\ast$}]{car\+\_\+y,  }\item[{int $\ast$}]{car\+\_\+angle,  }\item[{float}]{speed,  }\item[{float}]{steering }\end{DoxyParamCaption})}
+
+
+
+Updates the vehicle\textquotesingle{}s position based on speed and steering, using a simple bicycle model. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & Pointer to car\textquotesingle{}s X coordinate. \\
+\hline
+{\em car\+\_\+y} & Pointer to car\textquotesingle{}s Y coordinate. \\
+\hline
+{\em car\+\_\+angle} & Pointer to car\textquotesingle{}s heading (in degrees). \\
+\hline
+{\em speed} & Current speed of the vehicle. \\
+\hline
+{\em steering} & Current steering angle (in radians). \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{2Dsim__can_8c_aed5140a00a2ccfa91dd757fd8232f5df}\label{2Dsim__can_8c_aed5140a00a2ccfa91dd757fd8232f5df}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!angle\_step@{angle\_step}}
+\index{angle\_step@{angle\_step}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{angle\_step}{angle\_step}}
+{\footnotesize\ttfamily const int angle\+\_\+step = 1}
+
+Angular resolution of Li\+DAR \mbox{[}deg\mbox{]} \mbox{\Hypertarget{2Dsim__can_8c_a435f6810c39ce9f18cdf4a8e36da3b0d}\label{2Dsim__can_8c_a435f6810c39ce9f18cdf4a8e36da3b0d}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!background@{background}}
+\index{background@{background}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{background}{background}}
+{\footnotesize\ttfamily BITMAP$\ast$ background = NULL}
+
+
+
+Global bitmap for background (grass). 
+
+\mbox{\Hypertarget{2Dsim__can_8c_a7880081e0337661e36ecdecbb26157b2}\label{2Dsim__can_8c_a7880081e0337661e36ecdecbb26157b2}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!car@{car}}
+\index{car@{car}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{car}{car}}
+{\footnotesize\ttfamily BITMAP$\ast$ car = NULL}
+
+
+
+Global bitmap for car sprite. 
+
+\mbox{\Hypertarget{2Dsim__can_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}\label{2Dsim__can_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!car\_angle@{car\_angle}}
+\index{car\_angle@{car\_angle}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{car\_angle}{car\_angle}}
+{\footnotesize\ttfamily int car\+\_\+angle = 90}
+
+Car\textquotesingle{}s initial heading \mbox{[}deg\mbox{]} \mbox{\Hypertarget{2Dsim__can_8c_a4a4a6918df3caa78a889c76207349a02}\label{2Dsim__can_8c_a4a4a6918df3caa78a889c76207349a02}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!car\_x@{car\_x}}
+\index{car\_x@{car\_x}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{car\_x}{car\_x}}
+{\footnotesize\ttfamily float car\+\_\+x = 4.\+5f}
+
+Car\textquotesingle{}s initial X position \mbox{[}m\mbox{]} \mbox{\Hypertarget{2Dsim__can_8c_a2ff6267ace75a40353ce62fdb02b9e67}\label{2Dsim__can_8c_a2ff6267ace75a40353ce62fdb02b9e67}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!car\_y@{car\_y}}
+\index{car\_y@{car\_y}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{car\_y}{car\_y}}
+{\footnotesize\ttfamily float car\+\_\+y = 3.\+0f}
+
+Car\textquotesingle{}s initial Y position \mbox{[}m\mbox{]} \mbox{\Hypertarget{2Dsim__can_8c_aee7b5f297a1877e9b4a1995379ea5dff}\label{2Dsim__can_8c_aee7b5f297a1877e9b4a1995379ea5dff}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!cone\_radius@{cone\_radius}}
+\index{cone\_radius@{cone\_radius}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{cone\_radius}{cone\_radius}}
+{\footnotesize\ttfamily const float cone\+\_\+radius = 0.\+05f}
+
+Cone radius in meters (5 cm) \mbox{\Hypertarget{2Dsim__can_8c_aab5237f191baaef95b94ad0686b40aa6}\label{2Dsim__can_8c_aab5237f191baaef95b94ad0686b40aa6}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!detected\_cones@{detected\_cones}}
+\index{detected\_cones@{detected\_cones}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{detected\_cones}{detected\_cones}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structcone}{cone}} detected\+\_\+cones\mbox{[}\mbox{\hyperlink{2Dsim__can_8c_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}\mbox{]}}
+
+Global array for storing detected cones \mbox{\Hypertarget{2Dsim__can_8c_a9a4eb9ed171e76eef809cd4148645bd2}\label{2Dsim__can_8c_a9a4eb9ed171e76eef809cd4148645bd2}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!display\_buffer@{display\_buffer}}
+\index{display\_buffer@{display\_buffer}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{display\_buffer}{display\_buffer}}
+{\footnotesize\ttfamily BITMAP$\ast$ display\+\_\+buffer = NULL}
+
+
+
+Off-\/screen buffer for final compositing. 
+
+\mbox{\Hypertarget{2Dsim__can_8c_a47a64f73ba5947b88299164853564b5a}\label{2Dsim__can_8c_a47a64f73ba5947b88299164853564b5a}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!distance\_resolution@{distance\_resolution}}
+\index{distance\_resolution@{distance\_resolution}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{distance\_resolution}{distance\_resolution}}
+{\footnotesize\ttfamily const float distance\+\_\+resolution = 0.\+01f}
+
+Distance step for Li\+DAR \mbox{[}m\mbox{]} \mbox{\Hypertarget{2Dsim__can_8c_a013bdc57dbc2273eb9f584711e40b115}\label{2Dsim__can_8c_a013bdc57dbc2273eb9f584711e40b115}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!distance\_steps@{distance\_steps}}
+\index{distance\_steps@{distance\_steps}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{distance\_steps}{distance\_steps}}
+{\footnotesize\ttfamily const int distance\+\_\+steps = 500}
+
+Discrete steps in the range (MAXrange / distance\+\_\+resolution) \mbox{\Hypertarget{2Dsim__can_8c_ad4db8311e07824b47f416a7485ebfa31}\label{2Dsim__can_8c_ad4db8311e07824b47f416a7485ebfa31}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!draw\_mutex@{draw\_mutex}}
+\index{draw\_mutex@{draw\_mutex}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{draw\_mutex}{draw\_mutex}}
+{\footnotesize\ttfamily pthread\+\_\+mutex\+\_\+t draw\+\_\+mutex = PTHREAD\+\_\+\+MUTEX\+\_\+\+INITIALIZER}
+
+
+
+Global mutex for synchronizing drawing operations. 
+
+Multiple tasks (Perception, Display) might attempt to draw at the same time, so this mutex helps prevent race conditions and partial updates. \mbox{\Hypertarget{2Dsim__can_8c_ac7a26ea1e9d968ec27c79a692c3eae5d}\label{2Dsim__can_8c_ac7a26ea1e9d968ec27c79a692c3eae5d}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!ignore\_distance@{ignore\_distance}}
+\index{ignore\_distance@{ignore\_distance}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{ignore\_distance}{ignore\_distance}}
+{\footnotesize\ttfamily const float ignore\+\_\+distance = 0.\+2f}
+
+Ignore cones closer than this distance \mbox{[}m\mbox{]} \mbox{\Hypertarget{2Dsim__can_8c_a34b64c3118b1f0977c11c2917a3299c8}\label{2Dsim__can_8c_a34b64c3118b1f0977c11c2917a3299c8}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!MAXrange@{MAXrange}}
+\index{MAXrange@{MAXrange}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{MAXrange}{MAXrange}}
+{\footnotesize\ttfamily const float MAXrange = 5.\+0f}
+
+Maximum Li\+DAR range \mbox{[}m\mbox{]} \mbox{\Hypertarget{2Dsim__can_8c_a1fea8d29b77e6193da2f4fd20610626d}\label{2Dsim__can_8c_a1fea8d29b77e6193da2f4fd20610626d}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!measures@{measures}}
+\index{measures@{measures}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{measures}{measures}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structpointcloud}{pointcloud}} measures\mbox{[}360\mbox{]}}
+
+Global array storing the current Li\+DAR scan data \mbox{\Hypertarget{2Dsim__can_8c_aa1a91d9f4974e36f2dd729f10d51635c}\label{2Dsim__can_8c_aa1a91d9f4974e36f2dd729f10d51635c}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!N\_angles@{N\_angles}}
+\index{N\_angles@{N\_angles}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{N\_angles}{N\_angles}}
+{\footnotesize\ttfamily const int N\+\_\+angles = 360}
+
+Number of possible angles \mbox{[}0..359\mbox{]} \mbox{\Hypertarget{2Dsim__can_8c_a99560cbcada94239c16ac20b88dfd9cf}\label{2Dsim__can_8c_a99560cbcada94239c16ac20b88dfd9cf}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!perception@{perception}}
+\index{perception@{perception}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{perception}{perception}}
+{\footnotesize\ttfamily BITMAP$\ast$ perception = NULL}
+
+
+
+Global bitmap for perception (Li\+DAR) view. 
+
+\mbox{\Hypertarget{2Dsim__can_8c_afa8ca48959313e0aac2a594db9142263}\label{2Dsim__can_8c_afa8ca48959313e0aac2a594db9142263}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!sliding\_window@{sliding\_window}}
+\index{sliding\_window@{sliding\_window}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{sliding\_window}{sliding\_window}}
+{\footnotesize\ttfamily const int sliding\+\_\+window = 30}
+
+Number of Li\+DAR rays to plot in the perception view \mbox{\Hypertarget{2Dsim__can_8c_ac53039214d075800d8b4f87ebd760ef5}\label{2Dsim__can_8c_ac53039214d075800d8b4f87ebd760ef5}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!start\_angle@{start\_angle}}
+\index{start\_angle@{start\_angle}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{start\_angle}{start\_angle}}
+{\footnotesize\ttfamily int start\+\_\+angle = 0}
+
+
+
+Starting angle for the \char`\"{}sliding window\char`\"{} of Li\+DAR visualization. 
+
+Only a subset of rays near this angle are drawn in the perception view to avoid clutter and reduce rendering cost. \mbox{\Hypertarget{2Dsim__can_8c_a912f1519711b3b217d14888948962e3b}\label{2Dsim__can_8c_a912f1519711b3b217d14888948962e3b}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!track@{track}}
+\index{track@{track}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{track}{track}}
+{\footnotesize\ttfamily BITMAP$\ast$ track = NULL}
+
+
+
+Global bitmap for track (asphalt + cones). 
+
+\mbox{\Hypertarget{2Dsim__can_8c_a3a54b60206b996b38ab94fe1fa619da6}\label{2Dsim__can_8c_a3a54b60206b996b38ab94fe1fa619da6}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!XMAX@{XMAX}}
+\index{XMAX@{XMAX}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{XMAX}{XMAX}}
+{\footnotesize\ttfamily const int XMAX = (10 $\ast$ \mbox{\hyperlink{2Dsim__can_8c_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})}
+
+
+
+Screen resolution (in pixels). 
+
+The window size is set to 10 meters x 10 meters in simulation coordinates. 10 m in x-\/direction, scaled \mbox{\Hypertarget{2Dsim__can_8c_a689b73289e27812fea68db3702a4cb82}\label{2Dsim__can_8c_a689b73289e27812fea68db3702a4cb82}} 
+\index{2Dsim\_can.c@{2Dsim\_can.c}!YMAX@{YMAX}}
+\index{YMAX@{YMAX}!2Dsim\_can.c@{2Dsim\_can.c}}
+\doxysubsubsection{\texorpdfstring{YMAX}{YMAX}}
+{\footnotesize\ttfamily const int YMAX = (10 $\ast$ \mbox{\hyperlink{2Dsim__can_8c_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})}
+
+10 m in y-\/direction, scaled 

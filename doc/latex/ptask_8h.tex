@@ -1,0 +1,284 @@
+\hypertarget{ptask_8h}{}\doxysection{ptask/ptask.h File Reference}
+\label{ptask_8h}\index{ptask/ptask.h@{ptask/ptask.h}}
+{\ttfamily \#include $<$pthread.\+h$>$}\newline
+{\ttfamily \#include $<$semaphore.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+Include dependency graph for ptask.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{ptask_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=260pt]{ptask_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}}
+\item 
+struct \mbox{\hyperlink{structtask__par}{task\+\_\+par}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{ptask_8h_aac747bed84189f8cfa509b94d488e622}{MAX\+\_\+\+TASKS}}~32
+\item 
+\#define \mbox{\hyperlink{ptask_8h_a39f795126ae5c79f068a2c5c49d6ee59}{MICRO}}~1
+\item 
+\#define \mbox{\hyperlink{ptask_8h_aa45f3f33a4532dd600449668c704c045}{NANO}}~2
+\item 
+\#define \mbox{\hyperlink{ptask_8h_a8b1f9873f78b1d80ab85bdd8168ce794}{ACT}}~1
+\item 
+\#define \mbox{\hyperlink{ptask_8h_ad16bd61c7b83a51c07f46b84cac76676}{DEACT}}~0
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} \mbox{\hyperlink{ptask_8h_a593697523d1f80ee6e7ccc799e820aab}{timespec\+\_\+custom}}
+\item 
+typedef struct \mbox{\hyperlink{structtask__par}{task\+\_\+par}} \mbox{\hyperlink{ptask_8h_a8433db00f35e808c6a461127a1b594af}{task\+\_\+par}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{ptask_8h_ae0e60dff72af55224d61daad84e7bdce}{time\+\_\+copy}} (\mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} $\ast$td, \mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} ts)
+\item 
+void \mbox{\hyperlink{ptask_8h_ab98cd4e4744f831801de827071029dd4}{time\+\_\+add\+\_\+ms}} (\mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} $\ast$t, int ms)
+\item 
+int \mbox{\hyperlink{ptask_8h_aade67dfd54aa31d9c8da1ca2ee25c5a8}{time\+\_\+cmp}} (\mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} t1, \mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} t2)
+\item 
+void \mbox{\hyperlink{ptask_8h_a16dc5b4ee9790f380821701ff6865e90}{ptask\+\_\+init}} (int policy)
+\item 
+long \mbox{\hyperlink{ptask_8h_aef5009a10fad931c146fdaa9e5a20e61}{get\+\_\+systime}} (int unit)
+\item 
+int \mbox{\hyperlink{ptask_8h_a88099c7c946b1d8c34a3717e5d3b8b83}{task\+\_\+create}} (int i, void $\ast$($\ast$task)(void $\ast$), int period, int drel, int prio, int aflag)
+\item 
+int \mbox{\hyperlink{ptask_8h_a55744cf37a298cca48b46a38ecd1cbd7}{get\+\_\+task\+\_\+index}} (void $\ast$arg)
+\item 
+void \mbox{\hyperlink{ptask_8h_ac5a989242ff00476f314f92395f23252}{wait\+\_\+for\+\_\+activation}} (int i)
+\item 
+void \mbox{\hyperlink{ptask_8h_ac262dbdc5fc94fd0144de303d85a7afd}{task\+\_\+activate}} (int i)
+\item 
+int \mbox{\hyperlink{ptask_8h_a190af02eb96e0365aeba0839009a321d}{deadline\+\_\+miss}} (int i)
+\item 
+void \mbox{\hyperlink{ptask_8h_afd8a4ae978d1068cb18f8e5fc03a1f0c}{wait\+\_\+for\+\_\+period}} (int i)
+\item 
+void \mbox{\hyperlink{ptask_8h_aba02da1a4a1bedcee4247bc45741f2a2}{task\+\_\+set\+\_\+period}} (int i, int per)
+\item 
+void \mbox{\hyperlink{ptask_8h_a58fe4bf41d0c250f56d1e21f6b725c79}{task\+\_\+set\+\_\+deadline}} (int i, int drel)
+\item 
+int \mbox{\hyperlink{ptask_8h_a16816f0f426f634cf9aba4db2f353f32}{task\+\_\+period}} (int i)
+\item 
+int \mbox{\hyperlink{ptask_8h_aaad9888b424224be0fe6675ab6c349ac}{task\+\_\+deadline}} (int i)
+\item 
+int \mbox{\hyperlink{ptask_8h_a6636c699ec9ee75b01bb88797dfc04cf}{task\+\_\+dmiss}} (int i)
+\item 
+void \mbox{\hyperlink{ptask_8h_afecf68d02dd76e475bb90d75f3096675}{task\+\_\+atime}} (int i, \mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} $\ast$at)
+\item 
+void \mbox{\hyperlink{ptask_8h_a38afa83834e43d4834a032622d73d5ea}{task\+\_\+adline}} (int i, \mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} $\ast$dl)
+\item 
+void \mbox{\hyperlink{ptask_8h_a9142a39d7c9be6b98ce01f0c7541d8f7}{wait\+\_\+for\+\_\+task\+\_\+end}} (int i)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structtask__par}{task\+\_\+par}} \mbox{\hyperlink{ptask_8h_a67cd3fe25279faa2bdcd668f94615d4b}{tp}} \mbox{[}\mbox{\hyperlink{ptask_8h_aac747bed84189f8cfa509b94d488e622}{MAX\+\_\+\+TASKS}}\mbox{]}
+\item 
+\mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} \mbox{\hyperlink{ptask_8h_a32252d8f91e89ff41f33c4d5fb3049b3}{ptask\+\_\+t0}}
+\item 
+int \mbox{\hyperlink{ptask_8h_a2e2c8dc424b14ad86927ee05ec4b3797}{ptask\+\_\+policy}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{ptask_8h_a8b1f9873f78b1d80ab85bdd8168ce794}\label{ptask_8h_a8b1f9873f78b1d80ab85bdd8168ce794}} 
+\index{ptask.h@{ptask.h}!ACT@{ACT}}
+\index{ACT@{ACT}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{ACT}{ACT}}
+{\footnotesize\ttfamily \#define ACT~1}
+
+\mbox{\Hypertarget{ptask_8h_ad16bd61c7b83a51c07f46b84cac76676}\label{ptask_8h_ad16bd61c7b83a51c07f46b84cac76676}} 
+\index{ptask.h@{ptask.h}!DEACT@{DEACT}}
+\index{DEACT@{DEACT}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{DEACT}{DEACT}}
+{\footnotesize\ttfamily \#define DEACT~0}
+
+\mbox{\Hypertarget{ptask_8h_aac747bed84189f8cfa509b94d488e622}\label{ptask_8h_aac747bed84189f8cfa509b94d488e622}} 
+\index{ptask.h@{ptask.h}!MAX\_TASKS@{MAX\_TASKS}}
+\index{MAX\_TASKS@{MAX\_TASKS}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_TASKS}{MAX\_TASKS}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+TASKS~32}
+
+\mbox{\Hypertarget{ptask_8h_a39f795126ae5c79f068a2c5c49d6ee59}\label{ptask_8h_a39f795126ae5c79f068a2c5c49d6ee59}} 
+\index{ptask.h@{ptask.h}!MICRO@{MICRO}}
+\index{MICRO@{MICRO}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{MICRO}{MICRO}}
+{\footnotesize\ttfamily \#define MICRO~1}
+
+\mbox{\Hypertarget{ptask_8h_aa45f3f33a4532dd600449668c704c045}\label{ptask_8h_aa45f3f33a4532dd600449668c704c045}} 
+\index{ptask.h@{ptask.h}!NANO@{NANO}}
+\index{NANO@{NANO}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{NANO}{NANO}}
+{\footnotesize\ttfamily \#define NANO~2}
+
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{ptask_8h_a8433db00f35e808c6a461127a1b594af}\label{ptask_8h_a8433db00f35e808c6a461127a1b594af}} 
+\index{ptask.h@{ptask.h}!task\_par@{task\_par}}
+\index{task\_par@{task\_par}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{task\_par}{task\_par}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structtask__par}{task\+\_\+par}} \mbox{\hyperlink{structtask__par}{task\+\_\+par}}}
+
+\mbox{\Hypertarget{ptask_8h_a593697523d1f80ee6e7ccc799e820aab}\label{ptask_8h_a593697523d1f80ee6e7ccc799e820aab}} 
+\index{ptask.h@{ptask.h}!timespec\_custom@{timespec\_custom}}
+\index{timespec\_custom@{timespec\_custom}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{timespec\_custom}{timespec\_custom}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} \mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}}}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{ptask_8h_a190af02eb96e0365aeba0839009a321d}\label{ptask_8h_a190af02eb96e0365aeba0839009a321d}} 
+\index{ptask.h@{ptask.h}!deadline\_miss@{deadline\_miss}}
+\index{deadline\_miss@{deadline\_miss}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{deadline\_miss()}{deadline\_miss()}}
+{\footnotesize\ttfamily int deadline\+\_\+miss (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_aef5009a10fad931c146fdaa9e5a20e61}\label{ptask_8h_aef5009a10fad931c146fdaa9e5a20e61}} 
+\index{ptask.h@{ptask.h}!get\_systime@{get\_systime}}
+\index{get\_systime@{get\_systime}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{get\_systime()}{get\_systime()}}
+{\footnotesize\ttfamily long get\+\_\+systime (\begin{DoxyParamCaption}\item[{int}]{unit }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_a55744cf37a298cca48b46a38ecd1cbd7}\label{ptask_8h_a55744cf37a298cca48b46a38ecd1cbd7}} 
+\index{ptask.h@{ptask.h}!get\_task\_index@{get\_task\_index}}
+\index{get\_task\_index@{get\_task\_index}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{get\_task\_index()}{get\_task\_index()}}
+{\footnotesize\ttfamily int get\+\_\+task\+\_\+index (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_a16dc5b4ee9790f380821701ff6865e90}\label{ptask_8h_a16dc5b4ee9790f380821701ff6865e90}} 
+\index{ptask.h@{ptask.h}!ptask\_init@{ptask\_init}}
+\index{ptask\_init@{ptask\_init}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{ptask\_init()}{ptask\_init()}}
+{\footnotesize\ttfamily void ptask\+\_\+init (\begin{DoxyParamCaption}\item[{int}]{policy }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_ac262dbdc5fc94fd0144de303d85a7afd}\label{ptask_8h_ac262dbdc5fc94fd0144de303d85a7afd}} 
+\index{ptask.h@{ptask.h}!task\_activate@{task\_activate}}
+\index{task\_activate@{task\_activate}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{task\_activate()}{task\_activate()}}
+{\footnotesize\ttfamily void task\+\_\+activate (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_a38afa83834e43d4834a032622d73d5ea}\label{ptask_8h_a38afa83834e43d4834a032622d73d5ea}} 
+\index{ptask.h@{ptask.h}!task\_adline@{task\_adline}}
+\index{task\_adline@{task\_adline}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{task\_adline()}{task\_adline()}}
+{\footnotesize\ttfamily void task\+\_\+adline (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{\mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} $\ast$}]{dl }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_afecf68d02dd76e475bb90d75f3096675}\label{ptask_8h_afecf68d02dd76e475bb90d75f3096675}} 
+\index{ptask.h@{ptask.h}!task\_atime@{task\_atime}}
+\index{task\_atime@{task\_atime}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{task\_atime()}{task\_atime()}}
+{\footnotesize\ttfamily void task\+\_\+atime (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{\mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} $\ast$}]{at }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_a88099c7c946b1d8c34a3717e5d3b8b83}\label{ptask_8h_a88099c7c946b1d8c34a3717e5d3b8b83}} 
+\index{ptask.h@{ptask.h}!task\_create@{task\_create}}
+\index{task\_create@{task\_create}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{task\_create()}{task\_create()}}
+{\footnotesize\ttfamily int task\+\_\+create (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{void $\ast$($\ast$)(void $\ast$)}]{task,  }\item[{int}]{period,  }\item[{int}]{drel,  }\item[{int}]{prio,  }\item[{int}]{aflag }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_aaad9888b424224be0fe6675ab6c349ac}\label{ptask_8h_aaad9888b424224be0fe6675ab6c349ac}} 
+\index{ptask.h@{ptask.h}!task\_deadline@{task\_deadline}}
+\index{task\_deadline@{task\_deadline}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{task\_deadline()}{task\_deadline()}}
+{\footnotesize\ttfamily int task\+\_\+deadline (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_a6636c699ec9ee75b01bb88797dfc04cf}\label{ptask_8h_a6636c699ec9ee75b01bb88797dfc04cf}} 
+\index{ptask.h@{ptask.h}!task\_dmiss@{task\_dmiss}}
+\index{task\_dmiss@{task\_dmiss}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{task\_dmiss()}{task\_dmiss()}}
+{\footnotesize\ttfamily int task\+\_\+dmiss (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_a16816f0f426f634cf9aba4db2f353f32}\label{ptask_8h_a16816f0f426f634cf9aba4db2f353f32}} 
+\index{ptask.h@{ptask.h}!task\_period@{task\_period}}
+\index{task\_period@{task\_period}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{task\_period()}{task\_period()}}
+{\footnotesize\ttfamily int task\+\_\+period (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_a58fe4bf41d0c250f56d1e21f6b725c79}\label{ptask_8h_a58fe4bf41d0c250f56d1e21f6b725c79}} 
+\index{ptask.h@{ptask.h}!task\_set\_deadline@{task\_set\_deadline}}
+\index{task\_set\_deadline@{task\_set\_deadline}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{task\_set\_deadline()}{task\_set\_deadline()}}
+{\footnotesize\ttfamily void task\+\_\+set\+\_\+deadline (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{int}]{drel }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_aba02da1a4a1bedcee4247bc45741f2a2}\label{ptask_8h_aba02da1a4a1bedcee4247bc45741f2a2}} 
+\index{ptask.h@{ptask.h}!task\_set\_period@{task\_set\_period}}
+\index{task\_set\_period@{task\_set\_period}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{task\_set\_period()}{task\_set\_period()}}
+{\footnotesize\ttfamily void task\+\_\+set\+\_\+period (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{int}]{per }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_ab98cd4e4744f831801de827071029dd4}\label{ptask_8h_ab98cd4e4744f831801de827071029dd4}} 
+\index{ptask.h@{ptask.h}!time\_add\_ms@{time\_add\_ms}}
+\index{time\_add\_ms@{time\_add\_ms}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{time\_add\_ms()}{time\_add\_ms()}}
+{\footnotesize\ttfamily void time\+\_\+add\+\_\+ms (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} $\ast$}]{t,  }\item[{int}]{ms }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_aade67dfd54aa31d9c8da1ca2ee25c5a8}\label{ptask_8h_aade67dfd54aa31d9c8da1ca2ee25c5a8}} 
+\index{ptask.h@{ptask.h}!time\_cmp@{time\_cmp}}
+\index{time\_cmp@{time\_cmp}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{time\_cmp()}{time\_cmp()}}
+{\footnotesize\ttfamily int time\+\_\+cmp (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}}}]{t1,  }\item[{\mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}}}]{t2 }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_ae0e60dff72af55224d61daad84e7bdce}\label{ptask_8h_ae0e60dff72af55224d61daad84e7bdce}} 
+\index{ptask.h@{ptask.h}!time\_copy@{time\_copy}}
+\index{time\_copy@{time\_copy}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{time\_copy()}{time\_copy()}}
+{\footnotesize\ttfamily void time\+\_\+copy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} $\ast$}]{td,  }\item[{\mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}}}]{ts }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_ac5a989242ff00476f314f92395f23252}\label{ptask_8h_ac5a989242ff00476f314f92395f23252}} 
+\index{ptask.h@{ptask.h}!wait\_for\_activation@{wait\_for\_activation}}
+\index{wait\_for\_activation@{wait\_for\_activation}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{wait\_for\_activation()}{wait\_for\_activation()}}
+{\footnotesize\ttfamily void wait\+\_\+for\+\_\+activation (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_afd8a4ae978d1068cb18f8e5fc03a1f0c}\label{ptask_8h_afd8a4ae978d1068cb18f8e5fc03a1f0c}} 
+\index{ptask.h@{ptask.h}!wait\_for\_period@{wait\_for\_period}}
+\index{wait\_for\_period@{wait\_for\_period}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{wait\_for\_period()}{wait\_for\_period()}}
+{\footnotesize\ttfamily void wait\+\_\+for\+\_\+period (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{ptask_8h_a9142a39d7c9be6b98ce01f0c7541d8f7}\label{ptask_8h_a9142a39d7c9be6b98ce01f0c7541d8f7}} 
+\index{ptask.h@{ptask.h}!wait\_for\_task\_end@{wait\_for\_task\_end}}
+\index{wait\_for\_task\_end@{wait\_for\_task\_end}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{wait\_for\_task\_end()}{wait\_for\_task\_end()}}
+{\footnotesize\ttfamily void wait\+\_\+for\+\_\+task\+\_\+end (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{ptask_8h_a2e2c8dc424b14ad86927ee05ec4b3797}\label{ptask_8h_a2e2c8dc424b14ad86927ee05ec4b3797}} 
+\index{ptask.h@{ptask.h}!ptask\_policy@{ptask\_policy}}
+\index{ptask\_policy@{ptask\_policy}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{ptask\_policy}{ptask\_policy}}
+{\footnotesize\ttfamily int ptask\+\_\+policy\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{ptask_8h_a32252d8f91e89ff41f33c4d5fb3049b3}\label{ptask_8h_a32252d8f91e89ff41f33c4d5fb3049b3}} 
+\index{ptask.h@{ptask.h}!ptask\_t0@{ptask\_t0}}
+\index{ptask\_t0@{ptask\_t0}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{ptask\_t0}{ptask\_t0}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structtimespec__custom}{timespec\+\_\+custom}} ptask\+\_\+t0\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{ptask_8h_a67cd3fe25279faa2bdcd668f94615d4b}\label{ptask_8h_a67cd3fe25279faa2bdcd668f94615d4b}} 
+\index{ptask.h@{ptask.h}!tp@{tp}}
+\index{tp@{tp}!ptask.h@{ptask.h}}
+\doxysubsubsection{\texorpdfstring{tp}{tp}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structtask__par}{task\+\_\+par}} tp\mbox{[}\mbox{\hyperlink{ptask_8h_aac747bed84189f8cfa509b94d488e622}{MAX\+\_\+\+TASKS}}\mbox{]}\hspace{0.3cm}{\ttfamily [extern]}}
+
