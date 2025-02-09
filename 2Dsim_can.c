@@ -66,6 +66,9 @@
 #include <sched.h>
 #include <time.h>
 #include "ptask/ptask.h" // Custom functions for periodic task
+#include <semaphore.h>
+
+sem_t lidar_sem;
 
 /* TASK PERIODS (in milliseconds) */
 #define PERCEPTION_PERIOD    1   /**< Period of Perception Task [ms] */
@@ -325,6 +328,15 @@ void 	check_nearest_point(int angle, float new_point_x, float new_point_y, int c
  */
 void	trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory);
 
+/**
+ * \brief Manages runtime simulation and processing for signal triggering.
+ * 
+ * \param stop_signal An integer representing the ending signal to measure the runtime
+ * \param task_name Array of character pointers storing the task name (max 20 chars)
+
+ */
+void runtime (int stop_signal, char* task_name);
+
 /* --------------------------------
  * MAIN FUNCTION
  * -------------------------------- */
@@ -484,6 +496,7 @@ int main()
 		// Initialize the periodic task system (using SCHED_OTHER)
 		// [TODO] Maybe we need to change the scheduling policy 
 		ptask_init(SCHED_OTHER);
+		sem_init(&lidar_sem, 0, 0);
 
 		// Create periodic tasks:
 		// Task 1: Perception task
@@ -534,13 +547,14 @@ void *perception_task(void *arg)
 
 	while (!key[KEY_ESC])
 	{
+		runtime(0, "PERCEPTION");
+
 		// struct timespec iter_start, iter_end;
         // clock_gettime(CLOCK_MONOTONIC, &iter_start);
 
 		// LiDAR simulation
 		// detection measures[N_angles];
 		lidar(car_x, car_y, measures);
-
 
 		for (int i = 0; i < MAX_DETECTED_CONES; i++){
 			detected_cones[i].x = -1;
@@ -549,8 +563,7 @@ void *perception_task(void *arg)
 		}
 
 		mapping(car_x, car_y, car_angle, detected_cones); // Pass the address of first element
-
-		trajectory_planning(car_x, car_y, car_angle, detected_cones, trajectory);
+		sem_post(&lidar_sem);
 
 		// render the perception view
 		pthread_mutex_lock(&draw_mutex);
@@ -626,8 +639,45 @@ void *perception_task(void *arg)
 						3, 
 						makecol(255, 0, 0) //detected_cones[detected_cone_idx].color
 					);
-					
-					
+
+					detected_cone_idx++;	
+				}
+			}
+		pthread_mutex_unlock(&draw_mutex);
+
+		// update the start angle for the sliding window
+		start_angle = (start_angle + 1) % 360;
+
+		runtime(1, "PERCEPTION");
+
+		wait_for_period(task_id);
+	}
+	return NULL;
+}
+
+void *trajectory_task(void *arg)
+{
+	int task_id = get_task_index(arg);
+	wait_for_activation(task_id);
+
+	while (!key[KEY_ESC])
+	{
+		runtime(0, "TRAJ_PLANNING");
+
+		sem_wait(&lidar_sem);
+		trajectory_planning(car_x, car_y, car_angle, detected_cones, trajectory);
+
+		pthread_mutex_lock(&draw_mutex);
+
+			int detected_cone_idx = 0;
+			//while (detected_cones[detected_cone_idx].color != -1){
+			while (detected_cone_idx < MAX_DETECTED_CONES-1){
+				if (detected_cones[detected_cone_idx].color == -1){
+					detected_cone_idx++;
+					break;
+				}
+				else {
+#ifdef DEBUG
 					char* text = (char*)malloc(10);  // Allocate space for the string
 					snprintf(text, 10, "%d", detected_cone_idx);  // Convert int to string
 
@@ -650,6 +700,7 @@ void *perception_task(void *arg)
 						(int)(car->h/2) - 1000,
 						makecol(0, 255, 0)
 					);
+#endif /* DEBUG */
 
 					circlefill(
 						perception,
@@ -664,31 +715,8 @@ void *perception_task(void *arg)
 			}
 		pthread_mutex_unlock(&draw_mutex);
 
-		// update the start angle for the sliding window
-		start_angle = (start_angle + 1) % 360;
+		runtime(1, "TRAJ_PLANNING");
 
-
-		// clock_gettime(CLOCK_MONOTONIC, &iter_end);
-        // unsigned long iter_runtime_us = (iter_end.tv_sec - iter_start.tv_sec) * 1000000UL +
-        //                                 (iter_end.tv_nsec - iter_start.tv_nsec) / 1000;
-
-        // printf("[PERCEPTION] Runtime: %lu us\n", iter_runtime_us);
-
-		wait_for_period(task_id);
-	}
-	return NULL;
-}
-
-void *trajectory_task(void *arg)
-{
-	int task_id = get_task_index(arg);
-	wait_for_activation(task_id);
-
-	while (!key[KEY_ESC])
-	{
-		// runtime(1);
-		// trajectory_planning(car_x, car_y, car_angle, detected_cones, trajectory);
-		// runtime(0);
 		wait_for_period(task_id);
 	}
 	return NULL;
@@ -706,26 +734,36 @@ void *control_task(void *arg)
 
     while (!key[KEY_ESC])
     {
-        keyboard_control(&car_x, &car_y, &car_angle);
+		runtime(0, "CONTROL");
+
+		if (!key[KEY_A]){
+        	keyboard_control(&car_x, &car_y, &car_angle);
+		}
+		else
+			autonomous_control(&car_x, &car_y, &car_angle, trajectory);
+		
+
+		runtime(1, "CONTROL");
         wait_for_period(task_id);
     }
     return NULL;
 }
 
-// void runtime (int start_sgn)
-// {
-// 	static struct timespec iter_start, iter_end;
-// 	if (start_sgn == 1){
-// 		clock_gettime(CLOCK_MONOTONIC, &iter_start);
-// 	}
-// 	else{
-// 		clock_gettime(CLOCK_MONOTONIC, &iter_end);
-// 		unsigned long iter_runtime_us = (iter_end.tv_sec - iter_start.tv_sec) * 1000000UL +
-// 										(iter_end.tv_nsec - iter_start.tv_nsec) / 1000;
+// Helper functions to measure code performance
+void runtime (int stop_signal, char* task_name)
+{
+	static struct timespec iter_start, iter_end;
+	if (stop_signal == 0){
+		clock_gettime(CLOCK_MONOTONIC, &iter_start);
+	}
+	else{
+		clock_gettime(CLOCK_MONOTONIC, &iter_end);
+		unsigned long iter_runtime_us = (iter_end.tv_sec - iter_start.tv_sec) * 1000000UL +
+										(iter_end.tv_nsec - iter_start.tv_nsec) / 1000;
 
-// 		printf("[PERCEPTION] Runtime: %lu us\n", iter_runtime_us);
-// 	}
-// }
+		printf("[%s]\t Runtime: %lu us\n", task_name, iter_runtime_us);
+	}
+}
 
 /*
    Display Task (approx. 60Hz):
@@ -767,6 +805,8 @@ void *display_task(void *arg)
 				(int)(car_y * px_per_meter) - (int)(MAXrange)*px_per_meter
 			);
 
+			draw_dir_arrow();
+
 			blit(display_buffer, screen, 0, 0, 0, 0, XMAX, YMAX);
 			
 			int text_width = text_length(font, text);
@@ -785,6 +825,51 @@ void *display_task(void *arg)
         wait_for_period(task_id);
     }
     return NULL;
+}
+
+void draw_dir_arrow()
+{
+	// Draw direction arrow
+	int arrow_length = 50;  // Length in pixels
+	float arrow_x = car_x * px_per_meter;
+	float arrow_y = car_y * px_per_meter;
+	float rad_angle = -car_angle * deg2rad;  // Convert to radians and adjust direction
+
+	// Calculate arrow endpoint
+	float end_x = arrow_x + arrow_length * cos(rad_angle);
+	float end_y = arrow_y + arrow_length * sin(rad_angle);
+
+	// Draw thick green arrow shaft
+	for(int i=-2; i<=2; i++) {
+		for(int j=-2; j<=2; j++) {
+			line(display_buffer, 
+				arrow_x + i,
+				arrow_y + j, 
+				end_x + i,
+				end_y + j,
+				makecol(0, 255, 0));
+		}
+	}
+
+	// Draw thick arrow head
+	float head_size = 15.0;
+	float head_angle = 0.5;  // ~30 degrees in radians
+	for(int i=-2; i<=2; i++) {
+		for(int j=-2; j<=2; j++) {
+			line(display_buffer, 
+				end_x + i,
+				end_y + j,
+				end_x - head_size * cos(rad_angle - head_angle) + i,
+				end_y - head_size * sin(rad_angle - head_angle) + j,
+				makecol(0, 255, 0));
+			line(display_buffer,
+				end_x + i,
+				end_y + j,
+				end_x - head_size * cos(rad_angle + head_angle) + i,
+				end_y - head_size * sin(rad_angle + head_angle) + j,
+				makecol(0, 255, 0));
+		}
+	}
 }
 
 
@@ -865,45 +950,54 @@ float theta;
 
 }
 
-// void 	autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *trajectory)
-// {
-// 	// reorder trajectory waypoints
-// 	for (int point = 0; point < MAX_DETECTED_CONES; point++){
-// 		if (trajectory[point].x == -1){
-// 			printf("[AUTONOMOUS_CONTROL] Waypoints list is empty\n");
-// 			break;
-// 		}
-// 		else {
-// 			// calculate the angle between the car and the next waypoint
-// 			float dx = trajectory[point].x - *car_x;
-// 			float dy = trajectory[point].y - *car_y;
-// 			float angle = atan2(dy, dx) * 180 / M_PI;
+void 	autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *trajectory)
+{
+	float	minDist = 1000;
+	int 	minDist_idx = 0;
 
-// 			// calculate the angle between the car and the next waypoint
-// 			float angle_diff = angle - *car_angle;
-// 			if (angle_diff > 180){
-// 				angle_diff -= 360;
-// 			}
-// 			else if (angle_diff < -180){
-// 				angle_diff += 360;
-// 			}
+	// reorder trajectory waypoints
+	for (int point = 0; point < MAX_DETECTED_CONES; point++){
+		if (trajectory[point].x == -1){
+			break;
+		}
+		else {
+			// Calculate angle to waypoint relative to car's heading
+			float dx = trajectory[point].x - *car_x;
+			float dy = trajectory[point].y - *car_y;
+			float angle_to_point = atan2(dy, dx) / deg2rad;
+			float angle_diff = angle_to_point - *car_angle;
+			
+			// Normalize angle difference to [-180, 180]
+			while (angle_diff > 180) angle_diff -= 360;
+			while (angle_diff < -180) angle_diff += 360;
+			
+			// Only consider points in front of car (+/- 90 degrees from heading)
+			if (abs(angle_diff) < 90) {
+				float distance = sqrt(dx*dx + dy*dy);
+				if (distance < minDist){
+					minDist = distance;
+					minDist_idx = point;
+				}
+			}
+		}
+	}
 
-// 			// if the angle is too big, rotate the car
-// 			if (angle_diff > 5){
-// 				// rotate the car to the right
-// 				*car_angle += 5;
-// 			}
-// 			else if (angle_diff < -5){
-// 				// rotate the car to the left
-// 				*car_angle -= 5;
-// 			}
-// 			else {
-// 				// move the car forward
-// 				vehicle_model(car_x, car_y, car_angle, 0.1, 0);
-// 			}
-// 		}
-// 	}
-// }
+	circlefill(screen, (int)(trajectory[minDist_idx].x * px_per_meter), (int)(trajectory[minDist_idx].y * px_per_meter), 3, makecol(0, 0, 0));
+	// Calculate angle to next waypoint
+	float target_angle = atan2(trajectory[minDist_idx].y - *car_y, trajectory[minDist_idx].x - *car_x) / deg2rad;
+	float angle_diff = target_angle - *car_angle;
+
+	// Normalize angle difference to [-180, 180]
+	while (angle_diff > 180) angle_diff -= 360;
+	while (angle_diff < -180) angle_diff += 360;
+
+	// Apply steering based on angle difference
+	float steering = angle_diff * deg2rad * 0.5f; // Scale factor to smooth steering
+	float speed = 0.1f; // Constant speed
+
+	// Update vehicle model
+	vehicle_model(car_x, car_y, car_angle, speed, steering);
+}
 
 void 	keyboard_control(float *car_x, float *car_y, int *car_angle)
 {
