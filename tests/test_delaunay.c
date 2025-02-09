@@ -30,7 +30,7 @@ int main(){
 	install_keyboard(); // initialize keyboard
 	set_color_depth(32); // set the color depth to 8 bits for each of the RGB channels and 8 bits for the alpha channel (faster than 24 bit since it is aligned to 32 bits)
 	
-	int XMAX = 1000, YMAX = 1000; // screen resolution
+	int XMAX = 2000, YMAX = 1000; // screen resolution
 	set_gfx_mode(GFX_AUTODETECT_WINDOWED, XMAX, YMAX, 0, 0);
 	clear_to_color(screen, makecol(127, 127, 127)); // clear the screen making all pixels to white
 
@@ -85,7 +85,7 @@ int main(){
 	scaleFactor = 50.0;
 	*/
 
-/*
+
 points[0].x = 237.34316135087343;
 points[0].y = 297.0283562073332;
 points[0].color = giallo;
@@ -931,8 +931,8 @@ points[210].y = 336.85156508477974;
 points[210].color = blu;
 
 scaleFactor = 1.5;
-*/
 
+/*
 points[0].x = 51.43740124556603;
 points[0].y = 8.612570356472796;
 points[0].color = giallo;
@@ -9085,7 +9085,8 @@ points[2037].x = 53.10135017363136;
 points[2037].y = 11.5;
 points[2037].color = blu;
 
-scaleFactor = 2.5;
+scaleFactor = 15;
+*/
 
 	for (int i = 0; i < numPoints; i++){
 		circlefill(

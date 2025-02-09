@@ -69,18 +69,21 @@
 
 /* TASK PERIODS (in milliseconds) */
 #define PERCEPTION_PERIOD    1   /**< Period of Perception Task [ms] */
-#define CONTROL_PERIOD       25  /**< Period of Control Task [ms] */
-#define DISPLAY_PERIOD       16  /**< Period of Display Task [ms] (~30 Hz) */
+#define TRAJECTORY_PERIOD    10   /**< Period of Trajectory Planning Task [ms] */
+#define CONTROL_PERIOD       20  /**< Period of Control Task [ms] */
+#define DISPLAY_PERIOD       37  /**< Period of Display Task [ms] (~30 Hz) */
 
 /* DEADLINES (in milliseconds) */
-#define PERCEPTION_DEADLINE  PERCEPTION_PERIOD  /**< Deadline = Period for Perception Task */
-#define CONTROL_DEADLINE     CONTROL_PERIOD * 2 /**< Deadline = 2 * Period for Control Task */
-#define DISPLAY_DEADLINE     DISPLAY_PERIOD * 2	/**< Deadline = 2 * Period for Display Task */
+#define PERCEPTION_DEADLINE  PERCEPTION_PERIOD	/**< Deadline = Period for Perception Task */
+#define TRAJECTORY_DEADLINE  TRAJECTORY_PERIOD	/**< Deadline = Period for Trajectory Planning Task */
+#define CONTROL_DEADLINE     CONTROL_PERIOD		/**< Deadline = 2 * Period for Control Task */
+#define DISPLAY_DEADLINE     DISPLAY_PERIOD		/**< Deadline = 2 * Period for Display Task */
 
 /* PRIORITIES (lower number = higher priority) */
-#define PERCEPTION_PRIORITY 15
-#define CONTROL_PRIORITY    20
-#define DISPLAY_PRIORITY    25
+#define PERCEPTION_PRIORITY	15
+#define TRAJECTORY_PRIORITY	20
+#define CONTROL_PRIORITY    25
+#define DISPLAY_PRIORITY    30
 
 /** 
  * \brief Perception task (LiDAR simulation).
@@ -93,6 +96,18 @@
  * \return A NULL pointer (no specific return value).
  */
 void *perception_task(void *arg);
+
+/**
+ * @brief Calculates and manages object trajectory in a 2D simulation
+ * 
+ * This task is responsible for calculating and updating the trajectory of objects
+ * in a 2-dimensional simulation environment. It runs in a separate thread to 
+ * handle continuous trajectory computations.
+ * 
+ * @param arg Pointer to thread arguments (void pointer for flexibility)
+ * @return void* Return value of the thread (typically NULL)
+ */
+void *trajectory_task(void *arg);
 
 /**
  * \brief Control task (keyboard input).
@@ -136,13 +151,15 @@ pthread_mutex_t draw_mutex = PTHREAD_MUTEX_INITIALIZER;
  *
  * The window size is set to 10 meters x 10 meters in simulation coordinates.
  */
-const int XMAX = (10 * px_per_meter); /**< 10 m in x-direction, scaled */
-const int YMAX = (10 * px_per_meter); /**< 10 m in y-direction, scaled */
+const char* text = "2D FSAE sim by rimaturus"; // Title of the window
+
+const int XMAX = (19 * px_per_meter); /**< 10 m in x-direction, scaled */
+const int YMAX = (12 * px_per_meter); /**< 10 m in y-direction, scaled */
 
 /* CAR initial position */
 float  car_x        = 4.5f;   /**< Car's initial X position [m] */
 float  car_y        = 3.0f;   /**< Car's initial Y position [m] */
-int    car_angle    = 90;     /**< Car's initial heading [deg] */
+int    car_angle    = 0;     /**< Car's initial heading [deg] */
 
 /** \brief Global bitmap for background (grass). */
 BITMAP *background      = NULL;
@@ -186,10 +203,10 @@ typedef struct {
 } pointcloud;
 
 const int   angle_step           = 1;        /**< Angular resolution of LiDAR [deg] */
-const float MAXrange             = 5.0f;     /**< Maximum LiDAR range [m] */
+const float MAXrange             = 10.0f;     /**< Maximum LiDAR range [m] */
 const float distance_resolution  = 0.01f;    /**< Distance step for LiDAR [m] */
 const int   N_angles             = 360;      /**< Number of possible angles [0..359] */
-const int   distance_steps       = 500;      /**< Discrete steps in the range (MAXrange / distance_resolution) */
+const int   distance_steps       = (int)(MAXrange / distance_resolution);      /**< Discrete steps in the range (MAXrange / distance_resolution) */
 
 pointcloud measures[360]; /**< Global array storing the current LiDAR scan data */
 
@@ -341,7 +358,16 @@ int main()
 	yellow = makecol(254, 221, 0); // yellow for cones
 	blue = makecol(46, 103, 248); // blue for cones
 		
-		set_gfx_mode(GFX_AUTODETECT_WINDOWED, XMAX, YMAX, 0, 0); // enters the graphics mode (windowed) with resolution 1920x1080
+		if (set_gfx_mode(GFX_AUTODETECT_WINDOWED, XMAX, YMAX, 0, 0) != 0) {
+			// If windowed mode fails, try fullscreen
+			if (set_gfx_mode(GFX_AUTODETECT, XMAX, YMAX, 0, 0) != 0) {
+			allegro_message("Error setting graphics mode\n%s\n", allegro_error);
+			return -1;
+			}
+		}
+		set_window_title("2D FSAE Simulation"); // Optional: sets window title
+		set_display_switch_mode(SWITCH_BACKGROUND); // Allows window to be minimized/switched
+
 		clear_to_color(screen, white); // clear the screen making all pixels to white
 
 		// Create the off-screen display buffer
@@ -469,12 +495,17 @@ int main()
 			exit(EXIT_FAILURE);
 		}
 
-		if (task_create(2, control_task, CONTROL_PERIOD, CONTROL_DEADLINE, CONTROL_PRIORITY, ACT) != 0) {
+		if (task_create(2, trajectory_task, TRAJECTORY_PERIOD, TRAJECTORY_DEADLINE, TRAJECTORY_PRIORITY, ACT) != 0) {
+			fprintf(stderr, "Failed to create Trajectory Task\n");
+			exit(EXIT_FAILURE);
+		}
+
+		if (task_create(3, control_task, CONTROL_PERIOD, CONTROL_DEADLINE, CONTROL_PRIORITY, ACT) != 0) {
 			fprintf(stderr, "Failed to create Control Task\n");
 			exit(EXIT_FAILURE);
 		}
 
-		if (task_create(3, display_task, DISPLAY_PERIOD, DISPLAY_DEADLINE, DISPLAY_PRIORITY, ACT) != 0) {
+		if (task_create(4, display_task, DISPLAY_PERIOD, DISPLAY_DEADLINE, DISPLAY_PRIORITY, ACT) != 0) {
 			fprintf(stderr, "Failed to create Display Task\n");
 			exit(EXIT_FAILURE);
 		}
@@ -483,6 +514,7 @@ int main()
 		wait_for_task_end(1);
 		wait_for_task_end(2);
 		wait_for_task_end(3);
+		wait_for_task_end(4);
 
 		printf("Exiting simulation...\n");
 		clear_keybuf();
@@ -502,6 +534,9 @@ void *perception_task(void *arg)
 
 	while (!key[KEY_ESC])
 	{
+		// struct timespec iter_start, iter_end;
+        // clock_gettime(CLOCK_MONOTONIC, &iter_start);
+
 		// LiDAR simulation
 		// detection measures[N_angles];
 		lidar(car_x, car_y, measures);
@@ -519,7 +554,7 @@ void *perception_task(void *arg)
 
 		// render the perception view
 		pthread_mutex_lock(&draw_mutex);
-			clear_to_color(perception, makecol(255, 0, 255)); // pink color to make it transparent (True color notation)
+			clear_to_color(perception, pink); // pink color to make it transparent (True color notation)
 
 			circlefill(
 				perception, 
@@ -577,20 +612,43 @@ void *perception_task(void *arg)
 
 			int detected_cone_idx = 0;
 			//while (detected_cones[detected_cone_idx].color != -1){
-			printf("\n\n\n\n -----------\n");
 			while (detected_cone_idx < MAX_DETECTED_CONES-1){
 				if (detected_cones[detected_cone_idx].color == -1){
 					detected_cone_idx++;
 					break;
 				}
 				else {
-					printf("Detected cone at: %f, %f\n", detected_cones[detected_cone_idx].x, detected_cones[detected_cone_idx].y);
+					// printf("Detected cone at: %f, %f\n", detected_cones[detected_cone_idx].x, detected_cones[detected_cone_idx].y);
 					circlefill(
 						perception, 
 						(int)(detected_cones[detected_cone_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter), 
 						(int)(detected_cones[detected_cone_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter), 
 						3, 
 						makecol(255, 0, 0) //detected_cones[detected_cone_idx].color
+					);
+					
+					
+					char* text = (char*)malloc(10);  // Allocate space for the string
+					snprintf(text, 10, "%d", detected_cone_idx);  // Convert int to string
+
+					textout_ex(
+						perception, 
+						font, 
+						text, 
+						(int)(trajectory[detected_cone_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter), 
+						(int)(trajectory[detected_cone_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter), 
+						makecol(255, 0, 0), 
+						makecol(255, 255, 255)
+					);
+
+					free(text);  // Free the memory
+					line(
+						car, 
+						(int)(car->w/2),
+						(int)(car->h/2),
+						(int)(car->w/2),
+						(int)(car->h/2) - 1000,
+						makecol(0, 255, 0)
 					);
 
 					circlefill(
@@ -609,6 +667,28 @@ void *perception_task(void *arg)
 		// update the start angle for the sliding window
 		start_angle = (start_angle + 1) % 360;
 
+
+		// clock_gettime(CLOCK_MONOTONIC, &iter_end);
+        // unsigned long iter_runtime_us = (iter_end.tv_sec - iter_start.tv_sec) * 1000000UL +
+        //                                 (iter_end.tv_nsec - iter_start.tv_nsec) / 1000;
+
+        // printf("[PERCEPTION] Runtime: %lu us\n", iter_runtime_us);
+
+		wait_for_period(task_id);
+	}
+	return NULL;
+}
+
+void *trajectory_task(void *arg)
+{
+	int task_id = get_task_index(arg);
+	wait_for_activation(task_id);
+
+	while (!key[KEY_ESC])
+	{
+		// runtime(1);
+		// trajectory_planning(car_x, car_y, car_angle, detected_cones, trajectory);
+		// runtime(0);
 		wait_for_period(task_id);
 	}
 	return NULL;
@@ -632,6 +712,21 @@ void *control_task(void *arg)
     return NULL;
 }
 
+// void runtime (int start_sgn)
+// {
+// 	static struct timespec iter_start, iter_end;
+// 	if (start_sgn == 1){
+// 		clock_gettime(CLOCK_MONOTONIC, &iter_start);
+// 	}
+// 	else{
+// 		clock_gettime(CLOCK_MONOTONIC, &iter_end);
+// 		unsigned long iter_runtime_us = (iter_end.tv_sec - iter_start.tv_sec) * 1000000UL +
+// 										(iter_end.tv_nsec - iter_start.tv_nsec) / 1000;
+
+// 		printf("[PERCEPTION] Runtime: %lu us\n", iter_runtime_us);
+// 	}
+// }
+
 /*
    Display Task (approx. 60Hz):
    - Composites the final image using the off-screen display_buffer.
@@ -650,7 +745,7 @@ void *display_task(void *arg)
     while (!key[KEY_ESC])
     {
 		pthread_mutex_lock(&draw_mutex);
-			clear_to_color(display_buffer, makecol(255,0,255));
+			clear_to_color(display_buffer, pink);
 			
 			draw_sprite(display_buffer, background, 0, 0);
 			draw_sprite(display_buffer, track, 0, 0);
@@ -673,6 +768,18 @@ void *display_task(void *arg)
 			);
 
 			blit(display_buffer, screen, 0, 0, 0, 0, XMAX, YMAX);
+			
+			int text_width = text_length(font, text);
+			textout_ex(
+				screen, 
+				font, 
+				text, 
+				(screen->w - text_width) / 2, // centered x position 
+				0, // y position at top
+				makecol(255,0,0), // red text
+				makecol(255,255,255) // white background
+			);
+
 		pthread_mutex_unlock(&draw_mutex);
 
         wait_for_period(task_id);
@@ -739,7 +846,7 @@ void    lidar(float car_x, float car_y, pointcloud *measures)
 }
 
 // Control
-void vehicle_model(float *car_x, float *car_y, int *car_angle, float speed, float steering)
+void 	vehicle_model(float *car_x, float *car_y, int *car_angle, float speed, float steering)
 {
 // Simulation parameters
 const float     dt = 0.1;             // time step
@@ -758,7 +865,47 @@ float theta;
 
 }
 
-void keyboard_control(float *car_x, float *car_y, int *car_angle)
+// void 	autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *trajectory)
+// {
+// 	// reorder trajectory waypoints
+// 	for (int point = 0; point < MAX_DETECTED_CONES; point++){
+// 		if (trajectory[point].x == -1){
+// 			printf("[AUTONOMOUS_CONTROL] Waypoints list is empty\n");
+// 			break;
+// 		}
+// 		else {
+// 			// calculate the angle between the car and the next waypoint
+// 			float dx = trajectory[point].x - *car_x;
+// 			float dy = trajectory[point].y - *car_y;
+// 			float angle = atan2(dy, dx) * 180 / M_PI;
+
+// 			// calculate the angle between the car and the next waypoint
+// 			float angle_diff = angle - *car_angle;
+// 			if (angle_diff > 180){
+// 				angle_diff -= 360;
+// 			}
+// 			else if (angle_diff < -180){
+// 				angle_diff += 360;
+// 			}
+
+// 			// if the angle is too big, rotate the car
+// 			if (angle_diff > 5){
+// 				// rotate the car to the right
+// 				*car_angle += 5;
+// 			}
+// 			else if (angle_diff < -5){
+// 				// rotate the car to the left
+// 				*car_angle -= 5;
+// 			}
+// 			else {
+// 				// move the car forward
+// 				vehicle_model(car_x, car_y, car_angle, 0.1, 0);
+// 			}
+// 		}
+// 	}
+// }
+
+void 	keyboard_control(float *car_x, float *car_y, int *car_angle)
 {
 const float     accel_step = 0.01;    // speed increment per key press
 const float     steering_step = 0.05; // steering increment in radians per key press
@@ -797,8 +944,7 @@ static float    steering = 0.0;      // current steering angle in radians
 	vehicle_model(car_x, car_y, car_angle, speed, steering);
 }
 
-
-void mapping(float car_x, float car_y, int car_angle, cone *detected_cones)
+void 	mapping(float car_x, float car_y, int car_angle, cone *detected_cones)
 {
 #define KNOWN_RADIUS
 cone_border cone_borders[MAX_DETECTED_CONES]; // maximum number of cones viewed at each position
@@ -1083,7 +1229,7 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 	
 }
 
-void trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory)
+void 	trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory)
 {
 	int N_detected_cones = 0;
 	while (detected_cones[N_detected_cones].color != -1) N_detected_cones++; // count detected cones
@@ -1169,6 +1315,7 @@ void trajectory_planning(float car_x, float car_y, float car_angle, cone *detect
 
 		}
 
+#ifdef DEBUG
 		for (int i = 0; i < N_detected_cones; i++){
 			if (connected_indices[i][B_idx] != -1 && connected_indices[i][Y_idx] != -1){
 				line(
@@ -1198,7 +1345,6 @@ void trajectory_planning(float car_x, float car_y, float car_angle, cone *detect
 			}
 		}
 
-#ifdef DEBUG
 		for (int i = 0; i < N_detected_cones; i++){
 			char c = detected_cones[i].color == yellow ? 'Y' : 'B';
 			printf("\nCone %d (%c): ", i, c);
@@ -1349,10 +1495,10 @@ void load_cones_positions(const char *filename, cone *cones, int max_cones)
 					else {
 						// Expecting a value corresponding to the current key
 						if (strcmp(current_key, "x") == 0) {
-							cones[i].x = ( atof((char *)event.data.scalar.value) ) * tmp_scale * px_per_meter;
+							cones[i].x = (float)( atof((char *)event.data.scalar.value) ) * tmp_scale * px_per_meter;
 						} 
 						else if (strcmp(current_key, "y") == 0) { 
-							cones[i].y = ( atof((char *)event.data.scalar.value) ) * tmp_scale * px_per_meter;
+							cones[i].y = (float)( atof((char *)event.data.scalar.value) ) * tmp_scale * px_per_meter;
 						} 
 						else if (strcmp(current_key, "color") == 0) {
 							if (strcmp((char *)event.data.scalar.value, "yellow") == 0) {
