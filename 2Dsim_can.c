@@ -76,9 +76,9 @@ sem_t lidar_sem;
 
 /* TASK PERIODS (in milliseconds) */
 #define PERCEPTION_PERIOD    10   /**< Period of Perception Task [ms] */
-#define TRAJECTORY_PERIOD    30   /**< Period of Trajectory Planning Task [ms] */
-#define CONTROL_PERIOD       20  /**< Period of Control Task [ms] */
-#define DISPLAY_PERIOD       37  /**< Period of Display Task [ms] (~30 Hz) */
+#define TRAJECTORY_PERIOD    10   /**< Period of Trajectory Planning Task [ms] */
+#define CONTROL_PERIOD       10  /**< Period of Control Task [ms] */
+#define DISPLAY_PERIOD       17  /**< Period of Display Task [ms] (~30 Hz) */
 
 /* DEADLINES (in milliseconds) */
 #define PERCEPTION_DEADLINE  PERCEPTION_PERIOD	/**< Deadline = Period for Perception Task */
@@ -692,9 +692,9 @@ void *trajectory_task(void *arg)
 			for (int traj_point_idx = 0; traj_point_idx < trajectory_idx; traj_point_idx++)
 			{
 				circlefill(
-					perception,
-					(int)(trajectory[traj_point_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter),
-					(int)(trajectory[traj_point_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter),
+					screen,
+					(int)(trajectory[traj_point_idx].x * px_per_meter),// - (int)(car_x * px_per_meter - MAXrange*px_per_meter),
+					(int)(trajectory[traj_point_idx].y * px_per_meter),// - (int)(car_y * px_per_meter - MAXrange*px_per_meter),
 					3,
 					makecol(0, 255, 0)
 				);
@@ -768,13 +768,19 @@ void runtime (int stop_signal, char* task_name)
 	static struct timespec iter_start, iter_end;
 	if (stop_signal == 0){
 		clock_gettime(CLOCK_MONOTONIC, &iter_start);
+		unsigned long iter_start_time_us = (iter_start.tv_sec) * 1000000UL +
+										(iter_start.tv_nsec) / 1000;
+		printf("[%s],START,%lu\n", task_name, iter_start_time_us);
 	}
 	else{
 		clock_gettime(CLOCK_MONOTONIC, &iter_end);
 		unsigned long iter_runtime_us = (iter_end.tv_sec - iter_start.tv_sec) * 1000000UL +
 										(iter_end.tv_nsec - iter_start.tv_nsec) / 1000;
 
-		printf("[%s]\t Runtime: %lu us\n", task_name, iter_runtime_us);
+		unsigned long iter_end_time_us = (iter_end.tv_sec) * 1000000UL +
+										(iter_end.tv_nsec) / 1000;
+		printf("[%s],END,%lu\n", task_name, iter_end_time_us);
+		// printf("[%s]\t Runtime: %lu us\n", task_name, iter_runtime_us);
 	}
 }
 
@@ -794,7 +800,8 @@ void *display_task(void *arg)
     int YMAX = display_buffer->h;
 
     while (!key[KEY_ESC])
-    {
+    {	
+		runtime(0, "DISPLAY");
 		pthread_mutex_lock(&draw_mutex);
 			clear_to_color(display_buffer, pink);
 			
@@ -834,6 +841,7 @@ void *display_task(void *arg)
 			);
 
 		pthread_mutex_unlock(&draw_mutex);
+		runtime(1, "DISPLAY");
 
         wait_for_period(task_id);
     }
@@ -1527,7 +1535,7 @@ void 	trajectory_planning(float car_x, float car_y, float car_angle, cone *detec
 			trajectory_idx++;
 		}
 	}
-	printf("Trajectory points: %d\n", trajectory_idx);
+	// printf("Trajectory points: %d\n", trajectory_idx);
 }
 
 
