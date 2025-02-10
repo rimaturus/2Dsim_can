@@ -1,3 +1,5 @@
+// Run: gcc -g -Ofast -o 2Dsim_can 2Dsim_can.c ptask/ptask.c `allegro-config --libs` -lyaml -lm -lpthread && sudo ./2Dsim_can
+
 /**
  * \file 2Dsim_can.c
  * \brief 2D simulation of a full autonomous driving FSAE vehicle with Allegro, PThreads, and YAML parsing.
@@ -48,6 +50,8 @@
  * \enddot
  */
 
+// #define DEBUG
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro.h>
@@ -71,8 +75,8 @@
 sem_t lidar_sem;
 
 /* TASK PERIODS (in milliseconds) */
-#define PERCEPTION_PERIOD    1   /**< Period of Perception Task [ms] */
-#define TRAJECTORY_PERIOD    10   /**< Period of Trajectory Planning Task [ms] */
+#define PERCEPTION_PERIOD    10   /**< Period of Perception Task [ms] */
+#define TRAJECTORY_PERIOD    30   /**< Period of Trajectory Planning Task [ms] */
 #define CONTROL_PERIOD       20  /**< Period of Control Task [ms] */
 #define DISPLAY_PERIOD       37  /**< Period of Display Task [ms] (~30 Hz) */
 
@@ -239,7 +243,8 @@ typedef struct {
 	float y;
 } waypoint;
 
-waypoint trajectory[MAX_DETECTED_CONES]; // trajectory
+waypoint trajectory[2*MAX_DETECTED_CONES]; // trajectory
+int trajectory_idx = 0;
 
 /** 
  * \struct cone_border
@@ -373,17 +378,14 @@ int main()
 	yellow = makecol(254, 221, 0); // yellow for cones
 	blue = makecol(46, 103, 248); // blue for cones
 		
-		if (set_gfx_mode(GFX_AUTODETECT_WINDOWED, XMAX, YMAX, 0, 0) != 0) {
-			// If windowed mode fails, try fullscreen
-			if (set_gfx_mode(GFX_AUTODETECT, XMAX, YMAX, 0, 0) != 0) {
-			allegro_message("Error setting graphics mode\n%s\n", allegro_error);
-			return -1;
-			}
-		}
+		set_gfx_mode(GFX_AUTODETECT_WINDOWED, XMAX, YMAX, 0, 0);
+		
 		set_window_title("2D FSAE Simulation"); // Optional: sets window title
 		set_display_switch_mode(SWITCH_BACKGROUND); // Allows window to be minimized/switched
 
-		clear_to_color(screen, white); // clear the screen making all pixels to white
+		printf("Screen depth = %d bits\n", bitmap_color_depth(screen));
+		readkey();
+		clear_to_color(screen, pink); // clear the screen making all pixels to white
 
 		// Create the off-screen display buffer
 	display_buffer = create_bitmap(XMAX, YMAX);
@@ -473,7 +475,7 @@ int main()
 		
 		// Drawing initial simulation
 		pthread_mutex_lock(&draw_mutex);
-			clear_to_color(display_buffer, white);
+			clear_to_color(display_buffer, pink);
 			
 			draw_sprite(display_buffer, background, 0, 0);
 			draw_sprite(display_buffer, track, 0, 0);
@@ -687,50 +689,43 @@ void *trajectory_task(void *arg)
 
 		pthread_mutex_lock(&draw_mutex);
 
-			int detected_cone_idx = 0;
-			//while (detected_cones[detected_cone_idx].color != -1){
-			while (detected_cone_idx < MAX_DETECTED_CONES-1){
-				if (detected_cones[detected_cone_idx].color == -1){
-					detected_cone_idx++;
-					break;
-				}
-				else {
+			for (int traj_point_idx = 0; traj_point_idx < trajectory_idx; traj_point_idx++)
+			{
+				circlefill(
+					perception,
+					(int)(trajectory[traj_point_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter),
+					(int)(trajectory[traj_point_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter),
+					3,
+					makecol(0, 255, 0)
+				);
+
 #ifdef DEBUG
-					char* text = (char*)malloc(10);  // Allocate space for the string
-					snprintf(text, 10, "%d", detected_cone_idx);  // Convert int to string
+				char* text = (char*)malloc(10);  // Allocate space for the string
+				snprintf(text, 10, "%d", traj_point_idx);  // Convert int to string
 
-					textout_ex(
-						perception, 
-						font, 
-						text, 
-						(int)(trajectory[detected_cone_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter), 
-						(int)(trajectory[detected_cone_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter), 
-						makecol(255, 0, 0), 
-						makecol(255, 255, 255)
-					);
+				textout_ex(
+					perception, 
+					font, 
+					text, 
+					(int)(trajectory[traj_point_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter), 
+					(int)(trajectory[traj_point_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter), 
+					makecol(255, 0, 0), 
+					makecol(255, 255, 255)
+				);
 
-					free(text);  // Free the memory
-					line(
-						car, 
-						(int)(car->w/2),
-						(int)(car->h/2),
-						(int)(car->w/2),
-						(int)(car->h/2) - 1000,
-						makecol(0, 255, 0)
-					);
+				free(text);  // Free the memory
+				line(
+					car, 
+					(int)(car->w/2),
+					(int)(car->h/2),
+					(int)(car->w/2),
+					(int)(car->h/2) - 1000,
+					makecol(0, 255, 0)
+				);
 #endif /* DEBUG */
 
-					circlefill(
-						perception,
-						(int)(trajectory[detected_cone_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter),
-						(int)(trajectory[detected_cone_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter),
-						3,
-						makecol(0, 255, 0)
-					);
-
-					detected_cone_idx++;	
-				}
 			}
+
 		pthread_mutex_unlock(&draw_mutex);
 
 		runtime(1, "TRAJ_PLANNING");
@@ -1386,17 +1381,20 @@ void update_map(cone *detected_cones) {
 								pow(detected_cones[new_idx].y - candidates[i].y, 2));
 			
 			if (distance < 3 * cone_radius) { // 10cm threshold
-				// Update candidate position with moving average
-				candidates[i].x = (candidates[i].x * candidates[i].detections + detected_cones[new_idx].x) / (candidates[i].detections + 1);
-				candidates[i].y = (candidates[i].y * candidates[i].detections + detected_cones[new_idx].y) / (candidates[i].detections + 1);
-				candidates[i].detections++;
-				
-				// If threshold reached, add to map
-				if (candidates[i].detections == DETECTIONS_THRESHOLD) {
-					track_map[track_map_idx].x = candidates[i].x;
-					track_map[track_map_idx].y = candidates[i].y;
-					track_map[track_map_idx].color = candidates[i].color;
-					track_map_idx++;
+				// Only update if we haven't reached the threshold yet
+				if (candidates[i].detections < DETECTIONS_THRESHOLD) {
+					// Update candidate position with moving average
+					candidates[i].x = (candidates[i].x * candidates[i].detections + detected_cones[new_idx].x) / (candidates[i].detections + 1);
+					candidates[i].y = (candidates[i].y * candidates[i].detections + detected_cones[new_idx].y) / (candidates[i].detections + 1);
+					candidates[i].detections++;
+					
+					// If threshold reached, add to map
+					if (candidates[i].detections == DETECTIONS_THRESHOLD) {
+						track_map[track_map_idx].x = candidates[i].x;
+						track_map[track_map_idx].y = candidates[i].y;
+						track_map[track_map_idx].color = candidates[i].color;
+						track_map_idx++;
+					}
 				}
 				
 				found = 1;
@@ -1494,21 +1492,21 @@ void 	trajectory_planning(float car_x, float car_y, float car_angle, cone *detec
 	// Draw connections between cones
 	for (int i = 0; i < track_map_idx; i++) {
 		if (connected_indices[i][B_idx] != -1 && connected_indices[i][Y_idx] != -1) {
-			line(display_buffer,
+			line(screen,
 				track_map[i].x * px_per_meter,
 				track_map[i].y * px_per_meter,
 				track_map[connected_indices[i][B_idx]].x * px_per_meter,
 				track_map[connected_indices[i][B_idx]].y * px_per_meter,
 				blue);
 			
-			line(display_buffer,
+			line(screen,
 				track_map[i].x * px_per_meter,
 				track_map[i].y * px_per_meter,
 				track_map[connected_indices[i][Y_idx]].x * px_per_meter,
 				track_map[connected_indices[i][Y_idx]].y * px_per_meter,
 				yellow);
 			
-			line(display_buffer,
+			line(screen,
 				track_map[connected_indices[i][B_idx]].x * px_per_meter,
 				track_map[connected_indices[i][B_idx]].y * px_per_meter,
 				track_map[connected_indices[i][Y_idx]].x * px_per_meter,
@@ -1519,16 +1517,17 @@ void 	trajectory_planning(float car_x, float car_y, float car_angle, cone *detec
 #endif
 
 	// Generate trajectory points from cone connections
-	int traj_idx = 0;
-	for (int i = 0; i < track_map_idx && traj_idx < MAX_DETECTED_CONES; i++) {
+	trajectory_idx = 0;
+	for (int i = 0; i < track_map_idx && trajectory_idx < MAX_DETECTED_CONES; i++) {
 		int opposite_color_idx = track_map[i].color == yellow ? B_idx : Y_idx;
 		
 		if (connected_indices[i][opposite_color_idx] != -1) {
-			trajectory[traj_idx].x = (track_map[i].x + track_map[connected_indices[i][opposite_color_idx]].x) / 2;
-			trajectory[traj_idx].y = (track_map[i].y + track_map[connected_indices[i][opposite_color_idx]].y) / 2;
-			traj_idx++;
+			trajectory[trajectory_idx].x = (track_map[i].x + track_map[connected_indices[i][opposite_color_idx]].x) / 2;
+			trajectory[trajectory_idx].y = (track_map[i].y + track_map[connected_indices[i][opposite_color_idx]].y) / 2;
+			trajectory_idx++;
 		}
 	}
+	printf("Trajectory points: %d\n", trajectory_idx);
 }
 
 
