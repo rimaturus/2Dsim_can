@@ -231,6 +231,9 @@ const float ignore_distance = 0.2f; /**< Ignore cones closer than this distance 
 
 cone detected_cones[MAX_DETECTED_CONES]; /**< Global array for storing detected cones */
 
+cone track_map[MAX_DETECTED_CONES]; /**< Global array for storing track cones detected */
+int track_map_idx = 0; /**< Index for track_map */
+
 typedef struct {
 	float x;
 	float y;
@@ -404,16 +407,16 @@ int main()
 		clear_bitmap(track);
 		clear_to_color(track, asphalt_gray);
 		
-	const int 	max_cones = 1000;
+	const int 	max_cones = 3000;
 	cone		cones[max_cones];
-	const char	filename[100] = "track/cones.yaml";
+	const char	filename[100] = "track/cones_updated.yaml";
 
 		init_cones(cones, max_cones);
 		load_cones_positions(filename, cones, max_cones);
 		printf("Cones loaded\n");
 
 		// plot cones
-		for (int i = 0; i < 1000; i++)
+		for (int i = 0; i < max_cones; i++)
 		{
 			if (cones[i].color != -1) // plot only track cones
 			{
@@ -627,7 +630,7 @@ void *perception_task(void *arg)
 			//while (detected_cones[detected_cone_idx].color != -1){
 			while (detected_cone_idx < MAX_DETECTED_CONES-1){
 				if (detected_cones[detected_cone_idx].color == -1){
-					detected_cone_idx++;
+					// detected_cone_idx++;
 					break;
 				}
 				else {
@@ -643,6 +646,21 @@ void *perception_task(void *arg)
 					detected_cone_idx++;	
 				}
 			}
+
+			int map_idx = 0;
+			while (map_idx < track_map_idx){
+				// printf("Detected cone at: %f, %f\n", detected_cones[detected_cone_idx].x, detected_cones[detected_cone_idx].y);
+				circlefill(
+					perception, 
+					(int)(track_map[map_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter), 
+					(int)(track_map[map_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter), 
+					3, 
+					makecol(255, 255, 255) //detected_cones[detected_cone_idx].color
+				);
+
+				map_idx++;	
+			}
+
 		pthread_mutex_unlock(&draw_mutex);
 
 		// update the start angle for the sliding window
@@ -955,6 +973,8 @@ void 	autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *t
 	float	minDist = 1000;
 	int 	minDist_idx = 0;
 
+	waypoint front_waypoints[MAX_DETECTED_CONES] = {-1};
+
 	// reorder trajectory waypoints
 	for (int point = 0; point < MAX_DETECTED_CONES; point++){
 		if (trajectory[point].x == -1){
@@ -973,6 +993,8 @@ void 	autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *t
 			
 			// Only consider points in front of car (+/- 90 degrees from heading)
 			if (abs(angle_diff) < 90) {
+				front_waypoints[point] = trajectory[point];
+
 				float distance = sqrt(dx*dx + dy*dy);
 				if (distance < minDist){
 					minDist = distance;
@@ -981,6 +1003,21 @@ void 	autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *t
 			}
 		}
 	}
+
+// #ifdef DEBUG
+
+	// Draw front waypoints
+	for (int point = 0; point < MAX_DETECTED_CONES; point++){
+		if (front_waypoints[point].x == -1){
+			break;
+		}
+		else {
+			circlefill(screen, (int)(front_waypoints[point].x * px_per_meter), (int)(front_waypoints[point].y * px_per_meter), 3, makecol(0, 0, 0));
+		}
+	}
+
+// #endif /* DEBUG */
+
 
 	circlefill(screen, (int)(trajectory[minDist_idx].x * px_per_meter), (int)(trajectory[minDist_idx].y * px_per_meter), 3, makecol(0, 0, 0));
 	// Calculate angle to next waypoint
@@ -1311,155 +1348,187 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 
 		cone_idx++;
 	}
+#endif /* KNOWN_RADIUS */
 
 #ifdef UNKNOWN_RADIUS
 	// [TODO] Implement the trajectory planner for the case of unknown radius with the Hough transform
 #endif /* UNKNOWN_RADIUS */	
 
-	// Now I have the center of the cones in the detected_cones array
-	// I can use this information to plan the trajectory
+	update_map(detected_cones);	
+}
 
-#endif /* KNOWN_RADIUS */
-	
+#define MAX_CANDIDATES 100000
+#define DETECTIONS_THRESHOLD 10
+
+typedef struct {
+	float x;
+	float y;
+	int color;
+	int detections;  // Number of times this candidate has been detected
+} candidate_cone;
+
+candidate_cone candidates[MAX_CANDIDATES];
+int n_candidates = 0;
+
+void update_map(cone *detected_cones) {
+	int N_new_detections = 0;
+	while (detected_cones[N_new_detections].color != -1) { 
+		N_new_detections++;
+	}
+
+	// Process each new detection
+	for (int new_idx = 0; new_idx < N_new_detections; new_idx++) {
+		int found = 0;
+		
+		// Check if detection matches any existing candidate
+		for (int i = 0; i < n_candidates; i++) {
+			float distance = sqrt(pow(detected_cones[new_idx].x - candidates[i].x, 2) + 
+								pow(detected_cones[new_idx].y - candidates[i].y, 2));
+			
+			if (distance < 3 * cone_radius) { // 10cm threshold
+				// Update candidate position with moving average
+				candidates[i].x = (candidates[i].x * candidates[i].detections + detected_cones[new_idx].x) / (candidates[i].detections + 1);
+				candidates[i].y = (candidates[i].y * candidates[i].detections + detected_cones[new_idx].y) / (candidates[i].detections + 1);
+				candidates[i].detections++;
+				
+				// If threshold reached, add to map
+				if (candidates[i].detections == DETECTIONS_THRESHOLD) {
+					track_map[track_map_idx].x = candidates[i].x;
+					track_map[track_map_idx].y = candidates[i].y;
+					track_map[track_map_idx].color = candidates[i].color;
+					track_map_idx++;
+				}
+				
+				found = 1;
+				break;
+			}
+		}
+		
+		// If no matching candidate found, create new one
+		if (!found && n_candidates < MAX_CANDIDATES) {
+			candidates[n_candidates].x = detected_cones[new_idx].x;
+			candidates[n_candidates].y = detected_cones[new_idx].y;
+			candidates[n_candidates].color = detected_cones[new_idx].color;
+			candidates[n_candidates].detections = 1;
+			n_candidates++;
+		}
+	}
 }
 
 void 	trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory)
 {
-	int N_detected_cones = 0;
-	while (detected_cones[N_detected_cones].color != -1) N_detected_cones++; // count detected cones
-
-	if (N_detected_cones < 3){
-		return; // not enough cones to plan the trajectory
+	// Initialize trajectory points to invalid values
+	for (int i = 0; i < MAX_DETECTED_CONES; i++) {
+		trajectory[i].x = -1;
+		trajectory[i].y = -1;
 	}
-	else {
-		int connected_indices[N_detected_cones][2];
-		const int B_idx = 0;
-		const int Y_idx = 1;
+	
+	if (track_map_idx < 3) {
+		return; // Not enough cones in map to plan trajectory
+	}
 
-		for (int i = 0; i < N_detected_cones; i++){
-			for (int j = 0; j < 2; j++){
-				connected_indices[i][j] = -1;
-			}
+	int connected_indices[track_map_idx][2];
+	const int B_idx = 0;
+	const int Y_idx = 1;
+
+	// Initialize connection matrix
+	for (int i = 0; i < track_map_idx; i++) {
+		for (int j = 0; j < 2; j++) {
+			connected_indices[i][j] = -1;
+		}
+	}
+
+	// Find nearest neighbors for each cone in track map
+	for (int focus_idx = 0; focus_idx < track_map_idx; focus_idx++) {
+		float mDist_Y = 1000;
+		float mDist_B = 1000;
+		int mDist_Y_idx = -1;
+		int mDist_B_idx = -1;
+
+		int focusColor = (track_map[focus_idx].color == yellow) ? Y_idx : B_idx;
+
+		if (connected_indices[focus_idx][B_idx] != -1 && connected_indices[focus_idx][Y_idx] != -1) {
+			continue; // Skip if cone already fully connected
 		}
 
-		for (int focus_idx = 0; focus_idx < N_detected_cones; focus_idx++)
-		{
-			float mDist_Y = 1000;
-			float mDist_B = 1000;
-
-			int mDist_Y_idx = -1;
-			int mDist_B_idx = -1;
-
-			// [TODO] Add a condition to check if the candidate index is free to be connected
-			int focusColor = -1;
-
-			if (detected_cones[focus_idx].color == yellow) 
-				focusColor = Y_idx;
-			else 
-				focusColor = B_idx;
-
-			if (connected_indices[focus_idx][B_idx] != -1 && connected_indices[focus_idx][Y_idx] != -1)
-			{ 	// full connected
-				continue;
-			}
-			
-			if (connected_indices[focus_idx][Y_idx] == -1)
-			{	// so search for the nearest yellow cone
-				for (int candidate_idx = 0; candidate_idx < N_detected_cones; candidate_idx++){
-					if (candidate_idx == focus_idx){
-						continue;
-					}
+		// Find nearest yellow cone if needed
+		if (connected_indices[focus_idx][Y_idx] == -1) {
+			for (int candidate_idx = 0; candidate_idx < track_map_idx; candidate_idx++) {
+				if (candidate_idx != focus_idx && track_map[candidate_idx].color == yellow) {
+					float distance = sqrt(pow(track_map[candidate_idx].x - track_map[focus_idx].x, 2) + 
+									   pow(track_map[candidate_idx].y - track_map[focus_idx].y, 2));
 					
-					if ((detected_cones[candidate_idx].color == yellow))// && (connected_indices[candidate_idx][focusColor] == -1))
-					{
-						float distance = sqrt(pow(detected_cones[candidate_idx].x - detected_cones[focus_idx].x, 2) + pow(detected_cones[candidate_idx].y - detected_cones[focus_idx].y, 2));
-						
-						if (distance < mDist_Y){
-							mDist_Y = distance;
-							mDist_Y_idx = candidate_idx;
-						}
+					if (distance < mDist_Y) {
+						mDist_Y = distance;
+						mDist_Y_idx = candidate_idx;
 					}
 				}
-				// found the yellow one
-				connected_indices[focus_idx][Y_idx] = mDist_Y_idx; 
+			}
+			if (mDist_Y_idx >= 0) {
+				connected_indices[focus_idx][Y_idx] = mDist_Y_idx;
 				connected_indices[mDist_Y_idx][focusColor] = focus_idx;
 			}
+		}
 
-			if (connected_indices[focus_idx][B_idx] == -1)
-			{	// so search for the nearest blue cone
-				for (int candidate_idx = 0; candidate_idx < N_detected_cones; candidate_idx++){
-					if (candidate_idx == focus_idx){
-						continue;
-					}
-
-					if ((detected_cones[candidate_idx].color == blue))// && (connected_indices[candidate_idx][focusColor] == -1))
-					{
-						float distance = sqrt(pow(detected_cones[candidate_idx].x - detected_cones[focus_idx].x, 2) + pow(detected_cones[candidate_idx].y - detected_cones[focus_idx].y, 2));
-						
-						if (distance < mDist_B){
-							mDist_B = distance;
-							mDist_B_idx = candidate_idx;
-						}
+		// Find nearest blue cone if needed
+		if (connected_indices[focus_idx][B_idx] == -1) {
+			for (int candidate_idx = 0; candidate_idx < track_map_idx; candidate_idx++) {
+				if (candidate_idx != focus_idx && track_map[candidate_idx].color == blue) {
+					float distance = sqrt(pow(track_map[candidate_idx].x - track_map[focus_idx].x, 2) + 
+									   pow(track_map[candidate_idx].y - track_map[focus_idx].y, 2));
+					
+					if (distance < mDist_B) {
+						mDist_B = distance;
+						mDist_B_idx = candidate_idx;
 					}
 				}
-				// found the blue one
-				connected_indices[focus_idx][B_idx] = mDist_B_idx; 
+			}
+			if (mDist_B_idx >= 0) {
+				connected_indices[focus_idx][B_idx] = mDist_B_idx;
 				connected_indices[mDist_B_idx][focusColor] = focus_idx;
 			}
-
 		}
+	}
 
 #ifdef DEBUG
-		for (int i = 0; i < N_detected_cones; i++){
-			if (connected_indices[i][B_idx] != -1 && connected_indices[i][Y_idx] != -1){
-				line(
-					display_buffer,
-					detected_cones[i].x * px_per_meter,
-					detected_cones[i].y * px_per_meter,
-					detected_cones[connected_indices[i][B_idx]].x * px_per_meter,
-					detected_cones[connected_indices[i][B_idx]].y * px_per_meter,
-					blue
-				);
-				line(
-					display_buffer,
-					detected_cones[i].x * px_per_meter,
-					detected_cones[i].y * px_per_meter,
-					detected_cones[connected_indices[i][Y_idx]].x * px_per_meter,
-					detected_cones[connected_indices[i][Y_idx]].y * px_per_meter,
-					yellow
-				);
-				line(
-					display_buffer,
-					detected_cones[connected_indices[i][B_idx]].x * px_per_meter,
-					detected_cones[connected_indices[i][B_idx]].y * px_per_meter,
-					detected_cones[connected_indices[i][Y_idx]].x * px_per_meter,
-					detected_cones[connected_indices[i][Y_idx]].y * px_per_meter,
-					makecol(0, 255, 0)
-				);
-			}
+	// Draw connections between cones
+	for (int i = 0; i < track_map_idx; i++) {
+		if (connected_indices[i][B_idx] != -1 && connected_indices[i][Y_idx] != -1) {
+			line(display_buffer,
+				track_map[i].x * px_per_meter,
+				track_map[i].y * px_per_meter,
+				track_map[connected_indices[i][B_idx]].x * px_per_meter,
+				track_map[connected_indices[i][B_idx]].y * px_per_meter,
+				blue);
+			
+			line(display_buffer,
+				track_map[i].x * px_per_meter,
+				track_map[i].y * px_per_meter,
+				track_map[connected_indices[i][Y_idx]].x * px_per_meter,
+				track_map[connected_indices[i][Y_idx]].y * px_per_meter,
+				yellow);
+			
+			line(display_buffer,
+				track_map[connected_indices[i][B_idx]].x * px_per_meter,
+				track_map[connected_indices[i][B_idx]].y * px_per_meter,
+				track_map[connected_indices[i][Y_idx]].x * px_per_meter,
+				track_map[connected_indices[i][Y_idx]].y * px_per_meter,
+				makecol(0, 255, 0));
 		}
+	}
+#endif
 
-		for (int i = 0; i < N_detected_cones; i++){
-			char c = detected_cones[i].color == yellow ? 'Y' : 'B';
-			printf("\nCone %d (%c): ", i, c);
-			for (int j = 0; j < 2; j++){
-				char c = detected_cones[j].color == yellow ? 'Y' : 'B';
-				printf("%d (%c)\t", connected_indices[i][j], c);
-			}
+	// Generate trajectory points from cone connections
+	int traj_idx = 0;
+	for (int i = 0; i < track_map_idx && traj_idx < MAX_DETECTED_CONES; i++) {
+		int opposite_color_idx = track_map[i].color == yellow ? B_idx : Y_idx;
+		
+		if (connected_indices[i][opposite_color_idx] != -1) {
+			trajectory[traj_idx].x = (track_map[i].x + track_map[connected_indices[i][opposite_color_idx]].x) / 2;
+			trajectory[traj_idx].y = (track_map[i].y + track_map[connected_indices[i][opposite_color_idx]].y) / 2;
+			traj_idx++;
 		}
-#endif /* DEBUG */
-
-		// Now I have in the connected_indices matrix the inidices of the connected cones
-		// I have to use only the connection made by cones of different color 
-		for (int i = 0; i < N_detected_cones; i++){
-			int opposite_color_idx = detected_cones[i].color == yellow ? B_idx : Y_idx;
-
-			trajectory[i].x = (detected_cones[i].x + detected_cones[connected_indices[i][opposite_color_idx]].x) / 2;
-			trajectory[i].y = (detected_cones[i].y + detected_cones[connected_indices[i][opposite_color_idx]].y) / 2;
-
-		}
-
- 	}
+	}
 }
 
 
