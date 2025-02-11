@@ -1,0 +1,331 @@
+\@ifundefined {etoctocstyle}{\let \etoc@startlocaltoc \@gobble \let \etoc@settocdepth \@gobble \let \etoc@depthtag \@gobble \let \etoc@setlocaltop \@gobble }{}
+\contentsline {chapter}{\numberline {1}2D FSAE Simulation}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Project Overview}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Key Features}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Project Structure}{1}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Global Call Graph}{2}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Task Descriptions}{2}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Building and Running the Simulation}{2}{section.1.6}%
+\contentsline {chapter}{\numberline {2}Module Index}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Modules}{3}{section.2.1}%
+\contentsline {chapter}{\numberline {3}Class Index}{5}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Class List}{5}{section.3.1}%
+\contentsline {chapter}{\numberline {4}File Index}{7}{chapter.4}%
+\contentsline {section}{\numberline {4.1}File List}{7}{section.4.1}%
+\contentsline {chapter}{\numberline {5}Module Documentation}{9}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Cone Detection and Mapping}{9}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Detailed Description}{10}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Function Documentation}{10}{subsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.2.1}calculate\_circle\_points()}{10}{subsubsection.5.1.2.1}%
+\contentsline {subsubsection}{\numberline {5.1.2.2}check\_nearest\_point()}{11}{subsubsection.5.1.2.2}%
+\contentsline {subsubsection}{\numberline {5.1.2.3}find\_closest\_points()}{11}{subsubsection.5.1.2.3}%
+\contentsline {subsubsection}{\numberline {5.1.2.4}find\_cone\_center()}{11}{subsubsection.5.1.2.4}%
+\contentsline {subsubsection}{\numberline {5.1.2.5}find\_local\_minima()}{11}{subsubsection.5.1.2.5}%
+\contentsline {subsubsection}{\numberline {5.1.2.6}init\_cone\_borders()}{12}{subsubsection.5.1.2.6}%
+\contentsline {subsubsection}{\numberline {5.1.2.7}lidar()}{12}{subsubsection.5.1.2.7}%
+\contentsline {subsubsection}{\numberline {5.1.2.8}mapping()}{12}{subsubsection.5.1.2.8}%
+\contentsline {subsubsection}{\numberline {5.1.2.9}update\_map()}{13}{subsubsection.5.1.2.9}%
+\contentsline {subsection}{\numberline {5.1.3}Variable Documentation}{13}{subsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.3.1}angle\_step}{13}{subsubsection.5.1.3.1}%
+\contentsline {subsubsection}{\numberline {5.1.3.2}candidates}{13}{subsubsection.5.1.3.2}%
+\contentsline {subsubsection}{\numberline {5.1.3.3}detected\_cones}{13}{subsubsection.5.1.3.3}%
+\contentsline {subsubsection}{\numberline {5.1.3.4}distance\_resolution}{14}{subsubsection.5.1.3.4}%
+\contentsline {subsubsection}{\numberline {5.1.3.5}ignore\_distance}{14}{subsubsection.5.1.3.5}%
+\contentsline {subsubsection}{\numberline {5.1.3.6}n\_candidates}{14}{subsubsection.5.1.3.6}%
+\contentsline {subsubsection}{\numberline {5.1.3.7}sliding\_window}{14}{subsubsection.5.1.3.7}%
+\contentsline {subsubsection}{\numberline {5.1.3.8}start\_angle}{14}{subsubsection.5.1.3.8}%
+\contentsline {subsubsection}{\numberline {5.1.3.9}track\_map}{14}{subsubsection.5.1.3.9}%
+\contentsline {subsubsection}{\numberline {5.1.3.10}track\_map\_idx}{14}{subsubsection.5.1.3.10}%
+\contentsline {section}{\numberline {5.2}Cone Detection and Mapping}{15}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Vehicle model and control}{15}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Detailed Description}{15}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Function Documentation}{15}{subsection.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.3.2.1}vehicle\_model()}{15}{subsubsection.5.3.2.1}%
+\contentsline {chapter}{\numberline {6}Class Documentation}{17}{chapter.6}%
+\contentsline {section}{\numberline {6.1}candidate\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}cone Struct Reference}{17}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Detailed Description}{17}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Member Data Documentation}{17}{subsection.6.1.2}%
+\contentsline {subsubsection}{\numberline {6.1.2.1}color}{18}{subsubsection.6.1.2.1}%
+\contentsline {subsubsection}{\numberline {6.1.2.2}detections}{18}{subsubsection.6.1.2.2}%
+\contentsline {subsubsection}{\numberline {6.1.2.3}x}{18}{subsubsection.6.1.2.3}%
+\contentsline {subsubsection}{\numberline {6.1.2.4}y}{18}{subsubsection.6.1.2.4}%
+\contentsline {section}{\numberline {6.2}cone Struct Reference}{18}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Detailed Description}{18}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Member Data Documentation}{20}{subsection.6.2.2}%
+\contentsline {subsubsection}{\numberline {6.2.2.1}color}{20}{subsubsection.6.2.2.1}%
+\contentsline {subsubsection}{\numberline {6.2.2.2}x}{20}{subsubsection.6.2.2.2}%
+\contentsline {subsubsection}{\numberline {6.2.2.3}y}{20}{subsubsection.6.2.2.3}%
+\contentsline {section}{\numberline {6.3}cone\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}border Struct Reference}{20}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Detailed Description}{20}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Member Data Documentation}{21}{subsection.6.3.2}%
+\contentsline {subsubsection}{\numberline {6.3.2.1}angles}{21}{subsubsection.6.3.2.1}%
+\contentsline {subsubsection}{\numberline {6.3.2.2}color}{21}{subsubsection.6.3.2.2}%
+\contentsline {section}{\numberline {6.4}Hough\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}circle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}point\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}t Struct Reference}{21}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Detailed Description}{21}{subsection.6.4.1}%
+\contentsline {subsection}{\numberline {6.4.2}Member Data Documentation}{21}{subsection.6.4.2}%
+\contentsline {subsubsection}{\numberline {6.4.2.1}color}{22}{subsubsection.6.4.2.1}%
+\contentsline {subsubsection}{\numberline {6.4.2.2}distance}{22}{subsubsection.6.4.2.2}%
+\contentsline {subsubsection}{\numberline {6.4.2.3}x}{22}{subsubsection.6.4.2.3}%
+\contentsline {subsubsection}{\numberline {6.4.2.4}y}{22}{subsubsection.6.4.2.4}%
+\contentsline {section}{\numberline {6.5}pointcloud\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}t Struct Reference}{22}{section.6.5}%
+\contentsline {subsection}{\numberline {6.5.1}Detailed Description}{22}{subsection.6.5.1}%
+\contentsline {subsection}{\numberline {6.5.2}Member Data Documentation}{23}{subsection.6.5.2}%
+\contentsline {subsubsection}{\numberline {6.5.2.1}color}{23}{subsubsection.6.5.2.1}%
+\contentsline {subsubsection}{\numberline {6.5.2.2}distance}{23}{subsubsection.6.5.2.2}%
+\contentsline {subsubsection}{\numberline {6.5.2.3}point\_x}{23}{subsubsection.6.5.2.3}%
+\contentsline {subsubsection}{\numberline {6.5.2.4}point\_y}{23}{subsubsection.6.5.2.4}%
+\contentsline {section}{\numberline {6.6}task\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}par Struct Reference}{23}{section.6.6}%
+\contentsline {subsection}{\numberline {6.6.1}Member Data Documentation}{24}{subsection.6.6.1}%
+\contentsline {subsubsection}{\numberline {6.6.1.1}arg}{24}{subsubsection.6.6.1.1}%
+\contentsline {subsubsection}{\numberline {6.6.1.2}asem}{24}{subsubsection.6.6.1.2}%
+\contentsline {subsubsection}{\numberline {6.6.1.3}at}{24}{subsubsection.6.6.1.3}%
+\contentsline {subsubsection}{\numberline {6.6.1.4}deadline}{24}{subsubsection.6.6.1.4}%
+\contentsline {subsubsection}{\numberline {6.6.1.5}dl}{24}{subsubsection.6.6.1.5}%
+\contentsline {subsubsection}{\numberline {6.6.1.6}dmiss}{25}{subsubsection.6.6.1.6}%
+\contentsline {subsubsection}{\numberline {6.6.1.7}period}{25}{subsubsection.6.6.1.7}%
+\contentsline {subsubsection}{\numberline {6.6.1.8}prio}{25}{subsubsection.6.6.1.8}%
+\contentsline {subsubsection}{\numberline {6.6.1.9}tid}{25}{subsubsection.6.6.1.9}%
+\contentsline {section}{\numberline {6.7}timespec\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}\_\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}custom Struct Reference}{25}{section.6.7}%
+\contentsline {subsection}{\numberline {6.7.1}Member Data Documentation}{25}{subsection.6.7.1}%
+\contentsline {subsubsection}{\numberline {6.7.1.1}tv\_nsec}{25}{subsubsection.6.7.1.1}%
+\contentsline {subsubsection}{\numberline {6.7.1.2}tv\_sec}{26}{subsubsection.6.7.1.2}%
+\contentsline {section}{\numberline {6.8}waypoint Struct Reference}{26}{section.6.8}%
+\contentsline {subsection}{\numberline {6.8.1}Detailed Description}{26}{subsection.6.8.1}%
+\contentsline {subsection}{\numberline {6.8.2}Member Data Documentation}{26}{subsection.6.8.2}%
+\contentsline {subsubsection}{\numberline {6.8.2.1}x}{26}{subsubsection.6.8.2.1}%
+\contentsline {subsubsection}{\numberline {6.8.2.2}y}{27}{subsubsection.6.8.2.2}%
+\contentsline {chapter}{\numberline {7}File Documentation}{29}{chapter.7}%
+\contentsline {section}{\numberline {7.1}include/control.h File Reference}{29}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}Detailed Description}{30}{subsection.7.1.1}%
+\contentsline {subsection}{\numberline {7.1.2}Function Documentation}{31}{subsection.7.1.2}%
+\contentsline {subsubsection}{\numberline {7.1.2.1}autonomous\_control()}{31}{subsubsection.7.1.2.1}%
+\contentsline {subsubsection}{\numberline {7.1.2.2}keyboard\_control()}{32}{subsubsection.7.1.2.2}%
+\contentsline {subsection}{\numberline {7.1.3}Variable Documentation}{33}{subsection.7.1.3}%
+\contentsline {subsubsection}{\numberline {7.1.3.1}pedal}{33}{subsubsection.7.1.3.1}%
+\contentsline {subsubsection}{\numberline {7.1.3.2}steering}{33}{subsubsection.7.1.3.2}%
+\contentsline {section}{\numberline {7.2}include/display.h File Reference}{34}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}Detailed Description}{35}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}Function Documentation}{35}{subsection.7.2.2}%
+\contentsline {subsubsection}{\numberline {7.2.2.1}draw\_car()}{35}{subsubsection.7.2.2.1}%
+\contentsline {subsubsection}{\numberline {7.2.2.2}draw\_cone\_map()}{36}{subsubsection.7.2.2.2}%
+\contentsline {subsubsection}{\numberline {7.2.2.3}draw\_detected\_cones()}{37}{subsubsection.7.2.2.3}%
+\contentsline {subsubsection}{\numberline {7.2.2.4}draw\_dir\_arrow()}{37}{subsubsection.7.2.2.4}%
+\contentsline {subsubsection}{\numberline {7.2.2.5}draw\_lidar()}{38}{subsubsection.7.2.2.5}%
+\contentsline {subsubsection}{\numberline {7.2.2.6}draw\_perception()}{38}{subsubsection.7.2.2.6}%
+\contentsline {subsubsection}{\numberline {7.2.2.7}draw\_track()}{39}{subsubsection.7.2.2.7}%
+\contentsline {subsubsection}{\numberline {7.2.2.8}draw\_trajectory()}{40}{subsubsection.7.2.2.8}%
+\contentsline {subsubsection}{\numberline {7.2.2.9}update\_display()}{40}{subsubsection.7.2.2.9}%
+\contentsline {section}{\numberline {7.3}include/globals.h File Reference}{41}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}Detailed Description}{43}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Tasks Constants}{43}{subsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.3.3}Drawing Mutex}{43}{subsection.7.3.3}%
+\contentsline {subsection}{\numberline {7.3.4}Conversion Constants}{43}{subsection.7.3.4}%
+\contentsline {subsection}{\numberline {7.3.5}Visualization Constants}{44}{subsection.7.3.5}%
+\contentsline {subsection}{\numberline {7.3.6}Car Pose}{44}{subsection.7.3.6}%
+\contentsline {subsection}{\numberline {7.3.7}Perception Constants}{44}{subsection.7.3.7}%
+\contentsline {subsection}{\numberline {7.3.8}Macro Definition Documentation}{44}{subsection.7.3.8}%
+\contentsline {subsubsection}{\numberline {7.3.8.1}CONTROL\_DEADLINE}{45}{subsubsection.7.3.8.1}%
+\contentsline {subsubsection}{\numberline {7.3.8.2}CONTROL\_PERIOD}{45}{subsubsection.7.3.8.2}%
+\contentsline {subsubsection}{\numberline {7.3.8.3}CONTROL\_PRIORITY}{45}{subsubsection.7.3.8.3}%
+\contentsline {subsubsection}{\numberline {7.3.8.4}deg2rad}{45}{subsubsection.7.3.8.4}%
+\contentsline {subsubsection}{\numberline {7.3.8.5}DISPLAY\_DEADLINE}{45}{subsubsection.7.3.8.5}%
+\contentsline {subsubsection}{\numberline {7.3.8.6}DISPLAY\_PERIOD}{45}{subsubsection.7.3.8.6}%
+\contentsline {subsubsection}{\numberline {7.3.8.7}DISPLAY\_PRIORITY}{45}{subsubsection.7.3.8.7}%
+\contentsline {subsubsection}{\numberline {7.3.8.8}MAX\_DETECTED\_CONES}{45}{subsubsection.7.3.8.8}%
+\contentsline {subsubsection}{\numberline {7.3.8.9}maxThrottleHeight}{46}{subsubsection.7.3.8.9}%
+\contentsline {subsubsection}{\numberline {7.3.8.10}PERCEPTION\_DEADLINE}{46}{subsubsection.7.3.8.10}%
+\contentsline {subsubsection}{\numberline {7.3.8.11}PERCEPTION\_PERIOD}{46}{subsubsection.7.3.8.11}%
+\contentsline {subsubsection}{\numberline {7.3.8.12}PERCEPTION\_PRIORITY}{46}{subsubsection.7.3.8.12}%
+\contentsline {subsubsection}{\numberline {7.3.8.13}PROFILING}{46}{subsubsection.7.3.8.13}%
+\contentsline {subsubsection}{\numberline {7.3.8.14}px\_per\_meter}{46}{subsubsection.7.3.8.14}%
+\contentsline {subsubsection}{\numberline {7.3.8.15}TRAJECTORY\_DEADLINE}{46}{subsubsection.7.3.8.15}%
+\contentsline {subsubsection}{\numberline {7.3.8.16}TRAJECTORY\_PERIOD}{46}{subsubsection.7.3.8.16}%
+\contentsline {subsubsection}{\numberline {7.3.8.17}TRAJECTORY\_PRIORITY}{47}{subsubsection.7.3.8.17}%
+\contentsline {subsection}{\numberline {7.3.9}Variable Documentation}{47}{subsection.7.3.9}%
+\contentsline {subsubsection}{\numberline {7.3.9.1}asphalt\_gray}{47}{subsubsection.7.3.9.1}%
+\contentsline {subsubsection}{\numberline {7.3.9.2}background}{47}{subsubsection.7.3.9.2}%
+\contentsline {subsubsection}{\numberline {7.3.9.3}blue}{47}{subsubsection.7.3.9.3}%
+\contentsline {subsubsection}{\numberline {7.3.9.4}car}{47}{subsubsection.7.3.9.4}%
+\contentsline {subsubsection}{\numberline {7.3.9.5}car\_angle}{48}{subsubsection.7.3.9.5}%
+\contentsline {subsubsection}{\numberline {7.3.9.6}car\_x}{48}{subsubsection.7.3.9.6}%
+\contentsline {subsubsection}{\numberline {7.3.9.7}car\_y}{48}{subsubsection.7.3.9.7}%
+\contentsline {subsubsection}{\numberline {7.3.9.8}cone\_radius}{48}{subsubsection.7.3.9.8}%
+\contentsline {subsubsection}{\numberline {7.3.9.9}control\_panel}{49}{subsubsection.7.3.9.9}%
+\contentsline {subsubsection}{\numberline {7.3.9.10}display\_buffer}{49}{subsubsection.7.3.9.10}%
+\contentsline {subsubsection}{\numberline {7.3.9.11}draw\_mutex}{49}{subsubsection.7.3.9.11}%
+\contentsline {subsubsection}{\numberline {7.3.9.12}grass\_green}{49}{subsubsection.7.3.9.12}%
+\contentsline {subsubsection}{\numberline {7.3.9.13}lidar\_sem}{49}{subsubsection.7.3.9.13}%
+\contentsline {subsubsection}{\numberline {7.3.9.14}measures}{50}{subsubsection.7.3.9.14}%
+\contentsline {subsubsection}{\numberline {7.3.9.15}perception}{50}{subsubsection.7.3.9.15}%
+\contentsline {subsubsection}{\numberline {7.3.9.16}pink}{50}{subsubsection.7.3.9.16}%
+\contentsline {subsubsection}{\numberline {7.3.9.17}steering\_wheel}{50}{subsubsection.7.3.9.17}%
+\contentsline {subsubsection}{\numberline {7.3.9.18}throttle\_gauge}{50}{subsubsection.7.3.9.18}%
+\contentsline {subsubsection}{\numberline {7.3.9.19}title}{51}{subsubsection.7.3.9.19}%
+\contentsline {subsubsection}{\numberline {7.3.9.20}track}{51}{subsubsection.7.3.9.20}%
+\contentsline {subsubsection}{\numberline {7.3.9.21}trajectory\_bmp}{51}{subsubsection.7.3.9.21}%
+\contentsline {subsubsection}{\numberline {7.3.9.22}white}{51}{subsubsection.7.3.9.22}%
+\contentsline {subsubsection}{\numberline {7.3.9.23}X\_MAX}{51}{subsubsection.7.3.9.23}%
+\contentsline {subsubsection}{\numberline {7.3.9.24}Y\_MAX}{52}{subsubsection.7.3.9.24}%
+\contentsline {subsubsection}{\numberline {7.3.9.25}yellow}{52}{subsubsection.7.3.9.25}%
+\contentsline {section}{\numberline {7.4}include/perception.h File Reference}{52}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}Detailed Description}{53}{subsection.7.4.1}%
+\contentsline {subsection}{\numberline {7.4.2}Macro Definition Documentation}{54}{subsection.7.4.2}%
+\contentsline {subsubsection}{\numberline {7.4.2.1}DETECTIONS\_THRESHOLD}{54}{subsubsection.7.4.2.1}%
+\contentsline {subsubsection}{\numberline {7.4.2.2}MAX\_CANDIDATES}{54}{subsubsection.7.4.2.2}%
+\contentsline {subsubsection}{\numberline {7.4.2.3}MAX\_CONES\_MAP}{54}{subsubsection.7.4.2.3}%
+\contentsline {subsubsection}{\numberline {7.4.2.4}MAX\_POINTS\_PER\_CONE}{54}{subsubsection.7.4.2.4}%
+\contentsline {subsubsection}{\numberline {7.4.2.5}maxRange}{55}{subsubsection.7.4.2.5}%
+\contentsline {section}{\numberline {7.5}include/ptask.h File Reference}{55}{section.7.5}%
+\contentsline {subsection}{\numberline {7.5.1}Detailed Description}{57}{subsection.7.5.1}%
+\contentsline {subsection}{\numberline {7.5.2}Macro Definition Documentation}{58}{subsection.7.5.2}%
+\contentsline {subsubsection}{\numberline {7.5.2.1}ACT}{58}{subsubsection.7.5.2.1}%
+\contentsline {subsubsection}{\numberline {7.5.2.2}DEACT}{58}{subsubsection.7.5.2.2}%
+\contentsline {subsubsection}{\numberline {7.5.2.3}MAX\_TASKS}{58}{subsubsection.7.5.2.3}%
+\contentsline {subsubsection}{\numberline {7.5.2.4}MICRO}{59}{subsubsection.7.5.2.4}%
+\contentsline {subsubsection}{\numberline {7.5.2.5}NANO}{59}{subsubsection.7.5.2.5}%
+\contentsline {subsection}{\numberline {7.5.3}Typedef Documentation}{59}{subsection.7.5.3}%
+\contentsline {subsubsection}{\numberline {7.5.3.1}task\_par}{59}{subsubsection.7.5.3.1}%
+\contentsline {subsubsection}{\numberline {7.5.3.2}timespec\_custom}{59}{subsubsection.7.5.3.2}%
+\contentsline {subsection}{\numberline {7.5.4}Function Documentation}{59}{subsection.7.5.4}%
+\contentsline {subsubsection}{\numberline {7.5.4.1}deadline\_miss()}{59}{subsubsection.7.5.4.1}%
+\contentsline {subsubsection}{\numberline {7.5.4.2}get\_systime()}{59}{subsubsection.7.5.4.2}%
+\contentsline {subsubsection}{\numberline {7.5.4.3}get\_task\_index()}{60}{subsubsection.7.5.4.3}%
+\contentsline {subsubsection}{\numberline {7.5.4.4}ptask\_init()}{60}{subsubsection.7.5.4.4}%
+\contentsline {subsubsection}{\numberline {7.5.4.5}task\_activate()}{60}{subsubsection.7.5.4.5}%
+\contentsline {subsubsection}{\numberline {7.5.4.6}task\_adline()}{61}{subsubsection.7.5.4.6}%
+\contentsline {subsubsection}{\numberline {7.5.4.7}task\_atime()}{61}{subsubsection.7.5.4.7}%
+\contentsline {subsubsection}{\numberline {7.5.4.8}task\_create()}{61}{subsubsection.7.5.4.8}%
+\contentsline {subsubsection}{\numberline {7.5.4.9}task\_deadline()}{61}{subsubsection.7.5.4.9}%
+\contentsline {subsubsection}{\numberline {7.5.4.10}task\_dmiss()}{62}{subsubsection.7.5.4.10}%
+\contentsline {subsubsection}{\numberline {7.5.4.11}task\_period()}{62}{subsubsection.7.5.4.11}%
+\contentsline {subsubsection}{\numberline {7.5.4.12}task\_set\_deadline()}{62}{subsubsection.7.5.4.12}%
+\contentsline {subsubsection}{\numberline {7.5.4.13}task\_set\_period()}{62}{subsubsection.7.5.4.13}%
+\contentsline {subsubsection}{\numberline {7.5.4.14}time\_add\_ms()}{62}{subsubsection.7.5.4.14}%
+\contentsline {subsubsection}{\numberline {7.5.4.15}time\_cmp()}{62}{subsubsection.7.5.4.15}%
+\contentsline {subsubsection}{\numberline {7.5.4.16}time\_copy()}{63}{subsubsection.7.5.4.16}%
+\contentsline {subsubsection}{\numberline {7.5.4.17}wait\_for\_activation()}{63}{subsubsection.7.5.4.17}%
+\contentsline {subsubsection}{\numberline {7.5.4.18}wait\_for\_period()}{63}{subsubsection.7.5.4.18}%
+\contentsline {subsubsection}{\numberline {7.5.4.19}wait\_for\_task\_end()}{64}{subsubsection.7.5.4.19}%
+\contentsline {subsection}{\numberline {7.5.5}Variable Documentation}{64}{subsection.7.5.5}%
+\contentsline {subsubsection}{\numberline {7.5.5.1}ptask\_policy}{64}{subsubsection.7.5.5.1}%
+\contentsline {subsubsection}{\numberline {7.5.5.2}ptask\_t0}{64}{subsubsection.7.5.5.2}%
+\contentsline {subsubsection}{\numberline {7.5.5.3}tp}{64}{subsubsection.7.5.5.3}%
+\contentsline {section}{\numberline {7.6}include/tasks.h File Reference}{65}{section.7.6}%
+\contentsline {subsection}{\numberline {7.6.1}Detailed Description}{66}{subsection.7.6.1}%
+\contentsline {subsection}{\numberline {7.6.2}Function Documentation}{66}{subsection.7.6.2}%
+\contentsline {subsubsection}{\numberline {7.6.2.1}control\_task()}{66}{subsubsection.7.6.2.1}%
+\contentsline {subsubsection}{\numberline {7.6.2.2}display\_task()}{67}{subsubsection.7.6.2.2}%
+\contentsline {subsubsection}{\numberline {7.6.2.3}perception\_task()}{68}{subsubsection.7.6.2.3}%
+\contentsline {subsubsection}{\numberline {7.6.2.4}trajectory\_task()}{72}{subsubsection.7.6.2.4}%
+\contentsline {section}{\numberline {7.7}include/trajectory.h File Reference}{72}{section.7.7}%
+\contentsline {subsection}{\numberline {7.7.1}Detailed Description}{74}{subsection.7.7.1}%
+\contentsline {subsection}{\numberline {7.7.2}Function Documentation}{74}{subsection.7.7.2}%
+\contentsline {subsubsection}{\numberline {7.7.2.1}trajectory\_planning()}{74}{subsubsection.7.7.2.1}%
+\contentsline {subsection}{\numberline {7.7.3}Variable Documentation}{74}{subsection.7.7.3}%
+\contentsline {subsubsection}{\numberline {7.7.3.1}trajectory}{74}{subsubsection.7.7.3.1}%
+\contentsline {subsubsection}{\numberline {7.7.3.2}trajectory\_idx}{75}{subsubsection.7.7.3.2}%
+\contentsline {section}{\numberline {7.8}include/utilities.h File Reference}{75}{section.7.8}%
+\contentsline {subsection}{\numberline {7.8.1}Detailed Description}{76}{subsection.7.8.1}%
+\contentsline {subsection}{\numberline {7.8.2}Function Documentation}{76}{subsection.7.8.2}%
+\contentsline {subsubsection}{\numberline {7.8.2.1}angle\_rotation\_sprite()}{76}{subsubsection.7.8.2.1}%
+\contentsline {subsubsection}{\numberline {7.8.2.2}init\_cones()}{77}{subsubsection.7.8.2.2}%
+\contentsline {subsubsection}{\numberline {7.8.2.3}load\_cones\_positions()}{79}{subsubsection.7.8.2.3}%
+\contentsline {subsubsection}{\numberline {7.8.2.4}runtime()}{80}{subsubsection.7.8.2.4}%
+\contentsline {section}{\numberline {7.9}include/vehicle.h File Reference}{80}{section.7.9}%
+\contentsline {section}{\numberline {7.10}readme.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}md File Reference}{81}{section.7.10}%
+\contentsline {section}{\numberline {7.11}src/control.c File Reference}{81}{section.7.11}%
+\contentsline {subsection}{\numberline {7.11.1}Detailed Description}{82}{subsection.7.11.1}%
+\contentsline {subsection}{\numberline {7.11.2}Function Documentation}{82}{subsection.7.11.2}%
+\contentsline {subsubsection}{\numberline {7.11.2.1}autonomous\_control()}{82}{subsubsection.7.11.2.1}%
+\contentsline {subsubsection}{\numberline {7.11.2.2}keyboard\_control()}{83}{subsubsection.7.11.2.2}%
+\contentsline {subsection}{\numberline {7.11.3}Variable Documentation}{84}{subsection.7.11.3}%
+\contentsline {subsubsection}{\numberline {7.11.3.1}pedal}{84}{subsubsection.7.11.3.1}%
+\contentsline {subsubsection}{\numberline {7.11.3.2}steering}{84}{subsubsection.7.11.3.2}%
+\contentsline {section}{\numberline {7.12}src/display.c File Reference}{85}{section.7.12}%
+\contentsline {subsection}{\numberline {7.12.1}Detailed Description}{86}{subsection.7.12.1}%
+\contentsline {subsection}{\numberline {7.12.2}Function Documentation}{86}{subsection.7.12.2}%
+\contentsline {subsubsection}{\numberline {7.12.2.1}draw\_car()}{86}{subsubsection.7.12.2.1}%
+\contentsline {subsubsection}{\numberline {7.12.2.2}draw\_cone\_map()}{87}{subsubsection.7.12.2.2}%
+\contentsline {subsubsection}{\numberline {7.12.2.3}draw\_controls()}{88}{subsubsection.7.12.2.3}%
+\contentsline {subsubsection}{\numberline {7.12.2.4}draw\_detected\_cones()}{88}{subsubsection.7.12.2.4}%
+\contentsline {subsubsection}{\numberline {7.12.2.5}draw\_dir\_arrow()}{89}{subsubsection.7.12.2.5}%
+\contentsline {subsubsection}{\numberline {7.12.2.6}draw\_lidar()}{89}{subsubsection.7.12.2.6}%
+\contentsline {subsubsection}{\numberline {7.12.2.7}draw\_perception()}{90}{subsubsection.7.12.2.7}%
+\contentsline {subsubsection}{\numberline {7.12.2.8}draw\_track()}{90}{subsubsection.7.12.2.8}%
+\contentsline {subsubsection}{\numberline {7.12.2.9}draw\_trajectory()}{91}{subsubsection.7.12.2.9}%
+\contentsline {subsubsection}{\numberline {7.12.2.10}update\_display()}{91}{subsubsection.7.12.2.10}%
+\contentsline {section}{\numberline {7.13}src/globals.c File Reference}{92}{section.7.13}%
+\contentsline {subsection}{\numberline {7.13.1}Detailed Description}{93}{subsection.7.13.1}%
+\contentsline {subsection}{\numberline {7.13.2}Variable Documentation}{93}{subsection.7.13.2}%
+\contentsline {subsubsection}{\numberline {7.13.2.1}asphalt\_gray}{93}{subsubsection.7.13.2.1}%
+\contentsline {subsubsection}{\numberline {7.13.2.2}background}{93}{subsubsection.7.13.2.2}%
+\contentsline {subsubsection}{\numberline {7.13.2.3}blue}{93}{subsubsection.7.13.2.3}%
+\contentsline {subsubsection}{\numberline {7.13.2.4}car}{94}{subsubsection.7.13.2.4}%
+\contentsline {subsubsection}{\numberline {7.13.2.5}car\_angle}{94}{subsubsection.7.13.2.5}%
+\contentsline {subsubsection}{\numberline {7.13.2.6}car\_x}{94}{subsubsection.7.13.2.6}%
+\contentsline {subsubsection}{\numberline {7.13.2.7}car\_y}{94}{subsubsection.7.13.2.7}%
+\contentsline {subsubsection}{\numberline {7.13.2.8}cone\_radius}{94}{subsubsection.7.13.2.8}%
+\contentsline {subsubsection}{\numberline {7.13.2.9}control\_panel}{95}{subsubsection.7.13.2.9}%
+\contentsline {subsubsection}{\numberline {7.13.2.10}display\_buffer}{95}{subsubsection.7.13.2.10}%
+\contentsline {subsubsection}{\numberline {7.13.2.11}draw\_mutex}{95}{subsubsection.7.13.2.11}%
+\contentsline {subsubsection}{\numberline {7.13.2.12}grass\_green}{95}{subsubsection.7.13.2.12}%
+\contentsline {subsubsection}{\numberline {7.13.2.13}lidar\_sem}{95}{subsubsection.7.13.2.13}%
+\contentsline {subsubsection}{\numberline {7.13.2.14}measures}{96}{subsubsection.7.13.2.14}%
+\contentsline {subsubsection}{\numberline {7.13.2.15}perception}{96}{subsubsection.7.13.2.15}%
+\contentsline {subsubsection}{\numberline {7.13.2.16}pink}{96}{subsubsection.7.13.2.16}%
+\contentsline {subsubsection}{\numberline {7.13.2.17}steering\_wheel}{96}{subsubsection.7.13.2.17}%
+\contentsline {subsubsection}{\numberline {7.13.2.18}throttle\_gauge}{96}{subsubsection.7.13.2.18}%
+\contentsline {subsubsection}{\numberline {7.13.2.19}title}{97}{subsubsection.7.13.2.19}%
+\contentsline {subsubsection}{\numberline {7.13.2.20}track}{97}{subsubsection.7.13.2.20}%
+\contentsline {subsubsection}{\numberline {7.13.2.21}trajectory\_bmp}{97}{subsubsection.7.13.2.21}%
+\contentsline {subsubsection}{\numberline {7.13.2.22}white}{97}{subsubsection.7.13.2.22}%
+\contentsline {subsubsection}{\numberline {7.13.2.23}X\_MAX}{97}{subsubsection.7.13.2.23}%
+\contentsline {subsubsection}{\numberline {7.13.2.24}Y\_MAX}{98}{subsubsection.7.13.2.24}%
+\contentsline {subsubsection}{\numberline {7.13.2.25}yellow}{98}{subsubsection.7.13.2.25}%
+\contentsline {section}{\numberline {7.14}src/main.c File Reference}{98}{section.7.14}%
+\contentsline {subsection}{\numberline {7.14.1}Detailed Description}{99}{subsection.7.14.1}%
+\contentsline {subsection}{\numberline {7.14.2}Function Documentation}{99}{subsection.7.14.2}%
+\contentsline {subsubsection}{\numberline {7.14.2.1}init\_allegro()}{99}{subsubsection.7.14.2.1}%
+\contentsline {subsubsection}{\numberline {7.14.2.2}init\_bitmaps()}{100}{subsubsection.7.14.2.2}%
+\contentsline {subsubsection}{\numberline {7.14.2.3}init\_car()}{100}{subsubsection.7.14.2.3}%
+\contentsline {subsubsection}{\numberline {7.14.2.4}init\_perception()}{101}{subsubsection.7.14.2.4}%
+\contentsline {subsubsection}{\numberline {7.14.2.5}init\_track()}{101}{subsubsection.7.14.2.5}%
+\contentsline {subsubsection}{\numberline {7.14.2.6}init\_trajectory()}{102}{subsubsection.7.14.2.6}%
+\contentsline {subsubsection}{\numberline {7.14.2.7}init\_visual\_controls()}{102}{subsubsection.7.14.2.7}%
+\contentsline {subsubsection}{\numberline {7.14.2.8}main()}{102}{subsubsection.7.14.2.8}%
+\contentsline {subsubsection}{\numberline {7.14.2.9}update\_screen()}{103}{subsubsection.7.14.2.9}%
+\contentsline {subsection}{\numberline {7.14.3}Variable Documentation}{104}{subsection.7.14.3}%
+\contentsline {subsubsection}{\numberline {7.14.3.1}car\_bitmap\_x}{104}{subsubsection.7.14.3.1}%
+\contentsline {subsubsection}{\numberline {7.14.3.2}car\_bitmap\_y}{104}{subsubsection.7.14.3.2}%
+\contentsline {subsubsection}{\numberline {7.14.3.3}car\_x\_px}{104}{subsubsection.7.14.3.3}%
+\contentsline {subsubsection}{\numberline {7.14.3.4}car\_y\_px}{104}{subsubsection.7.14.3.4}%
+\contentsline {subsubsection}{\numberline {7.14.3.5}filename}{105}{subsubsection.7.14.3.5}%
+\contentsline {section}{\numberline {7.15}src/perception.c File Reference}{107}{section.7.15}%
+\contentsline {subsection}{\numberline {7.15.1}Detailed Description}{108}{subsection.7.15.1}%
+\contentsline {section}{\numberline {7.16}src/ptask.c File Reference}{108}{section.7.16}%
+\contentsline {subsection}{\numberline {7.16.1}Macro Definition Documentation}{109}{subsection.7.16.1}%
+\contentsline {subsubsection}{\numberline {7.16.1.1}PTASK\_IMPLEMENTATION}{109}{subsubsection.7.16.1.1}%
+\contentsline {section}{\numberline {7.17}src/tasks.c File Reference}{109}{section.7.17}%
+\contentsline {subsection}{\numberline {7.17.1}Detailed Description}{110}{subsection.7.17.1}%
+\contentsline {subsection}{\numberline {7.17.2}Function Documentation}{110}{subsection.7.17.2}%
+\contentsline {subsubsection}{\numberline {7.17.2.1}control\_task()}{110}{subsubsection.7.17.2.1}%
+\contentsline {subsubsection}{\numberline {7.17.2.2}display\_task()}{111}{subsubsection.7.17.2.2}%
+\contentsline {subsubsection}{\numberline {7.17.2.3}perception\_task()}{112}{subsubsection.7.17.2.3}%
+\contentsline {subsubsection}{\numberline {7.17.2.4}trajectory\_task()}{114}{subsubsection.7.17.2.4}%
+\contentsline {section}{\numberline {7.18}src/trajectory.c File Reference}{115}{section.7.18}%
+\contentsline {subsection}{\numberline {7.18.1}Detailed Description}{115}{subsection.7.18.1}%
+\contentsline {subsection}{\numberline {7.18.2}Function Documentation}{116}{subsection.7.18.2}%
+\contentsline {subsubsection}{\numberline {7.18.2.1}trajectory\_planning()}{116}{subsubsection.7.18.2.1}%
+\contentsline {subsection}{\numberline {7.18.3}Variable Documentation}{117}{subsection.7.18.3}%
+\contentsline {subsubsection}{\numberline {7.18.3.1}trajectory}{117}{subsubsection.7.18.3.1}%
+\contentsline {subsubsection}{\numberline {7.18.3.2}trajectory\_idx}{117}{subsubsection.7.18.3.2}%
+\contentsline {section}{\numberline {7.19}src/utilities.c File Reference}{117}{section.7.19}%
+\contentsline {subsection}{\numberline {7.19.1}Detailed Description}{118}{subsection.7.19.1}%
+\contentsline {subsection}{\numberline {7.19.2}Function Documentation}{118}{subsection.7.19.2}%
+\contentsline {subsubsection}{\numberline {7.19.2.1}angle\_rotation\_sprite()}{119}{subsubsection.7.19.2.1}%
+\contentsline {subsubsection}{\numberline {7.19.2.2}init\_cones()}{119}{subsubsection.7.19.2.2}%
+\contentsline {subsubsection}{\numberline {7.19.2.3}load\_cones\_positions()}{120}{subsubsection.7.19.2.3}%
+\contentsline {subsubsection}{\numberline {7.19.2.4}runtime()}{121}{subsubsection.7.19.2.4}%
+\contentsline {subsection}{\numberline {7.19.3}Variable Documentation}{121}{subsection.7.19.3}%
+\contentsline {subsubsection}{\numberline {7.19.3.1}tmp\_scale}{121}{subsubsection.7.19.3.1}%
+\contentsline {section}{\numberline {7.20}src/vehicle.c File Reference}{122}{section.7.20}%

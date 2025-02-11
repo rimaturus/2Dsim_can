@@ -1,0 +1,302 @@
+\hypertarget{display_8c}{}\doxysection{src/display.c File Reference}
+\label{display_8c}\index{src/display.c@{src/display.c}}
+
+
+Rendering and display update functions for the 2D simulation using Allegro.  
+
+
+{\ttfamily \#include $<$allegro.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}globals.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}perception.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}trajectory.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}utilities.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}control.\+h\char`\"{}}\newline
+Include dependency graph for display.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{display_8c_a264238ff7dcf301bbc2f190ea7dcea4c}{draw\+\_\+dir\+\_\+arrow}} ()
+\begin{DoxyCompactList}\small\item\em Draws a directional arrow representing the car\textquotesingle{}s orientation. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display_8c_a01a4e859fcc5ddef923afe9a8a674826}{draw\+\_\+car}} (float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int \mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}})
+\begin{DoxyCompactList}\small\item\em Renders the car sprite rotated to its current angle. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display_8c_a92e08b949df5d8a8e5edec1dd86bc360}{draw\+\_\+track}} ()
+\begin{DoxyCompactList}\small\item\em Draws the track. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display_8c_a5c07cb2dc1adb076383bced84f4a8154}{draw\+\_\+lidar}} (\mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} $\ast$\mbox{\hyperlink{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}{measures}})
+\begin{DoxyCompactList}\small\item\em Draws the lidar/perception view. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display_8c_a298532c4740f2a6785e5c1b0ff7fea9a}{draw\+\_\+detected\+\_\+cones}} (\mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}})
+\begin{DoxyCompactList}\small\item\em Renders the detected cones on the perception bitmap. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display_8c_aa45d316f5e50fa968e686d790d57457b}{draw\+\_\+cone\+\_\+map}} (\mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaefe2c104bad3e859c0f123af113abc22}{track\+\_\+map}}, int \mbox{\hyperlink{group__PerceptionModule_ga7b64bf8a899686d6bf0c7d6c65e9d522}{track\+\_\+map\+\_\+idx}})
+\begin{DoxyCompactList}\small\item\em Draws the cone map overlay. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display_8c_acd5437d29ba24cfc00dbd2f9f6b0cd28}{draw\+\_\+perception}} ()
+\begin{DoxyCompactList}\small\item\em Renders the complete perception layer. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display_8c_a2d077fa92b741d504d6ef5c5f2fdd74c}{draw\+\_\+trajectory}} (\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$\mbox{\hyperlink{trajectory_8c_a525ffa7b5c81396c8024ff1f8d9e7015}{trajectory}})
+\begin{DoxyCompactList}\small\item\em Draws the trajectory of the car. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display_8c_a385702fb79f2c451da015c3147f80515}{draw\+\_\+controls}} ()
+\begin{DoxyCompactList}\small\item\em Draws user control indicators. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b}{update\+\_\+display}} ()
+\begin{DoxyCompactList}\small\item\em Updates the entire display. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Rendering and display update functions for the 2D simulation using Allegro. 
+
+This file contains functions responsible for drawing various elements of the simulation, including the car sprite, direction indicator, track, lidar/perception display, trajectory, and user controls (e.\+g., steering wheel and pedal gauge). It also handles the final composition of the display buffer and its transfer to the screen. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{display_8c_a01a4e859fcc5ddef923afe9a8a674826}\label{display_8c_a01a4e859fcc5ddef923afe9a8a674826}} 
+\index{display.c@{display.c}!draw\_car@{draw\_car}}
+\index{draw\_car@{draw\_car}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{draw\_car()}{draw\_car()}}
+{\footnotesize\ttfamily void draw\+\_\+car (\begin{DoxyParamCaption}\item[{float}]{car\+\_\+x,  }\item[{float}]{car\+\_\+y,  }\item[{int}]{car\+\_\+angle }\end{DoxyParamCaption})}
+
+
+
+Renders the car sprite rotated to its current angle. 
+
+Draws a car shape on the display.
+
+Calculates the proper position for the car sprite based on its coordinates in the world space (scaled by pixels per meter) and draws it using Allegro\textquotesingle{}s rotate\+\_\+scaled\+\_\+sprite function. In DEBUG mode, the function also draws view angle lines to indicate the car\textquotesingle{}s field of view.
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & The car\textquotesingle{}s x-\/coordinate in world units. \\
+\hline
+{\em car\+\_\+y} & The car\textquotesingle{}s y-\/coordinate in world units. \\
+\hline
+{\em car\+\_\+angle} & The car\textquotesingle{}s angle in degrees. \\
+\hline
+\end{DoxyParams}
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=297pt]{display_8c_a01a4e859fcc5ddef923afe9a8a674826_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_a01a4e859fcc5ddef923afe9a8a674826_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{display_8c_aa45d316f5e50fa968e686d790d57457b}\label{display_8c_aa45d316f5e50fa968e686d790d57457b}} 
+\index{display.c@{display.c}!draw\_cone\_map@{draw\_cone\_map}}
+\index{draw\_cone\_map@{draw\_cone\_map}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{draw\_cone\_map()}{draw\_cone\_map()}}
+{\footnotesize\ttfamily void draw\+\_\+cone\+\_\+map (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{track\+\_\+map,  }\item[{int}]{track\+\_\+map\+\_\+idx }\end{DoxyParamCaption})}
+
+
+
+Draws the cone map overlay. 
+
+Draws the cone map (track map).
+
+Iterates through the track map data and draws a white filled circle at each cone\textquotesingle{}s position, properly mapping simulation world coordinates to the perception window.
+
+
+\begin{DoxyParams}{Parameters}
+{\em track\+\_\+map} & Pointer to an array of cones representing the track map. \\
+\hline
+{\em track\+\_\+map\+\_\+idx} & The number of valid entries in the track map array. \\
+\hline
+\end{DoxyParams}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_aa45d316f5e50fa968e686d790d57457b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{display_8c_a385702fb79f2c451da015c3147f80515}\label{display_8c_a385702fb79f2c451da015c3147f80515}} 
+\index{display.c@{display.c}!draw\_controls@{draw\_controls}}
+\index{draw\_controls@{draw\_controls}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{draw\_controls()}{draw\_controls()}}
+{\footnotesize\ttfamily void draw\+\_\+controls (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Draws user control indicators. 
+
+Renders the steering wheel sprite with the correct rotation and draws a gauge for pedal control. The gauge\textquotesingle{}s fill color indicates the pedal level (green for positive, red for non-\/positive). Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=321pt]{display_8c_a385702fb79f2c451da015c3147f80515_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_a385702fb79f2c451da015c3147f80515_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{display_8c_a298532c4740f2a6785e5c1b0ff7fea9a}\label{display_8c_a298532c4740f2a6785e5c1b0ff7fea9a}} 
+\index{display.c@{display.c}!draw\_detected\_cones@{draw\_detected\_cones}}
+\index{draw\_detected\_cones@{draw\_detected\_cones}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{draw\_detected\_cones()}{draw\_detected\_cones()}}
+{\footnotesize\ttfamily void draw\+\_\+detected\+\_\+cones (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{detected\+\_\+cones }\end{DoxyParamCaption})}
+
+
+
+Renders the detected cones on the perception bitmap. 
+
+Draws detected cones.
+
+Iterates through the array of detected cones and draws a filled circle at each cone\textquotesingle{}s location, after mapping the coordinates from the simulation world to the perception window.
+
+
+\begin{DoxyParams}{Parameters}
+{\em detected\+\_\+cones} & Pointer to an array of detected cone structures. \\
+\hline
+\end{DoxyParams}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_a298532c4740f2a6785e5c1b0ff7fea9a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{display_8c_a264238ff7dcf301bbc2f190ea7dcea4c}\label{display_8c_a264238ff7dcf301bbc2f190ea7dcea4c}} 
+\index{display.c@{display.c}!draw\_dir\_arrow@{draw\_dir\_arrow}}
+\index{draw\_dir\_arrow@{draw\_dir\_arrow}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{draw\_dir\_arrow()}{draw\_dir\_arrow()}}
+{\footnotesize\ttfamily void draw\+\_\+dir\+\_\+arrow (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Draws a directional arrow representing the car\textquotesingle{}s orientation. 
+
+Draws a directional arrow.
+
+Computes the arrow\textquotesingle{}s start (at the car\textquotesingle{}s position) and end points based on the car angle, using cosine and sine functions. The arrow shaft and head are drawn as thick green lines, with the head drawn at two angles to form a head shape. \mbox{\Hypertarget{display_8c_a5c07cb2dc1adb076383bced84f4a8154}\label{display_8c_a5c07cb2dc1adb076383bced84f4a8154}} 
+\index{display.c@{display.c}!draw\_lidar@{draw\_lidar}}
+\index{draw\_lidar@{draw\_lidar}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{draw\_lidar()}{draw\_lidar()}}
+{\footnotesize\ttfamily void draw\+\_\+lidar (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} $\ast$}]{measures }\end{DoxyParamCaption})}
+
+
+
+Draws the lidar/perception view. 
+
+Draws lidar measurements.
+
+Clears the perception bitmap and centers it on the car\textquotesingle{}s position. For each lidar measurement, computes the global-\/to-\/perception window mapping for the detected point and draws a line from the car\textquotesingle{}s center to that point. The color of the line depends on whether a cone was detected or not.
+
+
+\begin{DoxyParams}{Parameters}
+{\em measures} & Pointer to an array of lidar measurements. \\
+\hline
+\end{DoxyParams}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_a5c07cb2dc1adb076383bced84f4a8154_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{display_8c_acd5437d29ba24cfc00dbd2f9f6b0cd28}\label{display_8c_acd5437d29ba24cfc00dbd2f9f6b0cd28}} 
+\index{display.c@{display.c}!draw\_perception@{draw\_perception}}
+\index{draw\_perception@{draw\_perception}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{draw\_perception()}{draw\_perception()}}
+{\footnotesize\ttfamily void draw\+\_\+perception (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Renders the complete perception layer. 
+
+Draws perception results.
+
+Combines the lidar lines, detected cones, and cone map visualizations to create the perception overlay. Afterwards, the perception bitmap is blended onto the main display buffer offset in relation to the car\textquotesingle{}s position. Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=336pt]{display_8c_acd5437d29ba24cfc00dbd2f9f6b0cd28_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_acd5437d29ba24cfc00dbd2f9f6b0cd28_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{display_8c_a92e08b949df5d8a8e5edec1dd86bc360}\label{display_8c_a92e08b949df5d8a8e5edec1dd86bc360}} 
+\index{display.c@{display.c}!draw\_track@{draw\_track}}
+\index{draw\_track@{draw\_track}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{draw\_track()}{draw\_track()}}
+{\footnotesize\ttfamily void draw\+\_\+track (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Draws the track. 
+
+Checks that the track bitmap has valid dimensions, and if so, draws the track image onto the display buffer. If the bitmap dimensions are invalid, an error message is shown. Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_a92e08b949df5d8a8e5edec1dd86bc360_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{display_8c_a2d077fa92b741d504d6ef5c5f2fdd74c}\label{display_8c_a2d077fa92b741d504d6ef5c5f2fdd74c}} 
+\index{display.c@{display.c}!draw\_trajectory@{draw\_trajectory}}
+\index{draw\_trajectory@{draw\_trajectory}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{draw\_trajectory()}{draw\_trajectory()}}
+{\footnotesize\ttfamily void draw\+\_\+trajectory (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$}]{trajectory }\end{DoxyParamCaption})}
+
+
+
+Draws the trajectory of the car. 
+
+Draws the planned trajectory.
+
+Clears and sets the background for the trajectory bitmap and iterates over each trajectory waypoint, drawing each as a filled circle. In DEBUG mode, the waypoint index is also displayed and an extra line is drawn from the car sprite center.
+
+
+\begin{DoxyParams}{Parameters}
+{\em trajectory} & Pointer to an array of waypoint structures representing the car\textquotesingle{}s trajectory. \\
+\hline
+\end{DoxyParams}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_a2d077fa92b741d504d6ef5c5f2fdd74c_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b}\label{display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b}} 
+\index{display.c@{display.c}!update\_display@{update\_display}}
+\index{update\_display@{update\_display}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{update\_display()}{update\_display()}}
+{\footnotesize\ttfamily void update\+\_\+display (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Updates the entire display. 
+
+Updates the display.
+
+Locks the drawing mutex and sequentially renders the background, track, car, perception, trajectory, title text, and controls on the display buffer. Once all elements are rendered, the display buffer is blitted to the screen, and the mutex is subsequently unlocked. Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b_icgraph}
+\end{center}
+\end{figure}

@@ -1,3 +1,12 @@
+/**
+ * @file control.c
+ * @brief Implements vehicle control functions including both manual (keyboard) and autonomous (centerline based) control.
+ *
+ * This file contains methods to update the vehicle's motion state. The manual control routine (keyboard_control)
+ * processes user keystrokes to adjust speed (pedal) and steering angle, while the autonomous control routine uses
+ * a centerline of waypoints to compute a reference trajectory and derive the appropriate steering correction.
+ */
+
 #include <stdio.h>
 #include <math.h>
 #include <allegro.h>
@@ -7,6 +16,82 @@
 #include "globals.h"
 #include "control.h"
 #include "vehicle.h"
+
+/**
+ * @brief Adjusts vehicle controls based on keyboard input.
+ *
+ * This function processes the state of keyboard keys to adjust the vehicle's pedal (speed) and steering angle.
+ * It increments or decrements the pedal value and steering angle within pre-defined limits depending on the keys
+ * pressed (e.g., KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT). After updating these control signals, the vehicle's state
+ * is updated by calling the vehicle_model function.
+ *
+ * @param[in,out] car_x   Pointer to the vehicle's x-coordinate (in meters).
+ * @param[in,out] car_y   Pointer to the vehicle's y-coordinate (in meters).
+ * @param[in,out] car_angle Pointer to the vehicle's orientation angle (in degrees).
+ */
+void keyboard_control(float *car_x, float *car_y, int *car_angle);
+
+/**
+ * @brief Normalizes a 2D vector.
+ *
+ * Computes the Euclidean norm of the vector specified by the pointers x and y. If the norm is above a
+ * small threshold (to avoid division by zero), the vector components are divided by the norm to yield a unit
+ * vector.
+ *
+ * @param[in,out] x Pointer to the x component of the vector. The normalized value is written back.
+ * @param[in,out] y Pointer to the y component of the vector. The normalized value is written back.
+ *
+ * @return 1 if the vector is non-zero and has been normalized; 0 if the vector length is negligible.
+ */
+static int nomalize(float *x, float *y);
+
+/**
+ * @brief Determines if a given waypoint is ahead of the vehicle.
+ *
+ * Evaluates whether the waypoint (defined by wx and wy) is in front of the vehicle by computing the
+ * angle between the vehicle's heading (in degrees) and the vector from the vehicle (cx, cy) to the waypoint.
+ * The waypoint is considered "ahead" if the absolute angular difference is within ±100°.
+ *
+ * @param[in] car_angle_deg The current heading of the vehicle in degrees.
+ * @param[in] wx            The x-coordinate of the waypoint.
+ * @param[in] wy            The y-coordinate of the waypoint.
+ * @param[in] cx            The x-coordinate of the vehicle.
+ * @param[in] cy            The y-coordinate of the vehicle.
+ *
+ * @return Non-zero value if the waypoint is in front of the vehicle; 0 otherwise.
+ */
+static int is_in_front(float car_angle_deg, float wx, float wy, float cx, float cy);
+
+/**
+ * @brief Autonomous control routine using centerline waypoints.
+ *
+ * Implements an autonomous control strategy based on a provided centerline represented by an array of waypoints.
+ * The function follows these steps:
+ *  - Counts the number of valid centerline waypoints (terminated when a waypoint with x < 0.0f is found).
+ *  - Filters the centerline to extract waypoints that are located ahead of the vehicle using the
+ *    is_in_front helper.
+ *  - Identifies the closest valid waypoint ahead, and depending on the availability of neighboring points,
+ *    computes a reference trajectory vector. This is done in one of three ways:
+ *      * If at least three valid ahead waypoints exist, the reference vector is computed from the previous to the
+ *        next waypoint surrounding the closest ahead waypoint.
+ *      * If there are only one or two ahead points (but at least two total waypoints), the reference vector is
+ *        derived by combining the vector from the vehicle to the last waypoint and the segment between the last
+ *        two waypoints.
+ *      * If only one waypoint is available, the vector from the vehicle to that waypoint is used as the reference.
+ *  - The computed reference trajectory is normalized. If normalization fails, a default forward direction is used.
+ *  - The vehicle's current heading is computed as a unit vector based on car_angle.
+ *  - The required steering correction (delta) is obtained by computing the sine of the angle difference through the 2D cross
+ *    product between the normalized reference vector and the heading vector.
+ *  - A constant pedal value is applied.
+ *  - Finally, the updated control signals (pedal and delta for steering) are applied to the vehicle by calling vehicle_model.
+ *
+ * @param[in,out] car_x          Pointer to the vehicle's x-coordinate (in meters).
+ * @param[in,out] car_y          Pointer to the vehicle's y-coordinate (in meters).
+ * @param[in,out] car_angle      Pointer to the vehicle's orientation angle (in degrees).
+ * @param[in]     center_waypoints Pointer to an array of waypoints representing the desired centerline trajectory.
+ *                                 The array should be terminated by a waypoint with x < 0.0f.
+ */
+void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *center_waypoints);
 
 float pedal = 0.0f;         // current speed in m per step
 float steering = 0.0f;      // current steering angle in radians

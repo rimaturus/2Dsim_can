@@ -1,0 +1,12 @@
+<map id="update_display" name="update_display">
+<area shape="rect" id="node1" title="Updates the display." alt="" coords="5,107,127,133"/>
+<area shape="rect" id="node2" href="$display_8c.html#a01a4e859fcc5ddef923afe9a8a674826" title="Renders the car sprite rotated to its current angle." alt="" coords="199,5,281,32"/>
+<area shape="rect" id="node4" href="$display_8c.html#a385702fb79f2c451da015c3147f80515" title="Draws user control indicators." alt="" coords="183,56,297,83"/>
+<area shape="rect" id="node5" href="$display_8c.html#acd5437d29ba24cfc00dbd2f9f6b0cd28" title="Renders the complete perception layer." alt="" coords="175,107,305,133"/>
+<area shape="rect" id="node9" href="$display_8c.html#a92e08b949df5d8a8e5edec1dd86bc360" title="Draws the track." alt="" coords="193,157,287,184"/>
+<area shape="rect" id="node10" href="$display_8c.html#a2d077fa92b741d504d6ef5c5f2fdd74c" title="Draws the trajectory of the car." alt="" coords="178,208,302,235"/>
+<area shape="rect" id="node3" href="$utilities_8h.html#a33090597864cdfd30d87ff99c14eeecb" title=" " alt="" coords="355,5,515,32"/>
+<area shape="rect" id="node6" href="$display_8c.html#aa45d316f5e50fa968e686d790d57457b" title="Draws the cone map overlay." alt="" coords="371,56,499,83"/>
+<area shape="rect" id="node7" href="$display_8c.html#a298532c4740f2a6785e5c1b0ff7fea9a" title="Renders the detected cones on the perception bitmap." alt="" coords="353,107,516,133"/>
+<area shape="rect" id="node8" href="$display_8c.html#a5c07cb2dc1adb076383bced84f4a8154" title="Draws the lidar/perception view." alt="" coords="389,157,480,184"/>
+</map>

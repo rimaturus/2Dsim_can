@@ -1,0 +1,555 @@
+\hypertarget{globals_8h}{}\doxysection{include/globals.h File Reference}
+\label{globals_8h}\index{include/globals.h@{include/globals.h}}
+
+
+Global constants, variables, and structures for the simulation and visualization system.  
+
+
+{\ttfamily \#include $<$allegro.\+h$>$}\newline
+{\ttfamily \#include $<$pthread.\+h$>$}\newline
+{\ttfamily \#include $<$semaphore.\+h$>$}\newline
+Include dependency graph for globals.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=319pt]{globals_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{globals_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Contains the measures of distance made by the Li\+DAR at each angle. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{globals_8h_a8c097a59d344c89887c5f4cbdbcf493e}{PROFILING}}
+\item 
+\#define \mbox{\hyperlink{globals_8h_af16fdb17c97af7858f199089c651840d}{PERCEPTION\+\_\+\+PERIOD}}~50
+\item 
+\#define \mbox{\hyperlink{globals_8h_af354276741358e5c6922f593505b7abd}{TRAJECTORY\+\_\+\+PERIOD}}~10
+\item 
+\#define \mbox{\hyperlink{globals_8h_af36dcc5b8d483f93687711244b6a11ef}{CONTROL\+\_\+\+PERIOD}}~10
+\item 
+\#define \mbox{\hyperlink{globals_8h_aa7a9aa177dfa0114e2c9ce16ae874e35}{DISPLAY\+\_\+\+PERIOD}}~17
+\item 
+\#define \mbox{\hyperlink{globals_8h_ae6da475af3e420b75d8734fd499c0cde}{PERCEPTION\+\_\+\+DEADLINE}}~\mbox{\hyperlink{globals_8h_af16fdb17c97af7858f199089c651840d}{PERCEPTION\+\_\+\+PERIOD}}
+\item 
+\#define \mbox{\hyperlink{globals_8h_a8f976b724e8b56aeab6b6d9c792f4cf0}{TRAJECTORY\+\_\+\+DEADLINE}}~\mbox{\hyperlink{globals_8h_af354276741358e5c6922f593505b7abd}{TRAJECTORY\+\_\+\+PERIOD}}
+\item 
+\#define \mbox{\hyperlink{globals_8h_a6366da988fdd981274049f70aecb9646}{CONTROL\+\_\+\+DEADLINE}}~\mbox{\hyperlink{globals_8h_af36dcc5b8d483f93687711244b6a11ef}{CONTROL\+\_\+\+PERIOD}}
+\item 
+\#define \mbox{\hyperlink{globals_8h_a55ba14442ba004f7b62c928275243491}{DISPLAY\+\_\+\+DEADLINE}}~\mbox{\hyperlink{globals_8h_aa7a9aa177dfa0114e2c9ce16ae874e35}{DISPLAY\+\_\+\+PERIOD}}
+\item 
+\#define \mbox{\hyperlink{globals_8h_a6fa79a0953f9c779e36d454b588cf8a7}{PERCEPTION\+\_\+\+PRIORITY}}~15
+\item 
+\#define \mbox{\hyperlink{globals_8h_a808ab243e27f67f8a07770586842b81c}{TRAJECTORY\+\_\+\+PRIORITY}}~20
+\item 
+\#define \mbox{\hyperlink{globals_8h_af1e970e49915c36967fbd8acd7fa07c0}{CONTROL\+\_\+\+PRIORITY}}~25
+\item 
+\#define \mbox{\hyperlink{globals_8h_ae27f7e9a9f2fa45c338e25d8a2a6e74d}{DISPLAY\+\_\+\+PRIORITY}}~30
+\item 
+\#define \mbox{\hyperlink{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}}~100
+\item 
+\#define \mbox{\hyperlink{globals_8h_a3a59eceae22ca8dfae7e5255e8836083}{deg2rad}}~0.\+017453292519943295769236907684886f
+\item 
+\#define \mbox{\hyperlink{globals_8h_a6521403d61e5c32a93cb7c88fc759ffb}{max\+Throttle\+Height}}~100
+\item 
+\#define \mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}~360
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+pthread\+\_\+mutex\+\_\+t \mbox{\hyperlink{globals_8h_a01db197a65364d7b7b2f59f5863007c2}{draw\+\_\+mutex}}
+\item 
+const char $\ast$ \mbox{\hyperlink{globals_8h_a051e403214cb6872ad3fe4e50302a6ee}{title}}
+\item 
+const int \mbox{\hyperlink{globals_8h_a06a12873f8a85695ebe48194046f9903}{X\+\_\+\+MAX}}
+\item 
+const int \mbox{\hyperlink{globals_8h_a99a74a6925d1808bdce0de76aca0550d}{Y\+\_\+\+MAX}}
+\item 
+const float \mbox{\hyperlink{globals_8h_a952795524c1ac0c7d7aedb28328b80a8}{cone\+\_\+radius}}
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8h_a41f9ba9006b8869d38a51359afa11270}{control\+\_\+panel}}
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8h_a29633e1eefceb92936cfcf2f8553d9d6}{steering\+\_\+wheel}}
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8h_a6c9355aebe9fcec4b9de46a23a7b0495}{throttle\+\_\+gauge}}
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8h_a9239939b64679abad9d0ab88ba448083}{background}}
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8h_adb5e2391917cad02d6ca0c5ab0a46149}{track}}
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8h_afd57c2208cd2da0ae5d94ff02fd111c0}{car}}
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8h_a93d8b579fb6a6e44aceb0e66cd315b79}{perception}}
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8h_a02134862c4b4335bd7411c66d249a6f0}{trajectory\+\_\+bmp}}
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8h_a44d85ac37cf4fa165adadbc4de29dec4}{display\+\_\+buffer}}
+\item 
+int \mbox{\hyperlink{globals_8h_aa74dbd17ed3476453ec71b893ab9446b}{grass\+\_\+green}}
+\item 
+int \mbox{\hyperlink{globals_8h_a2c68c05ef3599e92e4e531256103a9b2}{asphalt\+\_\+gray}}
+\item 
+int \mbox{\hyperlink{globals_8h_a52b8a1dc217164197e6e5ba60ec911bf}{white}}
+\item 
+int \mbox{\hyperlink{globals_8h_af0d8b62806f3b2c95d55dc52164fbf32}{pink}}
+\item 
+int \mbox{\hyperlink{globals_8h_a34167711871149458e41ef5d3e3541fe}{yellow}}
+\item 
+int \mbox{\hyperlink{globals_8h_ab52c30a42ad18fe1e8d14464ba72df52}{blue}}
+\item 
+float \mbox{\hyperlink{globals_8h_aa62dd86c39b5bdbe50e06812f94da902}{car\+\_\+x}}
+\item 
+float \mbox{\hyperlink{globals_8h_ad86d30593c748c02c787e21130cf6495}{car\+\_\+y}}
+\item 
+int \mbox{\hyperlink{globals_8h_af758fe89bfde05c28a913d4277ca3c58}{car\+\_\+angle}}
+\item 
+\mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} \mbox{\hyperlink{globals_8h_a1e7de054f2faeeadadbab6364a1b5fe4}{measures}} \mbox{[}\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}\mbox{]}
+\item 
+sem\+\_\+t \mbox{\hyperlink{globals_8h_aa21f1e92d43a7701840f426f13061380}{lidar\+\_\+sem}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Global constants, variables, and structures for the simulation and visualization system. 
+
+This header file declares all global macros, extern variables, and data types required across multiple modules for task management, visualization, and perception in a 2D simulation environment.\hypertarget{globals_8h_tasks_constants}{}\doxysubsection{Tasks Constants}\label{globals_8h_tasks_constants}
+
+\begin{DoxyItemize}
+\item Defines task periods (in milliseconds)\+:
+\begin{DoxyItemize}
+\item PERCEPTION\+\_\+\+PERIOD\+: Period for the perception task.
+\item TRAJECTORY\+\_\+\+PERIOD\+: Period for the trajectory planning task.
+\item CONTROL\+\_\+\+PERIOD\+: Period for the control task.
+\item DISPLAY\+\_\+\+PERIOD\+: Period for the display update task.
+\end{DoxyItemize}
+\item Defines deadlines (in milliseconds), set equal to the corresponding task periods\+:
+\begin{DoxyItemize}
+\item PERCEPTION\+\_\+\+DEADLINE, TRAJECTORY\+\_\+\+DEADLINE, CONTROL\+\_\+\+DEADLINE, DISPLAY\+\_\+\+DEADLINE.
+\end{DoxyItemize}
+\item Defines task priorities (lower number indicates higher priority)\+:
+\begin{DoxyItemize}
+\item PERCEPTION\+\_\+\+PRIORITY, TRAJECTORY\+\_\+\+PRIORITY, CONTROL\+\_\+\+PRIORITY, DISPLAY\+\_\+\+PRIORITY.
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{globals_8h_mutex}{}\doxysubsection{Drawing Mutex}\label{globals_8h_mutex}
+
+\begin{DoxyItemize}
+\item Declares the external pthread\+\_\+mutex\+\_\+t variable draw\+\_\+mutex used to synchronize drawing operations across threads.
+\end{DoxyItemize}\hypertarget{globals_8h_conversion_constants}{}\doxysubsection{Conversion Constants}\label{globals_8h_conversion_constants}
+
+\begin{DoxyItemize}
+\item px\+\_\+per\+\_\+meter\+: Conversion factor from meters to pixels.
+\item deg2rad\+: Constant to convert degrees to radians.
+\end{DoxyItemize}\hypertarget{globals_8h_visualization_constants}{}\doxysubsection{Visualization Constants}\label{globals_8h_visualization_constants}
+
+\begin{DoxyItemize}
+\item Declares external constants and variables for visualization\+:
+\begin{DoxyItemize}
+\item title\+: Pointer to a string containing the window title.
+\item X\+\_\+\+MAX, Y\+\_\+\+MAX\+: Maximum dimensions (in pixels) of the window or display.
+\item cone\+\_\+radius\+: Radius used for drawing cones.
+\end{DoxyItemize}
+\item Declares external BITMAP pointers for various graphical assets\+:
+\begin{DoxyItemize}
+\item control\+\_\+panel\+: Bitmap for the control panel.
+\item steering\+\_\+wheel\+: Bitmap for the steering wheel graphic.
+\item throttle\+\_\+gauge\+: Bitmap for the throttle gauge.
+\item background\+: Background image bitmap.
+\item track\+: Bitmap representing the track.
+\item car\+: Bitmap representing the car.
+\item perception\+: Bitmap used for displaying perception data.
+\item trajectory\+\_\+bmp\+: Bitmap for trajectory visualization.
+\item display\+\_\+buffer\+: Bitmap used as a back buffer for display updates.
+\end{DoxyItemize}
+\item Defines max\+Throttle\+Height\+: Maximum height for the throttle gauge.
+\item Declares external color variables for various color schemes used in the display\+:
+\begin{DoxyItemize}
+\item grass\+\_\+green, asphalt\+\_\+gray, white, pink, yellow, blue.
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{globals_8h_car_pose}{}\doxysubsection{Car Pose}\label{globals_8h_car_pose}
+
+\begin{DoxyItemize}
+\item Declares global variables representing the car\textquotesingle{}s state\+:
+\begin{DoxyItemize}
+\item car\+\_\+x, car\+\_\+y\+: The car\textquotesingle{}s x and y positions in meters.
+\item car\+\_\+angle\+: The angle of the car in degrees.
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{globals_8h_perception}{}\doxysubsection{Perception Constants}\label{globals_8h_perception}
+
+\begin{DoxyItemize}
+\item MAX\+\_\+\+DETECTED\+\_\+\+CONES\+: Macro defining the maximum number of cones that can be detected simultaneously.
+\item \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}}\+: Struct representing a detected cone with the following fields\+:
+\begin{DoxyItemize}
+\item point\+\_\+x\+: x-\/coordinate of the detected point.
+\item point\+\_\+y\+: y-\/coordinate of the detected point.
+\item distance\+: Distance from the sensor to the cone.
+\item color\+: Color identifier for the cone.
+\end{DoxyItemize}
+\item Declares an external array \textquotesingle{}measures\textquotesingle{} of \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} to hold the detected cone data.
+\item Declares a semaphore \textquotesingle{}lidar\+\_\+sem\textquotesingle{} used to synchronize the passing of Li\+DAR data between tasks. 
+\end{DoxyItemize}
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{globals_8h_a6366da988fdd981274049f70aecb9646}\label{globals_8h_a6366da988fdd981274049f70aecb9646}} 
+\index{globals.h@{globals.h}!CONTROL\_DEADLINE@{CONTROL\_DEADLINE}}
+\index{CONTROL\_DEADLINE@{CONTROL\_DEADLINE}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{CONTROL\_DEADLINE}{CONTROL\_DEADLINE}}
+{\footnotesize\ttfamily \#define CONTROL\+\_\+\+DEADLINE~\mbox{\hyperlink{globals_8h_af36dcc5b8d483f93687711244b6a11ef}{CONTROL\+\_\+\+PERIOD}}}
+
+\mbox{\Hypertarget{globals_8h_af36dcc5b8d483f93687711244b6a11ef}\label{globals_8h_af36dcc5b8d483f93687711244b6a11ef}} 
+\index{globals.h@{globals.h}!CONTROL\_PERIOD@{CONTROL\_PERIOD}}
+\index{CONTROL\_PERIOD@{CONTROL\_PERIOD}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{CONTROL\_PERIOD}{CONTROL\_PERIOD}}
+{\footnotesize\ttfamily \#define CONTROL\+\_\+\+PERIOD~10}
+
+\mbox{\Hypertarget{globals_8h_af1e970e49915c36967fbd8acd7fa07c0}\label{globals_8h_af1e970e49915c36967fbd8acd7fa07c0}} 
+\index{globals.h@{globals.h}!CONTROL\_PRIORITY@{CONTROL\_PRIORITY}}
+\index{CONTROL\_PRIORITY@{CONTROL\_PRIORITY}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{CONTROL\_PRIORITY}{CONTROL\_PRIORITY}}
+{\footnotesize\ttfamily \#define CONTROL\+\_\+\+PRIORITY~25}
+
+\mbox{\Hypertarget{globals_8h_a3a59eceae22ca8dfae7e5255e8836083}\label{globals_8h_a3a59eceae22ca8dfae7e5255e8836083}} 
+\index{globals.h@{globals.h}!deg2rad@{deg2rad}}
+\index{deg2rad@{deg2rad}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{deg2rad}{deg2rad}}
+{\footnotesize\ttfamily \#define deg2rad~0.\+017453292519943295769236907684886f}
+
+\mbox{\Hypertarget{globals_8h_a55ba14442ba004f7b62c928275243491}\label{globals_8h_a55ba14442ba004f7b62c928275243491}} 
+\index{globals.h@{globals.h}!DISPLAY\_DEADLINE@{DISPLAY\_DEADLINE}}
+\index{DISPLAY\_DEADLINE@{DISPLAY\_DEADLINE}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{DISPLAY\_DEADLINE}{DISPLAY\_DEADLINE}}
+{\footnotesize\ttfamily \#define DISPLAY\+\_\+\+DEADLINE~\mbox{\hyperlink{globals_8h_aa7a9aa177dfa0114e2c9ce16ae874e35}{DISPLAY\+\_\+\+PERIOD}}}
+
+\mbox{\Hypertarget{globals_8h_aa7a9aa177dfa0114e2c9ce16ae874e35}\label{globals_8h_aa7a9aa177dfa0114e2c9ce16ae874e35}} 
+\index{globals.h@{globals.h}!DISPLAY\_PERIOD@{DISPLAY\_PERIOD}}
+\index{DISPLAY\_PERIOD@{DISPLAY\_PERIOD}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{DISPLAY\_PERIOD}{DISPLAY\_PERIOD}}
+{\footnotesize\ttfamily \#define DISPLAY\+\_\+\+PERIOD~17}
+
+\mbox{\Hypertarget{globals_8h_ae27f7e9a9f2fa45c338e25d8a2a6e74d}\label{globals_8h_ae27f7e9a9f2fa45c338e25d8a2a6e74d}} 
+\index{globals.h@{globals.h}!DISPLAY\_PRIORITY@{DISPLAY\_PRIORITY}}
+\index{DISPLAY\_PRIORITY@{DISPLAY\_PRIORITY}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{DISPLAY\_PRIORITY}{DISPLAY\_PRIORITY}}
+{\footnotesize\ttfamily \#define DISPLAY\+\_\+\+PRIORITY~30}
+
+\mbox{\Hypertarget{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}\label{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}} 
+\index{globals.h@{globals.h}!MAX\_DETECTED\_CONES@{MAX\_DETECTED\_CONES}}
+\index{MAX\_DETECTED\_CONES@{MAX\_DETECTED\_CONES}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_DETECTED\_CONES}{MAX\_DETECTED\_CONES}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+DETECTED\+\_\+\+CONES~360}
+
+\mbox{\Hypertarget{globals_8h_a6521403d61e5c32a93cb7c88fc759ffb}\label{globals_8h_a6521403d61e5c32a93cb7c88fc759ffb}} 
+\index{globals.h@{globals.h}!maxThrottleHeight@{maxThrottleHeight}}
+\index{maxThrottleHeight@{maxThrottleHeight}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{maxThrottleHeight}{maxThrottleHeight}}
+{\footnotesize\ttfamily \#define max\+Throttle\+Height~100}
+
+\mbox{\Hypertarget{globals_8h_ae6da475af3e420b75d8734fd499c0cde}\label{globals_8h_ae6da475af3e420b75d8734fd499c0cde}} 
+\index{globals.h@{globals.h}!PERCEPTION\_DEADLINE@{PERCEPTION\_DEADLINE}}
+\index{PERCEPTION\_DEADLINE@{PERCEPTION\_DEADLINE}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{PERCEPTION\_DEADLINE}{PERCEPTION\_DEADLINE}}
+{\footnotesize\ttfamily \#define PERCEPTION\+\_\+\+DEADLINE~\mbox{\hyperlink{globals_8h_af16fdb17c97af7858f199089c651840d}{PERCEPTION\+\_\+\+PERIOD}}}
+
+\mbox{\Hypertarget{globals_8h_af16fdb17c97af7858f199089c651840d}\label{globals_8h_af16fdb17c97af7858f199089c651840d}} 
+\index{globals.h@{globals.h}!PERCEPTION\_PERIOD@{PERCEPTION\_PERIOD}}
+\index{PERCEPTION\_PERIOD@{PERCEPTION\_PERIOD}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{PERCEPTION\_PERIOD}{PERCEPTION\_PERIOD}}
+{\footnotesize\ttfamily \#define PERCEPTION\+\_\+\+PERIOD~50}
+
+\mbox{\Hypertarget{globals_8h_a6fa79a0953f9c779e36d454b588cf8a7}\label{globals_8h_a6fa79a0953f9c779e36d454b588cf8a7}} 
+\index{globals.h@{globals.h}!PERCEPTION\_PRIORITY@{PERCEPTION\_PRIORITY}}
+\index{PERCEPTION\_PRIORITY@{PERCEPTION\_PRIORITY}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{PERCEPTION\_PRIORITY}{PERCEPTION\_PRIORITY}}
+{\footnotesize\ttfamily \#define PERCEPTION\+\_\+\+PRIORITY~15}
+
+\mbox{\Hypertarget{globals_8h_a8c097a59d344c89887c5f4cbdbcf493e}\label{globals_8h_a8c097a59d344c89887c5f4cbdbcf493e}} 
+\index{globals.h@{globals.h}!PROFILING@{PROFILING}}
+\index{PROFILING@{PROFILING}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{PROFILING}{PROFILING}}
+{\footnotesize\ttfamily \#define PROFILING}
+
+\mbox{\Hypertarget{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}\label{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}} 
+\index{globals.h@{globals.h}!px\_per\_meter@{px\_per\_meter}}
+\index{px\_per\_meter@{px\_per\_meter}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{px\_per\_meter}{px\_per\_meter}}
+{\footnotesize\ttfamily \#define px\+\_\+per\+\_\+meter~100}
+
+\mbox{\Hypertarget{globals_8h_a8f976b724e8b56aeab6b6d9c792f4cf0}\label{globals_8h_a8f976b724e8b56aeab6b6d9c792f4cf0}} 
+\index{globals.h@{globals.h}!TRAJECTORY\_DEADLINE@{TRAJECTORY\_DEADLINE}}
+\index{TRAJECTORY\_DEADLINE@{TRAJECTORY\_DEADLINE}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{TRAJECTORY\_DEADLINE}{TRAJECTORY\_DEADLINE}}
+{\footnotesize\ttfamily \#define TRAJECTORY\+\_\+\+DEADLINE~\mbox{\hyperlink{globals_8h_af354276741358e5c6922f593505b7abd}{TRAJECTORY\+\_\+\+PERIOD}}}
+
+\mbox{\Hypertarget{globals_8h_af354276741358e5c6922f593505b7abd}\label{globals_8h_af354276741358e5c6922f593505b7abd}} 
+\index{globals.h@{globals.h}!TRAJECTORY\_PERIOD@{TRAJECTORY\_PERIOD}}
+\index{TRAJECTORY\_PERIOD@{TRAJECTORY\_PERIOD}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{TRAJECTORY\_PERIOD}{TRAJECTORY\_PERIOD}}
+{\footnotesize\ttfamily \#define TRAJECTORY\+\_\+\+PERIOD~10}
+
+\mbox{\Hypertarget{globals_8h_a808ab243e27f67f8a07770586842b81c}\label{globals_8h_a808ab243e27f67f8a07770586842b81c}} 
+\index{globals.h@{globals.h}!TRAJECTORY\_PRIORITY@{TRAJECTORY\_PRIORITY}}
+\index{TRAJECTORY\_PRIORITY@{TRAJECTORY\_PRIORITY}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{TRAJECTORY\_PRIORITY}{TRAJECTORY\_PRIORITY}}
+{\footnotesize\ttfamily \#define TRAJECTORY\+\_\+\+PRIORITY~20}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{globals_8h_a2c68c05ef3599e92e4e531256103a9b2}\label{globals_8h_a2c68c05ef3599e92e4e531256103a9b2}} 
+\index{globals.h@{globals.h}!asphalt\_gray@{asphalt\_gray}}
+\index{asphalt\_gray@{asphalt\_gray}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{asphalt\_gray}{asphalt\_gray}}
+{\footnotesize\ttfamily int asphalt\+\_\+gray}
+
+\mbox{\Hypertarget{globals_8h_a9239939b64679abad9d0ab88ba448083}\label{globals_8h_a9239939b64679abad9d0ab88ba448083}} 
+\index{globals.h@{globals.h}!background@{background}}
+\index{background@{background}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{background}{background}}
+{\footnotesize\ttfamily background\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_ab52c30a42ad18fe1e8d14464ba72df52}\label{globals_8h_ab52c30a42ad18fe1e8d14464ba72df52}} 
+\index{globals.h@{globals.h}!blue@{blue}}
+\index{blue@{blue}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{blue}{blue}}
+{\footnotesize\ttfamily \mbox{\hyperlink{globals_8c_aa74dbd17ed3476453ec71b893ab9446b}{grass\+\_\+green}} \mbox{\hyperlink{globals_8c_a2c68c05ef3599e92e4e531256103a9b2}{asphalt\+\_\+gray}} \mbox{\hyperlink{globals_8c_a52b8a1dc217164197e6e5ba60ec911bf}{white}} \mbox{\hyperlink{globals_8c_af0d8b62806f3b2c95d55dc52164fbf32}{pink}} \mbox{\hyperlink{globals_8c_a34167711871149458e41ef5d3e3541fe}{yellow}} blue}
+
+Integer values representing various colors used for rendering the simulation\textquotesingle{}s elements.
+
+
+\begin{DoxyItemize}
+\item Li\+DAR Data\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_afd57c2208cd2da0ae5d94ff02fd111c0}\label{globals_8h_afd57c2208cd2da0ae5d94ff02fd111c0}} 
+\index{globals.h@{globals.h}!car@{car}}
+\index{car@{car}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{car}{car}}
+{\footnotesize\ttfamily car\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_af758fe89bfde05c28a913d4277ca3c58}\label{globals_8h_af758fe89bfde05c28a913d4277ca3c58}} 
+\index{globals.h@{globals.h}!car\_angle@{car\_angle}}
+\index{car\_angle@{car\_angle}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{car\_angle}{car\_angle}}
+{\footnotesize\ttfamily car\+\_\+angle\hspace{0.3cm}{\ttfamily [extern]}}
+
+The initial orientation angle of the car (in degrees).
+
+
+\begin{DoxyItemize}
+\item Graphical Resources\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_aa62dd86c39b5bdbe50e06812f94da902}\label{globals_8h_aa62dd86c39b5bdbe50e06812f94da902}} 
+\index{globals.h@{globals.h}!car\_x@{car\_x}}
+\index{car\_x@{car\_x}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{car\_x}{car\_x}}
+{\footnotesize\ttfamily car\+\_\+x\hspace{0.3cm}{\ttfamily [extern]}}
+
+The initial X-\/coordinate position of the car within the simulation.
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_ad86d30593c748c02c787e21130cf6495}\label{globals_8h_ad86d30593c748c02c787e21130cf6495}} 
+\index{globals.h@{globals.h}!car\_y@{car\_y}}
+\index{car\_y@{car\_y}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{car\_y}{car\_y}}
+{\footnotesize\ttfamily car\+\_\+y}
+
+The initial Y-\/coordinate position of the car within the simulation.
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a952795524c1ac0c7d7aedb28328b80a8}\label{globals_8h_a952795524c1ac0c7d7aedb28328b80a8}} 
+\index{globals.h@{globals.h}!cone\_radius@{cone\_radius}}
+\index{cone\_radius@{cone\_radius}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{cone\_radius}{cone\_radius}}
+{\footnotesize\ttfamily cone\+\_\+radius\hspace{0.3cm}{\ttfamily [extern]}}
+
+The radius (in meters) for cone-\/related calculations, set to 0.\+05.
+
+
+\begin{DoxyItemize}
+\item Car Initial State\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a41f9ba9006b8869d38a51359afa11270}\label{globals_8h_a41f9ba9006b8869d38a51359afa11270}} 
+\index{globals.h@{globals.h}!control\_panel@{control\_panel}}
+\index{control\_panel@{control\_panel}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{control\_panel}{control\_panel}}
+{\footnotesize\ttfamily control\+\_\+panel\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a44d85ac37cf4fa165adadbc4de29dec4}\label{globals_8h_a44d85ac37cf4fa165adadbc4de29dec4}} 
+\index{globals.h@{globals.h}!display\_buffer@{display\_buffer}}
+\index{display\_buffer@{display\_buffer}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{display\_buffer}{display\_buffer}}
+{\footnotesize\ttfamily display\+\_\+buffer\hspace{0.3cm}{\ttfamily [extern]}}
+
+Bitmap pointers used for rendering various components of the simulation such as the background, track markings, car image, perception overlays, trajectory visualizations, and the overall display buffer.
+
+
+\begin{DoxyItemize}
+\item Color Definitions\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a01db197a65364d7b7b2f59f5863007c2}\label{globals_8h_a01db197a65364d7b7b2f59f5863007c2}} 
+\index{globals.h@{globals.h}!draw\_mutex@{draw\_mutex}}
+\index{draw\_mutex@{draw\_mutex}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{draw\_mutex}{draw\_mutex}}
+{\footnotesize\ttfamily draw\+\_\+mutex\hspace{0.3cm}{\ttfamily [extern]}}
+
+A POSIX mutex that ensures mutual exclusion during drawing operations.
+
+\begin{DoxyNote}{Note}
+The multiplier \textquotesingle{}px\+\_\+per\+\_\+meter\textquotesingle{} used for computing X\+\_\+\+MAX and Y\+\_\+\+MAX is defined elsewhere. 
+\end{DoxyNote}
+\mbox{\Hypertarget{globals_8h_aa74dbd17ed3476453ec71b893ab9446b}\label{globals_8h_aa74dbd17ed3476453ec71b893ab9446b}} 
+\index{globals.h@{globals.h}!grass\_green@{grass\_green}}
+\index{grass\_green@{grass\_green}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{grass\_green}{grass\_green}}
+{\footnotesize\ttfamily int grass\+\_\+green\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{globals_8h_aa21f1e92d43a7701840f426f13061380}\label{globals_8h_aa21f1e92d43a7701840f426f13061380}} 
+\index{globals.h@{globals.h}!lidar\_sem@{lidar\_sem}}
+\index{lidar\_sem@{lidar\_sem}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{lidar\_sem}{lidar\_sem}}
+{\footnotesize\ttfamily lidar\+\_\+sem\hspace{0.3cm}{\ttfamily [extern]}}
+
+A POSIX semaphore used to synchronize access to Li\+DAR data.
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a1e7de054f2faeeadadbab6364a1b5fe4}\label{globals_8h_a1e7de054f2faeeadadbab6364a1b5fe4}} 
+\index{globals.h@{globals.h}!measures@{measures}}
+\index{measures@{measures}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{measures}{measures}}
+{\footnotesize\ttfamily measures\hspace{0.3cm}{\ttfamily [extern]}}
+
+An array of 360 Li\+DAR measurements (one per degree) representing the simulated point cloud data.
+
+
+\begin{DoxyItemize}
+\item Thread Synchronization\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a93d8b579fb6a6e44aceb0e66cd315b79}\label{globals_8h_a93d8b579fb6a6e44aceb0e66cd315b79}} 
+\index{globals.h@{globals.h}!perception@{perception}}
+\index{perception@{perception}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{perception}{perception}}
+{\footnotesize\ttfamily perception\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_af0d8b62806f3b2c95d55dc52164fbf32}\label{globals_8h_af0d8b62806f3b2c95d55dc52164fbf32}} 
+\index{globals.h@{globals.h}!pink@{pink}}
+\index{pink@{pink}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{pink}{pink}}
+{\footnotesize\ttfamily int pink}
+
+\mbox{\Hypertarget{globals_8h_a29633e1eefceb92936cfcf2f8553d9d6}\label{globals_8h_a29633e1eefceb92936cfcf2f8553d9d6}} 
+\index{globals.h@{globals.h}!steering\_wheel@{steering\_wheel}}
+\index{steering\_wheel@{steering\_wheel}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{steering\_wheel}{steering\_wheel}}
+{\footnotesize\ttfamily steering\+\_\+wheel\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a6c9355aebe9fcec4b9de46a23a7b0495}\label{globals_8h_a6c9355aebe9fcec4b9de46a23a7b0495}} 
+\index{globals.h@{globals.h}!throttle\_gauge@{throttle\_gauge}}
+\index{throttle\_gauge@{throttle\_gauge}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{throttle\_gauge}{throttle\_gauge}}
+{\footnotesize\ttfamily throttle\+\_\+gauge\hspace{0.3cm}{\ttfamily [extern]}}
+
+Bitmap pointers for UI elements including the control panel, steering wheel, and throttle gauge.
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a051e403214cb6872ad3fe4e50302a6ee}\label{globals_8h_a051e403214cb6872ad3fe4e50302a6ee}} 
+\index{globals.h@{globals.h}!title@{title}}
+\index{title@{title}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{title}{title}}
+{\footnotesize\ttfamily title\hspace{0.3cm}{\ttfamily [extern]}}
+
+The simulation title (\char`\"{}2\+D FSAE sim by rimaturus\char`\"{}).
+
+
+\begin{DoxyItemize}
+\item Simulation Dimensions\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_adb5e2391917cad02d6ca0c5ab0a46149}\label{globals_8h_adb5e2391917cad02d6ca0c5ab0a46149}} 
+\index{globals.h@{globals.h}!track@{track}}
+\index{track@{track}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{track}{track}}
+{\footnotesize\ttfamily track\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a02134862c4b4335bd7411c66d249a6f0}\label{globals_8h_a02134862c4b4335bd7411c66d249a6f0}} 
+\index{globals.h@{globals.h}!trajectory\_bmp@{trajectory\_bmp}}
+\index{trajectory\_bmp@{trajectory\_bmp}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{trajectory\_bmp}{trajectory\_bmp}}
+{\footnotesize\ttfamily trajectory\+\_\+bmp\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a52b8a1dc217164197e6e5ba60ec911bf}\label{globals_8h_a52b8a1dc217164197e6e5ba60ec911bf}} 
+\index{globals.h@{globals.h}!white@{white}}
+\index{white@{white}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{white}{white}}
+{\footnotesize\ttfamily int white}
+
+\mbox{\Hypertarget{globals_8h_a06a12873f8a85695ebe48194046f9903}\label{globals_8h_a06a12873f8a85695ebe48194046f9903}} 
+\index{globals.h@{globals.h}!X\_MAX@{X\_MAX}}
+\index{X\_MAX@{X\_MAX}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{X\_MAX}{X\_MAX}}
+{\footnotesize\ttfamily X\+\_\+\+MAX\hspace{0.3cm}{\ttfamily [extern]}}
+
+The maximum horizontal dimension of the simulation in pixels, computed as 19 $\ast$ px\+\_\+per\+\_\+meter.
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a99a74a6925d1808bdce0de76aca0550d}\label{globals_8h_a99a74a6925d1808bdce0de76aca0550d}} 
+\index{globals.h@{globals.h}!Y\_MAX@{Y\_MAX}}
+\index{Y\_MAX@{Y\_MAX}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{Y\_MAX}{Y\_MAX}}
+{\footnotesize\ttfamily Y\+\_\+\+MAX\hspace{0.3cm}{\ttfamily [extern]}}
+
+The maximum vertical dimension of the simulation in pixels, computed as 12 $\ast$ px\+\_\+per\+\_\+meter.
+
+
+\begin{DoxyItemize}
+\item Physics and Geometry\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a34167711871149458e41ef5d3e3541fe}\label{globals_8h_a34167711871149458e41ef5d3e3541fe}} 
+\index{globals.h@{globals.h}!yellow@{yellow}}
+\index{yellow@{yellow}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{yellow}{yellow}}
+{\footnotesize\ttfamily int yellow\hspace{0.3cm}{\ttfamily [extern]}}
+

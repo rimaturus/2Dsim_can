@@ -1,0 +1,17 @@
+<map id="include/globals.h" name="include/globals.h">
+<area shape="rect" id="node1" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="842,5,974,32"/>
+<area shape="rect" id="node2" href="$control_8h.html" title="Declarations for vehicle control functions and variables in the 2D simulator." alt="" coords="296,229,427,256"/>
+<area shape="rect" id="node4" href="$main_8c.html" title="Main implementation of the 2D FSAE Simulation." alt="" coords="609,379,698,405"/>
+<area shape="rect" id="node5" href="$tasks_8c.html" title="Contains periodic task functions for LiDAR perception, trajectory planning, vehicle control,..." alt="" coords="112,379,203,405"/>
+<area shape="rect" id="node6" href="$control_8c.html" title="Implements vehicle control functions including both manual (keyboard) and autonomous (centerline base..." alt="" coords="113,304,215,331"/>
+<area shape="rect" id="node7" href="$display_8c.html" title="Rendering and display update functions for the 2D simulation using Allegro." alt="" coords="656,304,757,331"/>
+<area shape="rect" id="node8" href="$perception_8h.html" title="Header file for perception&#45;related types, constants, and function declarations." alt="" coords="643,80,797,107"/>
+<area shape="rect" id="node9" href="$trajectory_8h.html" title="Provides declarations for trajectory planning based on cone detection." alt="" coords="371,155,517,181"/>
+<area shape="rect" id="node10" href="$trajectory_8c.html" title="Implements trajectory planning based on detected cones." alt="" coords="552,229,669,256"/>
+<area shape="rect" id="node11" href="$utilities_8h.html" title="Utility function prototypes for cone management and runtime tasks." alt="" coords="745,229,879,256"/>
+<area shape="rect" id="node12" href="$perception_8c.html" title="Implements LiDAR&#45;based cone detection and mapping using circle Hough transform." alt="" coords="845,155,971,181"/>
+<area shape="rect" id="node13" href="$utilities_8c.html" title="Utility functions for cone initialization, YAML cone loading, angle rotation conversion,..." alt="" coords="995,155,1101,181"/>
+<area shape="rect" id="node14" href="$globals_8c.html" title="Global definitions and state variables for the 2D FSAE simulation." alt="" coords="1278,80,1381,107"/>
+<area shape="rect" id="node15" href="$vehicle_8c.html" title=" " alt="" coords="1405,80,1507,107"/>
+<area shape="rect" id="node3" href="$tasks_8h.html" title="Declaration of task thread functions for the simulation." alt="" coords="347,304,467,331"/>
+</map>

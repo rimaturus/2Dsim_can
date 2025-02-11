@@ -1,0 +1,13 @@
+<map id="src/control.c" name="src/control.c">
+<area shape="rect" id="node1" title="Implements vehicle control functions including both manual (keyboard) and autonomous (centerline base..." alt="" coords="204,5,305,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,80,72,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="177,304,245,331"/>
+<area shape="rect" id="node4" title=" " alt="" coords="126,379,205,405"/>
+<area shape="rect" id="node5" href="$trajectory_8h.html" title="Provides declarations for trajectory planning based on cone detection." alt="" coords="350,155,445,181"/>
+<area shape="rect" id="node6" href="$perception_8h.html" title="Header file for perception&#45;related types, constants, and function declarations." alt="" coords="198,229,301,256"/>
+<area shape="rect" id="node7" href="$globals_8h.html" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="298,304,379,331"/>
+<area shape="rect" id="node10" href="$control_8h.html" title="Declarations for vehicle control functions and variables in the 2D simulator." alt="" coords="261,80,339,107"/>
+<area shape="rect" id="node11" href="$vehicle_8h.html" title=" " alt="" coords="521,80,602,107"/>
+<area shape="rect" id="node8" title=" " alt="" coords="389,379,473,405"/>
+<area shape="rect" id="node9" title=" " alt="" coords="257,379,364,405"/>
+</map>

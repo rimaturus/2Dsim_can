@@ -1,9 +1,151 @@
+/**
+ * @defgroup PerceptionModule Cone Detection and Mapping
+ * @{
+ */
+
+/**
+ * @file perception.c
+ * @brief Implements LiDAR-based cone detection and mapping using circle Hough transform.
+ *
+ * This file contains functions to process LiDAR measurements, cluster points belonging
+ * to the same cone, compute cone centers with a Hough circle parameterization, and update
+ * a global map of detected cones.
+ *
+ * Global variables:
+ *  - sliding_window: Number of angles scanned (360 degrees).
+ *  - angle_step: Step in degrees for each LiDAR scan.
+ *  - start_angle: Starting angle of the LiDAR scan.
+ *  - ignore_distance: Minimum distance threshold for detection.
+ *  - distance_resolution: Increment step for distances along LiDAR rays.
+ *  - detected_cones: Array that holds final detected cone positions and colors.
+ *  - n_candidates: Number of candidate cones currently tracked.
+ *  - candidates: Array that holds candidate cone detections.
+ *  - track_map_idx: Index for the global map where detected cones are stored.
+ *  - track_map: Global map of cone positions and colors.
+ *
+ * @defgroup Perception_Functions Cone Detection and Mapping
+ * @{
+ */
+
+/**
+ * @brief Checks if a given LiDAR point is near an already detected cone.
+ *
+ * The function loops over the cone borders array and finds a suitable cone where the new
+ * point (defined by angle and (x,y) coordinates) can be assigned. If the cone border is empty,
+ * it is initialized; if the cone already exists, the function compares distances to decide
+ * if the new point should be added to that cone's border.
+ *
+ * @param angle Angle index at which the measurement was taken.
+ * @param new_point_x X coordinate of the new LiDAR point.
+ * @param new_point_y Y coordinate of the new LiDAR point.
+ * @param color Color identifier of the detected point (e.g., yellow or blue).
+ * @param cone_borders Pointer to an array of cone_border structures that hold border points.
+ */
+ 
+/**
+ * @brief Simulates a LiDAR scan around the vehicle to detect cones.
+ *
+ * For each angle in a 360 degree window, the function increments distances starting from 
+ * a minimum ignore distance until an obstacle of interest (yellow or blue pixel) is reached.
+ * The found distance and corresponding point coordinates are stored in the measures array.
+ *
+ * @param car_x Vehicle's x coordinate in world space.
+ * @param car_y Vehicle's y coordinate in world space.
+ * @param measures Pointer to a pointcloud_t array where LiDAR measurements are stored.
+ */
+
+/**
+ * @brief Initializes an array of cone borders.
+ *
+ * Each cone border element is cleared by setting its angle indexes to -1 and color to -1,
+ * representing an uninitialized state.
+ *
+ * @param cone_borders Pointer to the cone_border array to be initialized.
+ */
+
+/**
+ * @brief Calculates and stores the circumference points for a cone.
+ *
+ * Given a cone center (center_x, center_y) and its color, the function computes 360 points
+ * around the circle using the predefined cone_radius, and stores them in the provided array.
+ *
+ * @param center_x X coordinate of the cone center.
+ * @param center_y Y coordinate of the cone center.
+ * @param color Color of the cone.
+ * @param circle_points Pointer to an array of cone structures that will receive the circle points.
+ */
+
+/**
+ * @brief Finds the closest intersection points between candidate circles.
+ *
+ * For a circle (centered at point_x, point_y) with a predefined cone radius, the function calculates
+ * its circumference points (360 possible points) and determines the minimum distance to points provided
+ * in the reference_points array. The resulting closest points are stored in the circumference_points array.
+ *
+ * @param circumference_points Array of Hough_circle_point_t where the processed points will be stored.
+ * @param point_x X coordinate used as the origin for the circumference.
+ * @param point_y Y coordinate used as the origin for the circumference.
+ * @param reference_points Array of Hough_circle_point_t used as a reference to compute distances.
+ * @param ref_size Number of elements in the reference_points array.
+ */
+
+/**
+ * @brief Identifies two local minima in a set of circle intersection points.
+ *
+ * The function analyzes the trends of the distances stored in the provided points array and finds
+ * the indexes of the two local minima. These minima correspond to candidate centers for the cone.
+ *
+ * @param points Array of Hough_circle_point_t representing distances along a circumference.
+ * @param first_min Pointer to an integer that will store the index of the first local minimum.
+ * @param second_min Pointer to an integer that will store the index of the second local minimum.
+ */
+
+/**
+ * @brief Performs cluster analysis on candidate cone centers.
+ *
+ * The function examines an array of candidate centers (possible_centers) and groups those that
+ * are spatially close using a clustering threshold. The coordinates of the best candidate cluster
+ * (i.e., the one with the most points) are averaged and returned as the computed cone center.
+ *
+ * @param possible_centers Array of Hough_circle_point_t containing potential cone centers.
+ * @param center_count The number of candidate centers in the array.
+ * @return Pointer to a static float array of two elements where [0] is the x coordinate and [1] is the y coordinate of the computed cone center.
+ */
+
+/**
+ * @brief Processes LiDAR measures to detect and map cones using a circle Hough transformation.
+ *
+ * The mapping function groups LiDAR points detected as cones into clusters (cone borders) using 
+ * the check_nearest_point helper. It then calculates circle intersections for points forming each
+ * cone border, finds local minima corresponding to candidate cone centers, clusters these candidate centers,
+ * and finally selects the best center for each cone. The resulting cone centers are stored, with their
+ * color information preserved.
+ *
+ * @param car_x Vehicle's x coordinate in world space.
+ * @param car_y Vehicle's y coordinate in world space.
+ * @param car_angle Vehicle's heading angle in degrees.
+ * @param detected_cones Pointer to an array of cones where the detected cone centers will be stored.
+ */
+
+/**
+ * @brief Updates the global map with newly detected cones.
+ *
+ * For each detected cone in the detected_cones array, the function checks against existing candidates.
+ * If the newly detected cone is close to a candidate, a moving average is computed for its position. If a candidate
+ * reaches a detection threshold (DETECTIONS_THRESHOLD), it is committed to the global map (track_map).
+ * Otherwise, if no nearby candidate is found, a new candidate is created.
+ *
+ * @param detected_cones Pointer to the array of cones with detected centers and colors ready for map update.
+ *
+ * @}
+ */
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
 
 #include "globals.h"
 #include "perception.h"
+#include "trajectory.h"
 
 const int sliding_window = 360;
 const int angle_step = 1;
@@ -18,7 +160,6 @@ candidate_cone candidates[MAX_CANDIDATES];
 
 int track_map_idx = 0;
 cone track_map[MAX_CONES_MAP];
-
 
 // LiDAR measures
 void 	check_nearest_point(int angle, float new_point_x, float new_point_y, int color, cone_border *cone_borders)
@@ -121,15 +262,6 @@ void    lidar(float car_x, float car_y, pointcloud_t *measures)
 		}
 	}
 }
-
-// Real-time mapping
-// Helper struct definitions
-typedef struct {
-	float x;
-	float y;
-	float distance;
-	int color;
-} Hough_circle_point_t;
 
 // Initialize cone borders array
 void	init_cone_borders(cone_border *cone_borders) 
@@ -635,3 +767,5 @@ void update_map(cone *detected_cones)
 		}
 	}
 }
+
+/** @} */

@@ -1,0 +1,6 @@
+<map id="draw_perception" name="draw_perception">
+<area shape="rect" id="node1" title="Draws perception results." alt="" coords="5,56,136,83"/>
+<area shape="rect" id="node2" href="$display_8c.html#aa45d316f5e50fa968e686d790d57457b" title="Draws the cone map overlay." alt="" coords="201,5,329,32"/>
+<area shape="rect" id="node3" href="$display_8c.html#a298532c4740f2a6785e5c1b0ff7fea9a" title="Renders the detected cones on the perception bitmap." alt="" coords="184,56,347,83"/>
+<area shape="rect" id="node4" href="$display_8c.html#a5c07cb2dc1adb076383bced84f4a8154" title="Draws the lidar/perception view." alt="" coords="220,107,311,133"/>
+</map>

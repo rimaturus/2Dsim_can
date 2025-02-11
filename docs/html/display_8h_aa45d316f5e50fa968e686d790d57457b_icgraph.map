@@ -1,0 +1,7 @@
+<map id="draw_cone_map" name="draw_cone_map">
+<area shape="rect" id="node1" title="Draws the cone map (track map)." alt="" coords="608,5,736,32"/>
+<area shape="rect" id="node2" href="$display_8h.html#acd5437d29ba24cfc00dbd2f9f6b0cd28" title="Draws perception results." alt="" coords="429,5,560,32"/>
+<area shape="rect" id="node3" href="$display_8h.html#aa2eb9ba074b23fc3b4a91c98e0c83c8b" title="Updates the display." alt="" coords="260,5,381,32"/>
+<area shape="rect" id="node4" href="$tasks_8h.html#a16cbac3bef85b555e76fe999965c1b7e" title=" " alt="" coords="108,5,212,32"/>
+<area shape="rect" id="node5" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title=" " alt="" coords="5,5,60,32"/>
+</map>

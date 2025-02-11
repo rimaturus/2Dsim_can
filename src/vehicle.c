@@ -1,3 +1,36 @@
+/**
+ * @defgroup VehicleModule Vehicle model and control
+ * @{
+ */
+
+/**
+ * @brief Updates the vehicle's position and orientation based on pedal and steering inputs.
+ *
+ * This function simulates the movement of a vehicle using a simple bicycle model (Ackermann steering).
+ * It updates the current position (car_x, car_y) and the heading (car_angle) of the vehicle according
+ * to the pedal input (acceleration or braking) and the steering angle over a fixed time step.
+ *
+ * The simulation parameters include:
+ * - A time step (dt) for the simulation.
+ * - A mass of the vehicle, which is used to compute acceleration from the force.
+ * - A fixed wheelbase, representing the distance between the front and rear axles.
+ * - A maximum achievable speed and a maximum braking force.
+ *
+ * When the pedal input is positive, the vehicle accelerates towards a speed that is a proportion of maxSpeed.
+ * If the pedal input is not positive, the vehicle is assumed to be braking, and the deceleration is computed
+ * using the current speed and a maximum braking factor.
+ *
+ * The vehicle's position is updated based on its current speed and orientation. The steering angle influences
+ * the change in the vehicle's heading only if the vehicle is moving above a small threshold speed.
+ * The angle conversion between degrees and radians is used to interface with the trigonometric functions.
+ *
+ * @param[in,out] car_x Pointer to the vehicle's x-coordinate. Updated based on the vehicle's motion.
+ * @param[in,out] car_y Pointer to the vehicle's y-coordinate. Updated based on the vehicle's motion.
+ * @param[in,out] car_angle Pointer to the vehicle's heading in degrees. Updated based on the computed orientation.
+ * @param[in] pedal The pedal input; a positive value corresponds to acceleration while a non-positive value
+ *                  initiates braking.
+ * @param[in] steering The steering input that determines the rate of change of the vehicle's heading.
+ */
 #include <math.h>
 #include <stdio.h>
 #include "vehicle.h"
@@ -48,3 +81,5 @@ float speed, acceleration;
 	*car_angle = (int)(theta / deg2rad);
 
 }
+
+/** @} */

@@ -1,0 +1,48 @@
+\label{index_md_readme}%
+\Hypertarget{index_md_readme}%
+ \hypertarget{index_autotoc_md1}{}\doxysection{Project Overview}\label{index_autotoc_md1}
+This project is a 2D simulation of a Formula SAE (FSAE) vehicle, designed to model vehicle dynamics, perception, trajectory planning, and control systems. It provides a platform for testing and visualizing autonomous driving algorithms in a simplified environment.\hypertarget{index_autotoc_md2}{}\doxysection{Key Features}\label{index_autotoc_md2}
+
+\begin{DoxyItemize}
+\item {\bfseries{Vehicle Dynamics\+:}} Simulates basic vehicle movement based on pedal and steering inputs.
+\item {\bfseries{Li\+DAR-\/based Perception\+:}} Implements cone detection using simulated Li\+DAR measurements and a circle Hough transform.
+\item {\bfseries{Trajectory Planning\+:}} Generates a driving trajectory by connecting detected cones.
+\item {\bfseries{Autonomous Control\+:}} Includes an autonomous control system to follow the planned trajectory.
+\item {\bfseries{Manual Control\+:}} Allows keyboard control of the vehicle.
+\item {\bfseries{Visualization\+:}} Uses the Allegro library to provide a 2D graphical representation of the simulation, including the car, track, cones, and planned trajectory.
+\item {\bfseries{Periodic Tasks\+:}} Utilizes a periodic task scheduler for managing different simulation components.
+\end{DoxyItemize}\hypertarget{index_autotoc_md3}{}\doxysection{Project Structure}\label{index_autotoc_md3}
+The project is organized into several modules\+:
+
+
+\begin{DoxyItemize}
+\item $\ast$$\ast${\ttfamily \mbox{\hyperlink{main_8c}{src/main.\+c}}}\+:$\ast$$\ast$ Initializes the simulation, creates tasks, and manages the main loop.
+\item $\ast$$\ast${\ttfamily \mbox{\hyperlink{vehicle_8c}{src/vehicle.\+c}}}\+:$\ast$$\ast$ Implements the vehicle dynamics model.
+\item $\ast$$\ast${\ttfamily \mbox{\hyperlink{perception_8c}{src/perception.\+c}}}\+:$\ast$$\ast$ Handles Li\+DAR data processing and cone detection.
+\item $\ast$$\ast${\ttfamily \mbox{\hyperlink{trajectory_8c}{src/trajectory.\+c}}}\+:$\ast$$\ast$ Plans the driving trajectory based on detected cones.
+\item $\ast$$\ast${\ttfamily \mbox{\hyperlink{control_8c}{src/control.\+c}}}\+:$\ast$$\ast$ Implements control algorithms for both manual and autonomous driving.
+\item $\ast$$\ast${\ttfamily \mbox{\hyperlink{display_8c}{src/display.\+c}}}\+:$\ast$$\ast$ Manages the graphical display of the simulation.
+\item $\ast$$\ast${\ttfamily \mbox{\hyperlink{tasks_8c}{src/tasks.\+c}}}\+:$\ast$$\ast$ Defines the periodic tasks for perception, trajectory planning, control, and display.
+\item $\ast$$\ast${\ttfamily \mbox{\hyperlink{utilities_8c}{src/utilities.\+c}}}\+:$\ast$$\ast$ Provides utility functions for cone management and runtime measurement.
+\item $\ast$$\ast${\ttfamily \mbox{\hyperlink{globals_8c}{src/globals.\+c}}}\+:$\ast$$\ast$ Defines global variables and constants used throughout the simulation.
+\item $\ast$$\ast${\ttfamily \mbox{\hyperlink{ptask_8c}{src/ptask.\+c}}}\+:$\ast$$\ast$ Implements the periodic task scheduler.
+\item $\ast$$\ast${\ttfamily include/$\ast$.h}\+:$\ast$$\ast$ Header files declaring the interfaces for each module.
+\end{DoxyItemize}\hypertarget{index_autotoc_md4}{}\doxysection{Global Call Graph}\label{index_autotoc_md4}
+\hypertarget{index_autotoc_md5}{}\doxysection{Task Descriptions}\label{index_autotoc_md5}
+
+\begin{DoxyItemize}
+\item {\bfseries{Perception Task}}\+: Acquires Li\+DAR measurements, detects cones, and updates the map.
+\item {\bfseries{Trajectory Task}}\+: Plans the trajectory based on the detected cones.
+\item {\bfseries{Control Task}}\+: Controls the vehicle either manually or autonomously.
+\item {\bfseries{Display Task}}\+: Updates the graphical display of the simulation.
+\end{DoxyItemize}\hypertarget{index_autotoc_md6}{}\doxysection{Building and Running the Simulation}\label{index_autotoc_md6}
+1) Ensure you have Allegro 4 installed $\ast$(On Ubuntu/\+Debian\+:$\ast$ {\ttfamily sudo apt-\/get install liballegro4.\+2 liballegro4.\+2-\/dev}$\ast$)$\ast$.
+
+2) Other dependencies for this project\+:
+\begin{DoxyItemize}
+\item {\itshape libyaml}\+: {\ttfamily git clone \href{https://github.com/yaml/libyaml.git}{\texttt{ https\+://github.\+com/yaml/libyaml.\+git}}}
+\end{DoxyItemize}
+
+3) Use the provided Makefile to build the project.
+
+4) Run the executable {\ttfamily make}. 

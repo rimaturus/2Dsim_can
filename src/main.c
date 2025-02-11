@@ -1,3 +1,131 @@
+/**
+ * @file main.c
+ * @brief Main implementation of the 2D FSAE Simulation.
+ *
+ * This file initializes the Allegro graphics library, sets up various bitmaps for simulation elements,
+ * and creates periodic tasks for perception, trajectory, control, and display. It also handles input,
+ * such as waiting for the user to press ESC to exit the simulation.
+ *
+ * These routines configure the graphical environment, load assets (bitmaps), and initialize the simulation
+ * track including cones from an external YAML file. The program makes use of a periodic task system (using
+ * SCHED_OTHER) and employs mutexes to synchronize drawing operations.
+ *
+ * @callergraph
+ * @callgraph
+ */
+
+/**
+ * @brief Application entry point.
+ *
+ * The main() function initializes the graphics system, creates display bitmaps, and sets up periodic tasks
+ * for different simulation modules:
+ *  - Perception: processes sensor data to detect environment features.
+ *  - Trajectory: calculates the planned path for the vehicle.
+ *  - Control: manages vehicle control based on perception and trajectory.
+ *  - Display: updates the visual representation of the simulation.
+ *
+ * After task creation, the main loop waits for all tasks to terminate (typically on ESC key press), cleans up
+ * the graphical buffers, and exits the simulation.
+ *
+ * @see init_allegro(), init_bitmaps(), update_screen(), task_create(), wait_for_task_end()
+ */
+
+/**
+ * @brief Initializes the Allegro graphics system.
+ *
+ * Sets up the graphics data structures, installs keyboard and mouse handlers, and configures the graphics 
+ * mode. It defines the color depth and initializes several colors (e.g., grass green, asphalt gray, pink) 
+ * used throughout the simulation. The display window is created with a title and switch mode, and finally 
+ * the screen is cleared.
+ *
+ * @see allegro_init(), install_keyboard(), install_mouse(), set_gfx_mode(), set_window_title(), clear_to_color()
+ * @callergraph
+ * @callgraph
+ */
+ 
+/**
+ * @brief Initializes the track bitmap.
+ *
+ * Creates a bitmap representing the track and clears it to an asphalt color. It loads cone positions from an
+ * external YAML configuration file and plots track cones on the track bitmap. Only valid cones (with a valid color)
+ * are rendered, using a radius scaled to pixels per meter.
+ *
+ * @see load_cones_positions(), init_cones(), clear_bitmap(), circlefill()
+ * @callergraph
+ * @callgraph
+ */
+ 
+/**
+ * @brief Initializes the car bitmap and positions.
+ *
+ * Loads the car sprite bitmap from a file. It computes the car position in pixels, ensuring that the car's
+ * graphical representation is centered on its logical position by offsetting the bitmap’s top-left coordinates.
+ *
+ * @see load_bitmap(), clear_bitmap(), circlefill()
+ * @callergraph
+ * @callgraph
+ */
+ 
+/**
+ * @brief Initializes the perception bitmap.
+ *
+ * Creates a dedicated bitmap for representing the perceptual data (e.g., sensor outputs) of the simulation.
+ * The dimensions are based on the maximum range of the sensor (scaled by pixels per meter), ensuring that the
+ * bitmap covers the necessary area for sensor information. The bitmap is cleared and set to a transparent color.
+ *
+ * @see create_bitmap(), clear_bitmap(), clear_to_color()
+ * @callergraph
+ * @callgraph
+ */
+ 
+/**
+ * @brief Initializes the trajectory bitmap.
+ *
+ * This function creates and configures the bitmap that visualizes the calculated trajectory path.
+ * The bitmap is cleared and its background is set transparent (using the designated pink color).
+ *
+ * @see create_bitmap(), clear_bitmap(), clear_to_color()
+ * @callergraph
+ * @callgraph
+ */
+ 
+/**
+ * @brief Initializes visual control elements.
+ *
+ * Loads and initializes bitmaps for user visual controls such as the steering wheel (bitmap for steering)
+ * and a visual throttle gauge. In case of any loading error, the application exits with an error message.
+ *
+ * @see load_bitmap(), create_bitmap(), clear_bitmap(), clear_to_color()
+ * @callergraph
+ * @callgraph
+ */
+ 
+/**
+ * @brief Initializes all bitmaps used for displaying the simulation.
+ *
+ * Creates the display buffer and background bitmaps, clearing them to the proper color. Then, it calls several
+ * initialization functions that prepare all simulation-specific bitmaps (track, car, perception, trajectory, and visual controls).
+ *
+ * @see create_bitmap(), init_track(), init_car(), init_perception(), init_trajectory(), init_visual_controls()
+ * @callergraph
+ * @callgraph
+ */
+ 
+/**
+ * @brief Updates the display screen.
+ *
+ * Locks a mutex to prevent concurrent drawing modifications, clears the display buffer, and performs a series
+ * of drawing operations:
+ *  - Renders the steering wheel with rotation and scaling.
+ *  - Draws the background and track bitmaps.
+ *  - Rotates, scales, and draws the car sprite ensuring correct orientation.
+ *  - Draws the perception and trajectory bitmaps.
+ * Finally, the updated display buffer is blitted to the actual screen, and the mutex is unlocked.
+ *
+ * @see pthread_mutex_lock(), clear_to_color(), rotate_scaled_sprite(), draw_sprite(), blit(), pthread_mutex_unlock()
+ * @callergraph
+ * @callgraph
+ */
 #include <stdio.h>
 #include <allegro.h>
 

@@ -1,0 +1,19 @@
+<map id="src/tasks.c" name="src/tasks.c">
+<area shape="rect" id="node1" title="Contains periodic task functions for LiDAR perception, trajectory planning, vehicle control,..." alt="" coords="293,5,384,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="421,155,488,181"/>
+<area shape="rect" id="node3" href="$globals_8h.html" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="179,379,261,405"/>
+<area shape="rect" id="node7" href="$tasks_8h.html" title="Declaration of task thread functions for the simulation." alt="" coords="200,80,269,107"/>
+<area shape="rect" id="node9" href="$perception_8h.html" title="Header file for perception&#45;related types, constants, and function declarations." alt="" coords="214,304,317,331"/>
+<area shape="rect" id="node12" href="$trajectory_8h.html" title="Provides declarations for trajectory planning based on cone detection." alt="" coords="43,229,138,256"/>
+<area shape="rect" id="node13" href="$display_8h.html" title="Header file declaring display rendering functions." alt="" coords="267,155,346,181"/>
+<area shape="rect" id="node14" href="$vehicle_8h.html" title=" " alt="" coords="466,80,547,107"/>
+<area shape="rect" id="node15" href="$ptask_8h.html" title="Interface for managing periodic tasks and time utilities." alt="" coords="571,80,642,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="181,453,259,480"/>
+<area shape="rect" id="node5" title=" " alt="" coords="306,453,390,480"/>
+<area shape="rect" id="node6" title=" " alt="" coords="501,453,608,480"/>
+<area shape="rect" id="node8" href="$utilities_8h.html" title="Utility function prototypes for cone management and runtime tasks." alt="" coords="264,229,347,256"/>
+<area shape="rect" id="node11" href="$control_8h.html" title="Declarations for vehicle control functions and variables in the 2D simulator." alt="" coords="113,155,191,181"/>
+<area shape="rect" id="node10" title=" " alt="" coords="285,379,353,405"/>
+<area shape="rect" id="node16" title=" " alt="" coords="613,155,677,181"/>
+<area shape="rect" id="node17" title=" " alt="" coords="702,155,773,181"/>
+</map>

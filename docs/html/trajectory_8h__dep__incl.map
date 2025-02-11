@@ -1,0 +1,10 @@
+<map id="include/trajectory.h" name="include/trajectory.h">
+<area shape="rect" id="node1" title="Provides declarations for trajectory planning based on cone detection." alt="" coords="252,5,399,32"/>
+<area shape="rect" id="node2" href="$control_8h.html" title="Declarations for vehicle control functions and variables in the 2D simulator." alt="" coords="193,80,324,107"/>
+<area shape="rect" id="node4" href="$main_8c.html" title="Main implementation of the 2D FSAE Simulation." alt="" coords="117,229,206,256"/>
+<area shape="rect" id="node5" href="$tasks_8c.html" title="Contains periodic task functions for LiDAR perception, trajectory planning, vehicle control,..." alt="" coords="333,229,424,256"/>
+<area shape="rect" id="node6" href="$control_8c.html" title="Implements vehicle control functions including both manual (keyboard) and autonomous (centerline base..." alt="" coords="23,155,124,181"/>
+<area shape="rect" id="node7" href="$display_8c.html" title="Rendering and display update functions for the 2D simulation using Allegro." alt="" coords="343,155,444,181"/>
+<area shape="rect" id="node8" href="$trajectory_8c.html" title="Implements trajectory planning based on detected cones." alt="" coords="519,80,636,107"/>
+<area shape="rect" id="node3" href="$tasks_8h.html" title="Declaration of task thread functions for the simulation." alt="" coords="199,155,319,181"/>
+</map>

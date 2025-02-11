@@ -1,0 +1,7 @@
+<map id="vehicle_model" name="vehicle_model">
+<area shape="rect" id="node1" title="Simulates the vehicle&#39;s movement by updating its position and orientation." alt="" coords="461,31,579,57"/>
+<area shape="rect" id="node2" href="$control_8h.html#ae3c1be6c75e99edd3ab89b0d2f6c4b0d" title="Autonomous control routine using centerline waypoints." alt="" coords="259,5,413,32"/>
+<area shape="rect" id="node5" href="$control_8h.html#aa7d41004f6e6355c5dd871a9a8c8a59d" title="Adjusts vehicle controls based on keyboard input." alt="" coords="269,56,403,83"/>
+<area shape="rect" id="node3" href="$tasks_8h.html#a91e3918bad881fbf7304d534268de11d" title=" " alt="" coords="108,31,211,57"/>
+<area shape="rect" id="node4" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title=" " alt="" coords="5,31,60,57"/>
+</map>

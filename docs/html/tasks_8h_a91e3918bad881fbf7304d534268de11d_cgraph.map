@@ -1,0 +1,10 @@
+<map id="control_task" name="control_task">
+<area shape="rect" id="node1" title=" " alt="" coords="5,132,108,159"/>
+<area shape="rect" id="node2" href="$control_8h.html#ae3c1be6c75e99edd3ab89b0d2f6c4b0d" title="Autonomous control routine using centerline waypoints." alt="" coords="156,5,311,32"/>
+<area shape="rect" id="node4" href="$ptask_8h.html#a55744cf37a298cca48b46a38ecd1cbd7" title=" " alt="" coords="173,56,294,83"/>
+<area shape="rect" id="node5" href="$control_8h.html#aa7d41004f6e6355c5dd871a9a8c8a59d" title="Adjusts vehicle controls based on keyboard input." alt="" coords="166,107,301,133"/>
+<area shape="rect" id="node6" href="$utilities_8h.html#a28b6717d007598c8d776ee5b8652be51" title=" " alt="" coords="197,157,270,184"/>
+<area shape="rect" id="node7" href="$ptask_8h.html#ac5a989242ff00476f314f92395f23252" title=" " alt="" coords="160,208,307,235"/>
+<area shape="rect" id="node8" href="$ptask_8h.html#afd8a4ae978d1068cb18f8e5fc03a1f0c" title=" " alt="" coords="172,259,295,285"/>
+<area shape="rect" id="node3" href="$group__VehicleModule.html#ga4a1f78c4260229ebd2850350d181cc86" title="Simulates the vehicle&#39;s movement by updating its position and orientation." alt="" coords="359,56,476,83"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="keyboard_control" name="keyboard_control">
+<area shape="rect" id="node1" title="Adjusts vehicle controls based on keyboard input." alt="" coords="5,5,140,32"/>
+<area shape="rect" id="node2" href="$group__VehicleModule.html#ga4a1f78c4260229ebd2850350d181cc86" title="Simulates the vehicle&#39;s movement by updating its position and orientation." alt="" coords="188,5,305,32"/>
+</map>

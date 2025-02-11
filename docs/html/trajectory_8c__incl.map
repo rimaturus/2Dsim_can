@@ -1,0 +1,12 @@
+<map id="src/trajectory.c" name="src/trajectory.c">
+<area shape="rect" id="node1" title="Implements trajectory planning based on detected cones." alt="" coords="132,5,249,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="71,229,139,256"/>
+<area shape="rect" id="node3" title=" " alt="" coords="28,80,94,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="119,80,190,107"/>
+<area shape="rect" id="node5" href="$trajectory_8h.html" title="Provides declarations for trajectory planning based on cone detection." alt="" coords="266,80,360,107"/>
+<area shape="rect" id="node6" href="$perception_8h.html" title="Header file for perception&#45;related types, constants, and function declarations." alt="" coords="176,155,279,181"/>
+<area shape="rect" id="node7" href="$globals_8h.html" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="276,229,358,256"/>
+<area shape="rect" id="node8" title=" " alt="" coords="172,304,251,331"/>
+<area shape="rect" id="node9" title=" " alt="" coords="275,304,359,331"/>
+<area shape="rect" id="node10" title=" " alt="" coords="384,304,490,331"/>
+</map>

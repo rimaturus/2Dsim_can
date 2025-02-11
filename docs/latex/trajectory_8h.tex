@@ -1,0 +1,85 @@
+\hypertarget{trajectory_8h}{}\doxysection{include/trajectory.h File Reference}
+\label{trajectory_8h}\index{include/trajectory.h@{include/trajectory.h}}
+
+
+Provides declarations for trajectory planning based on cone detection.  
+
+
+{\ttfamily \#include \char`\"{}perception.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}globals.\+h\char`\"{}}\newline
+Include dependency graph for trajectory.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=319pt]{trajectory_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{trajectory_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structwaypoint}{waypoint}}
+\begin{DoxyCompactList}\small\item\em Plans the trajectory for the car based on its current state and detected obstacles. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{trajectory_8h_a919f2f0e87ab763cdae69585d089d23d}{trajectory\+\_\+planning}} (float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, float \mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, \mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}}, \mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$\mbox{\hyperlink{trajectory_8c_a525ffa7b5c81396c8024ff1f8d9e7015}{trajectory}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structwaypoint}{waypoint}} \mbox{\hyperlink{trajectory_8h_a909b9a123f41f67f27ddab0f43094733}{trajectory}} \mbox{[}2 $\ast$\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}\mbox{]}
+\begin{DoxyCompactList}\small\item\em Global array of waypoints forming the planned trajectory. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{trajectory_8h_a95c304e54bd0cdde5be7e3053ed2e9c0}{trajectory\+\_\+idx}}
+\begin{DoxyCompactList}\small\item\em Global index used to track the number of waypoints currently stored in the trajectory. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides declarations for trajectory planning based on cone detection. 
+
+This header defines the data structures and function prototypes necessary for generating trajectories (waypoints) that guide the car through detected cones. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{trajectory_8h_a919f2f0e87ab763cdae69585d089d23d}\label{trajectory_8h_a919f2f0e87ab763cdae69585d089d23d}} 
+\index{trajectory.h@{trajectory.h}!trajectory\_planning@{trajectory\_planning}}
+\index{trajectory\_planning@{trajectory\_planning}!trajectory.h@{trajectory.h}}
+\doxysubsubsection{\texorpdfstring{trajectory\_planning()}{trajectory\_planning()}}
+{\footnotesize\ttfamily void trajectory\+\_\+planning (\begin{DoxyParamCaption}\item[{float}]{car\+\_\+x,  }\item[{float}]{car\+\_\+y,  }\item[{float}]{car\+\_\+angle,  }\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{detected\+\_\+cones,  }\item[{\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$}]{trajectory }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{trajectory_8h_a919f2f0e87ab763cdae69585d089d23d_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{trajectory_8h_a909b9a123f41f67f27ddab0f43094733}\label{trajectory_8h_a909b9a123f41f67f27ddab0f43094733}} 
+\index{trajectory.h@{trajectory.h}!trajectory@{trajectory}}
+\index{trajectory@{trajectory}!trajectory.h@{trajectory.h}}
+\doxysubsubsection{\texorpdfstring{trajectory}{trajectory}}
+{\footnotesize\ttfamily trajectory\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Global array of waypoints forming the planned trajectory. 
+
+This array stores the computed trajectory based on the detected cones. It is sized to accommodate up to twice the number of maximum detectable cones (2 $\ast$ MAX\+\_\+\+DETECTED\+\_\+\+CONES). \mbox{\Hypertarget{trajectory_8h_a95c304e54bd0cdde5be7e3053ed2e9c0}\label{trajectory_8h_a95c304e54bd0cdde5be7e3053ed2e9c0}} 
+\index{trajectory.h@{trajectory.h}!trajectory\_idx@{trajectory\_idx}}
+\index{trajectory\_idx@{trajectory\_idx}!trajectory.h@{trajectory.h}}
+\doxysubsubsection{\texorpdfstring{trajectory\_idx}{trajectory\_idx}}
+{\footnotesize\ttfamily trajectory\+\_\+idx\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Global index used to track the number of waypoints currently stored in the trajectory. 
+
+This variable indicates the current position in the trajectory array, facilitating the addition of new waypoints. 

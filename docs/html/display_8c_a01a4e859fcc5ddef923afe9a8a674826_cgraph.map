@@ -1,0 +1,4 @@
+<map id="draw_car" name="draw_car">
+<area shape="rect" id="node1" title="Renders the car sprite rotated to its current angle." alt="" coords="5,5,87,32"/>
+<area shape="rect" id="node2" href="$utilities_8h.html#a33090597864cdfd30d87ff99c14eeecb" title=" " alt="" coords="135,5,295,32"/>
+</map>

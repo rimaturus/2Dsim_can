@@ -1,0 +1,9 @@
+<map id="angle_rotation_sprite" name="angle_rotation_sprite">
+<area shape="rect" id="node1" title=" " alt="" coords="591,56,751,83"/>
+<area shape="rect" id="node2" href="$display_8h.html#a01a4e859fcc5ddef923afe9a8a674826" title="Draws a car shape on the display." alt="" coords="445,5,527,32"/>
+<area shape="rect" id="node6" href="$display_8c.html#a385702fb79f2c451da015c3147f80515" title="Draws user control indicators." alt="" coords="429,56,543,83"/>
+<area shape="rect" id="node7" href="$main_8c.html#a10da25e92e69613be93d099bb029feb2" title=" " alt="" coords="262,107,379,133"/>
+<area shape="rect" id="node3" href="$display_8h.html#aa2eb9ba074b23fc3b4a91c98e0c83c8b" title="Updates the display." alt="" coords="260,56,381,83"/>
+<area shape="rect" id="node4" href="$tasks_8h.html#a16cbac3bef85b555e76fe999965c1b7e" title=" " alt="" coords="108,56,212,83"/>
+<area shape="rect" id="node5" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title=" " alt="" coords="5,81,60,108"/>
+</map>

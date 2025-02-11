@@ -1,3 +1,69 @@
+/**
+ * @file ptask.h
+ * @brief Interface for managing periodic tasks and time utilities.
+ *
+ * This header file defines data types, macros, global variables, and function prototypes 
+ * that collectively support a periodic real-time task management system.
+ *
+ * @details
+ * The API supports:
+ * - Configuring a maximum number of tasks via #MAX_TASKS.
+ * - Defining time units using MICRO (for microseconds) and NANO (for nanoseconds).
+ * - Controlling task activation state with the ACT and DEACT flags.
+ * - Using a custom time structure (timespec_custom) with the same layout as struct timespec,
+ *   enabling compatibility with standard POSIX time functions (e.g., clock_gettime, clock_nanosleep).
+ *
+ * Two primary data structures are provided:
+ * - timespec_custom: A custom time structure for representing seconds and nanoseconds.
+ * - task_par: A structure representing a periodic task that contains the task identifier,
+ *   period (in milliseconds), relative deadline (in milliseconds), scheduling priority, 
+ *   a counter for deadline misses, activation and deadline timestamps, a thread identifier, 
+ *   and a semaphore for activation control.
+ *
+ * Global Variables:
+ * - tp[MAX_TASKS]: Array of task_par structures holding task parameters.
+ * - ptask_t0: Reference starting time for the system.
+ * - ptask_policy: Global scheduling policy to be applied to all tasks.
+ *
+ * Provided Functions:
+ * - time_copy(): Copies a timespec_custom value.
+ * - time_add_ms(): Adds a given number of milliseconds to a timespec_custom value.
+ * - time_cmp(): Compares two timespec_custom values, returning 1 if the first is greater,
+ *   -1 if it is smaller, and 0 if they are equal.
+ *
+ * - ptask_init(): Initializes the periodic task system by setting the scheduling policy, 
+ *   capturing the reference system time, and initializing activation semaphores.
+ * - get_systime(): Returns the elapsed system time since initialization in either microseconds
+ *   or nanoseconds.
+ *
+ * - task_create(): Creates a new periodic task with specified period, relative deadline, priority, 
+ *   and activation flag. If activated immediately, the task’s semaphore is posted.
+ * - get_task_index(): Retrieves the task index from the task parameter pointer.
+ *
+ * - wait_for_activation(): Blocks the task until its activation semaphore is posted. 
+ *   It then updates the task’s activation and deadline times based on its period and deadline.
+ * - task_activate(): Posts the semaphore to activate the task.
+ * - deadline_miss(): Checks if the current time has exceeded the task’s deadline; if so, 
+ *   it increments the deadline miss counter and returns 1.
+ * - wait_for_period(): Uses absolute time waiting (clock_nanosleep) to synchronize the task with its defined period,
+ *   avoiding cumulative time drift.
+ *
+ * - Task Parameter Setters and Getters:
+ *   - task_set_period() and task_set_deadline(): Modify a task's period and relative deadline.
+ *   - task_period(), task_deadline(), and task_dmiss(): Retrieve a task's period, relative deadline, 
+ *     and the count of deadline misses.
+ *   - task_atime() and task_adline(): Get the next activation time and current deadline time for a task.
+ *
+ * - wait_for_task_end(): Waits (joins) for a task thread to complete execution.
+ *
+ * @note The function implementations are only compiled when PTASK_IMPLEMENTATION is defined.
+ *
+ * @author 
+ *        Your Name or Organization
+ *
+ * @date 
+ *        YYYY-MM-DD
+ */
 #ifndef PTASK_H
 #define PTASK_H
 

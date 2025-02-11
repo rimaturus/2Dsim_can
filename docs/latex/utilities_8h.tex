@@ -1,0 +1,194 @@
+\hypertarget{utilities_8h}{}\doxysection{include/utilities.h File Reference}
+\label{utilities_8h}\index{include/utilities.h@{include/utilities.h}}
+
+
+Utility function prototypes for cone management and runtime tasks.  
+
+
+{\ttfamily \#include $<$perception.\+h$>$}\newline
+{\ttfamily \#include $<$globals.\+h$>$}\newline
+Include dependency graph for utilities.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=319pt]{utilities_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=326pt]{utilities_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{utilities_8h_a5297509bfed850c9f8cb92b994b7fd75}{init\+\_\+cones}} (\mbox{\hyperlink{structcone}{cone}} $\ast$cones)
+\begin{DoxyCompactList}\small\item\em Initializes an array of cone structures. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{utilities_8h_a77d50bbb4a4844ce7ddab4a7b3d52d24}{load\+\_\+cones\+\_\+positions}} (const char $\ast$\mbox{\hyperlink{main_8c_aee5ee0d6a8a10e195acbec5ee97f65d9}{filename}}, \mbox{\hyperlink{structcone}{cone}} $\ast$cones, int max\+\_\+cones)
+\item 
+float \mbox{\hyperlink{utilities_8h_a33090597864cdfd30d87ff99c14eeecb}{angle\+\_\+rotation\+\_\+sprite}} (float angle)
+\item 
+void \mbox{\hyperlink{utilities_8h_a28b6717d007598c8d776ee5b8652be51}{runtime}} (int stop\+\_\+signal, char $\ast$task\+\_\+name)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Utility function prototypes for cone management and runtime tasks. 
+
+This header declares functions for initializing cone structures, loading cone positions from a file, calculating sprite rotations, and handling runtime processes. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{utilities_8h_a33090597864cdfd30d87ff99c14eeecb}\label{utilities_8h_a33090597864cdfd30d87ff99c14eeecb}} 
+\index{utilities.h@{utilities.h}!angle\_rotation\_sprite@{angle\_rotation\_sprite}}
+\index{angle\_rotation\_sprite@{angle\_rotation\_sprite}!utilities.h@{utilities.h}}
+\doxysubsubsection{\texorpdfstring{angle\_rotation\_sprite()}{angle\_rotation\_sprite()}}
+{\footnotesize\ttfamily float angle\+\_\+rotation\+\_\+sprite (\begin{DoxyParamCaption}\item[{float}]{angle }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{utilities_8h_a33090597864cdfd30d87ff99c14eeecb_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{utilities_8h_a5297509bfed850c9f8cb92b994b7fd75}\label{utilities_8h_a5297509bfed850c9f8cb92b994b7fd75}} 
+\index{utilities.h@{utilities.h}!init\_cones@{init\_cones}}
+\index{init\_cones@{init\_cones}!utilities.h@{utilities.h}}
+\doxysubsubsection{\texorpdfstring{init\_cones()}{init\_cones()}}
+{\footnotesize\ttfamily void init\+\_\+cones (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{cones }\end{DoxyParamCaption})}
+
+
+
+Initializes an array of cone structures. 
+
+This function sets up the specified array of cones so that each cone is properly initialized.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cones} & Pointer to the first element of an array of cone structures.\\
+\hline
+\end{DoxyParams}
+Loads cone positions from a file.
+
+Reads cone position data from the provided file and populates the cone array accordingly. Only up to {\ttfamily max\+\_\+cones} entries are loaded, ensuring the array bounds are respected.
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & Path to the file containing cone position data. \\
+\hline
+{\em cones} & Pointer to an array of cone structures where the positions will be stored. \\
+\hline
+{\em max\+\_\+cones} & The maximum number of cones to load from the file.\\
+\hline
+\end{DoxyParams}
+Computes the sprite rotation angle.
+
+Calculates and returns a new rotation angle for a sprite based on the input {\ttfamily angle}. The calculation may involve normalization or other transformations suitable for sprite handling.
+
+
+\begin{DoxyParams}{Parameters}
+{\em angle} & The initial angle value (in degrees or radians, as defined by the application\textquotesingle{}s convention). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The adjusted angle after applying the rotation transformation.
+\end{DoxyReturn}
+Handles runtime processes based on a stop signal.
+
+Executes runtime tasks, potentially including logging or task management, until a stop condition defined by {\ttfamily stop\+\_\+signal} is met. The associated task description is provided via {\ttfamily task\+\_\+name}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em stop\+\_\+signal} & Signal value indicating when to terminate the runtime process. \\
+\hline
+{\em task\+\_\+name} & A string identifier for the task being executed.\\
+\hline
+\end{DoxyParams}
+This function initializes each cone in the provided array by setting its x and y coordinates to 0.\+0f and its color to -\/1.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cones} & Pointer to the array of cone structures to be initialized.\\
+\hline
+\end{DoxyParams}
+Loads cone positions and colors from a YAML file.
+
+This function parses the specified YAML file to extract cone position (x and y) and color data. The YAML file is expected to have a top-\/level key \char`\"{}cones\char`\"{} containing a sequence of cone mappings. Each cone mapping should provide\+:
+\begin{DoxyItemize}
+\item \char`\"{}x\char`\"{}\+: A string representing the x coordinate (converted to float and scaled).
+\item \char`\"{}y\char`\"{}\+: A string representing the y coordinate (converted to float and scaled).
+\item \char`\"{}color\char`\"{}\+: A string representing the cone color (e.\+g., \char`\"{}yellow\char`\"{} or \char`\"{}blue\char`\"{}).
+\end{DoxyItemize}
+
+The function prints out diagnostic messages to the standard output regarding the file being loaded, and reports any errors encountered during file opening or YAML parsing.
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & Path to the YAML file containing cone data. \\
+\hline
+{\em cones} & Pointer to the array of cone structures to be populated. \\
+\hline
+{\em max\+\_\+cones} & Maximum number of cones to load into the array.\\
+\hline
+\end{DoxyParams}
+Converts an angle (in degrees) to a sprite rotation value.
+
+This helper function transforms an input angle (in degrees) into a corresponding sprite rotation value. The conversion is based on the formula\+: sprite\+\_\+rotation = 64.\+0f -\/ (128.\+0f $\ast$ angle / 180.\+0f).
+
+
+\begin{DoxyParams}{Parameters}
+{\em angle} & Angle in degrees.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Sprite rotation value as a floating-\/point number.
+\end{DoxyReturn}
+Measures code performance based on a runtime signal.
+
+This function is a helper to measure code execution performance if the PROFILING macro is defined. When called with a start signal (stop\+\_\+signal = 0), it records the current time and prints a \char`\"{}\+START\char`\"{} message. When called with a stop signal (stop\+\_\+signal != 0), it calculates the difference from the start time, prints an \char`\"{}\+END\char`\"{} message, and optionally prints the elapsed runtime in microseconds.
+
+\begin{DoxyNote}{Note}
+This function depends on the POSIX clock\+\_\+gettime() function and is active only if PROFILING is defined.
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em stop\+\_\+signal} & A flag indicating whether to start (0) or stop (non-\/zero) the runtime measurement. \\
+\hline
+{\em task\+\_\+name} & A string representing the name of the task for which the runtime is being measured. \\
+\hline
+\end{DoxyParams}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{utilities_8h_a5297509bfed850c9f8cb92b994b7fd75_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{utilities_8h_a77d50bbb4a4844ce7ddab4a7b3d52d24}\label{utilities_8h_a77d50bbb4a4844ce7ddab4a7b3d52d24}} 
+\index{utilities.h@{utilities.h}!load\_cones\_positions@{load\_cones\_positions}}
+\index{load\_cones\_positions@{load\_cones\_positions}!utilities.h@{utilities.h}}
+\doxysubsubsection{\texorpdfstring{load\_cones\_positions()}{load\_cones\_positions()}}
+{\footnotesize\ttfamily void load\+\_\+cones\+\_\+positions (\begin{DoxyParamCaption}\item[{const char $\ast$}]{filename,  }\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{cones,  }\item[{int}]{max\+\_\+cones }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{utilities_8h_a77d50bbb4a4844ce7ddab4a7b3d52d24_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{utilities_8h_a28b6717d007598c8d776ee5b8652be51}\label{utilities_8h_a28b6717d007598c8d776ee5b8652be51}} 
+\index{utilities.h@{utilities.h}!runtime@{runtime}}
+\index{runtime@{runtime}!utilities.h@{utilities.h}}
+\doxysubsubsection{\texorpdfstring{runtime()}{runtime()}}
+{\footnotesize\ttfamily void runtime (\begin{DoxyParamCaption}\item[{int}]{stop\+\_\+signal,  }\item[{char $\ast$}]{task\+\_\+name }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=343pt]{utilities_8h_a28b6717d007598c8d776ee5b8652be51_icgraph}
+\end{center}
+\end{figure}

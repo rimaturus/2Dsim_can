@@ -1,0 +1,60 @@
+\hypertarget{structwaypoint}{}\doxysection{waypoint Struct Reference}
+\label{structwaypoint}\index{waypoint@{waypoint}}
+
+
+Plans the trajectory for the car based on its current state and detected obstacles.  
+
+
+
+
+{\ttfamily \#include $<$trajectory.\+h$>$}
+
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{structwaypoint_a4870343b078fed6ed6b305bcf011a583}{x}}
+\item 
+float \mbox{\hyperlink{structwaypoint_a343dba0587c17fd8e9165e63ee2ae05e}{y}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Plans the trajectory for the car based on its current state and detected obstacles. 
+
+Represents a point in 2D space.
+
+This function calculates the trajectory by considering the car\textquotesingle{}s position and orientation, as well as the positions of detected cones. The resultant waypoints are stored in the provided trajectory array.
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & The x-\/coordinate of the car\textquotesingle{}s current position. \\
+\hline
+{\em car\+\_\+y} & The y-\/coordinate of the car\textquotesingle{}s current position. \\
+\hline
+{\em car\+\_\+angle} & The heading angle of the car in radians. \\
+\hline
+{\em detected\+\_\+cones} & Pointer to an array of cone structures representing detected cones. \\
+\hline
+{\em trajectory} & Pointer to an array of waypoint structures where the planned trajectory will be stored.\\
+\hline
+\end{DoxyParams}
+This structure is used to define a waypoint with x and y coordinates. 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{structwaypoint_a4870343b078fed6ed6b305bcf011a583}\label{structwaypoint_a4870343b078fed6ed6b305bcf011a583}} 
+\index{waypoint@{waypoint}!x@{x}}
+\index{x@{x}!waypoint@{waypoint}}
+\doxysubsubsection{\texorpdfstring{x}{x}}
+{\footnotesize\ttfamily float waypoint\+::x}
+
+\mbox{\Hypertarget{structwaypoint_a343dba0587c17fd8e9165e63ee2ae05e}\label{structwaypoint_a343dba0587c17fd8e9165e63ee2ae05e}} 
+\index{waypoint@{waypoint}!y@{y}}
+\index{y@{y}!waypoint@{waypoint}}
+\doxysubsubsection{\texorpdfstring{y}{y}}
+{\footnotesize\ttfamily float waypoint\+::y}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{trajectory_8h}{trajectory.\+h}}\end{DoxyCompactItemize}

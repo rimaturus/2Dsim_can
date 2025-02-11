@@ -1,0 +1,191 @@
+\hypertarget{control_8h}{}\doxysection{include/control.h File Reference}
+\label{control_8h}\index{include/control.h@{include/control.h}}
+
+
+Declarations for vehicle control functions and variables in the 2D simulator.  
+
+
+{\ttfamily \#include $<$trajectory.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}globals.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}perception.\+h\char`\"{}}\newline
+Include dependency graph for control.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=320pt]{control_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{control_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{control_8h_aa7d41004f6e6355c5dd871a9a8c8a59d}{keyboard\+\_\+control}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}})
+\begin{DoxyCompactList}\small\item\em Adjusts vehicle controls based on keyboard input. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d}{autonomous\+\_\+control}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, \mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$\mbox{\hyperlink{trajectory_8c_a525ffa7b5c81396c8024ff1f8d9e7015}{trajectory}})
+\begin{DoxyCompactList}\small\item\em Autonomous control routine using centerline waypoints. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{control_8h_abf65b77f4a341762b97d645dd857e021}{steering}}
+\begin{DoxyCompactList}\small\item\em Controls the vehicle using keyboard input. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{control_8h_aa469e51bab916bcd3fc763e8563db01b}{pedal}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Declarations for vehicle control functions and variables in the 2D simulator. 
+
+This header file is part of the 2D simulation project and provides the interface for controlling the simulated vehicle. It supports both manual (keyboard-\/driven) and autonomous (trajectory-\/based) modes.
+
+Global Variables\+:
+\begin{DoxyItemize}
+\item steering\+: Current steering angle in radians.
+\item pedal\+: Throttle input as a normalized value in the range \mbox{[}0, 1\mbox{]}.
+\end{DoxyItemize}
+
+Dependencies\+:
+\begin{DoxyItemize}
+\item \mbox{\hyperlink{trajectory_8h}{trajectory.\+h}}\+: Used for waypoint and trajectory definitions.
+\item \mbox{\hyperlink{globals_8h}{globals.\+h}}\+: Contains global variables and settings.
+\item \mbox{\hyperlink{perception_8h}{perception.\+h}}\+: Provides functionalities related to situational awareness. 
+\end{DoxyItemize}
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d}\label{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d}} 
+\index{control.h@{control.h}!autonomous\_control@{autonomous\_control}}
+\index{autonomous\_control@{autonomous\_control}!control.h@{control.h}}
+\doxysubsubsection{\texorpdfstring{autonomous\_control()}{autonomous\_control()}}
+{\footnotesize\ttfamily void autonomous\+\_\+control (\begin{DoxyParamCaption}\item[{float $\ast$}]{car\+\_\+x,  }\item[{float $\ast$}]{car\+\_\+y,  }\item[{int $\ast$}]{car\+\_\+angle,  }\item[{\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$}]{center\+\_\+waypoints }\end{DoxyParamCaption})}
+
+
+
+Autonomous control routine using centerline waypoints. 
+
+Implements an autonomous control strategy based on a provided centerline represented by an array of waypoints. The function follows these steps\+:
+\begin{DoxyItemize}
+\item Counts the number of valid centerline waypoints (terminated when a waypoint with x $<$ 0.\+0f is found).
+\item Filters the centerline to extract waypoints that are located ahead of the vehicle using the is\+\_\+in\+\_\+front helper.
+\item Identifies the closest valid waypoint ahead, and depending on the availability of neighboring points, computes a reference trajectory vector. This is done in one of three ways\+:
+\begin{DoxyItemize}
+\item If at least three valid ahead waypoints exist, the reference vector is computed from the previous to the next waypoint surrounding the closest ahead waypoint.
+\item If there are only one or two ahead points (but at least two total waypoints), the reference vector is derived by combining the vector from the vehicle to the last waypoint and the segment between the last two waypoints.
+\item If only one waypoint is available, the vector from the vehicle to that waypoint is used as the reference.
+\end{DoxyItemize}
+\item The computed reference trajectory is normalized. If normalization fails, a default forward direction is used.
+\item The vehicle\textquotesingle{}s current heading is computed as a unit vector based on car\+\_\+angle.
+\item The required steering correction (delta) is obtained by computing the sine of the angle difference through the 2D cross product between the normalized reference vector and the heading vector.
+\item A constant pedal value is applied.
+\item Finally, the updated control signals (pedal and delta for steering) are applied to the vehicle by calling vehicle\+\_\+model.
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in,out}}  & {\em car\+\_\+x} & Pointer to the vehicle\textquotesingle{}s x-\/coordinate (in meters). \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em car\+\_\+y} & Pointer to the vehicle\textquotesingle{}s y-\/coordinate (in meters). \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em car\+\_\+angle} & Pointer to the vehicle\textquotesingle{}s orientation angle (in degrees). \\
+\hline
+\mbox{\texttt{ in}}  & {\em center\+\_\+waypoints} & Pointer to an array of waypoints representing the desired centerline trajectory. The array should be terminated by a waypoint with x $<$ 0.\+0f. \\
+\hline
+\end{DoxyParams}
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=320pt]{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{control_8h_aa7d41004f6e6355c5dd871a9a8c8a59d}\label{control_8h_aa7d41004f6e6355c5dd871a9a8c8a59d}} 
+\index{control.h@{control.h}!keyboard\_control@{keyboard\_control}}
+\index{keyboard\_control@{keyboard\_control}!control.h@{control.h}}
+\doxysubsubsection{\texorpdfstring{keyboard\_control()}{keyboard\_control()}}
+{\footnotesize\ttfamily void keyboard\+\_\+control (\begin{DoxyParamCaption}\item[{float $\ast$}]{car\+\_\+x,  }\item[{float $\ast$}]{car\+\_\+y,  }\item[{int $\ast$}]{car\+\_\+angle }\end{DoxyParamCaption})}
+
+
+
+Adjusts vehicle controls based on keyboard input. 
+
+This function processes the state of keyboard keys to adjust the vehicle\textquotesingle{}s pedal (speed) and steering angle. It increments or decrements the pedal value and steering angle within pre-\/defined limits depending on the keys pressed (e.\+g., KEY\+\_\+\+UP, KEY\+\_\+\+DOWN, KEY\+\_\+\+LEFT, KEY\+\_\+\+RIGHT). After updating these control signals, the vehicle\textquotesingle{}s state is updated by calling the vehicle\+\_\+model function.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in,out}}  & {\em car\+\_\+x} & Pointer to the vehicle\textquotesingle{}s x-\/coordinate (in meters). \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em car\+\_\+y} & Pointer to the vehicle\textquotesingle{}s y-\/coordinate (in meters). \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em car\+\_\+angle} & Pointer to the vehicle\textquotesingle{}s orientation angle (in degrees). \\
+\hline
+\end{DoxyParams}
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=305pt]{control_8h_aa7d41004f6e6355c5dd871a9a8c8a59d_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{control_8h_aa7d41004f6e6355c5dd871a9a8c8a59d_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{control_8h_aa469e51bab916bcd3fc763e8563db01b}\label{control_8h_aa469e51bab916bcd3fc763e8563db01b}} 
+\index{control.h@{control.h}!pedal@{pedal}}
+\index{pedal@{pedal}!control.h@{control.h}}
+\doxysubsubsection{\texorpdfstring{pedal}{pedal}}
+{\footnotesize\ttfamily float pedal\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{control_8h_abf65b77f4a341762b97d645dd857e021}\label{control_8h_abf65b77f4a341762b97d645dd857e021}} 
+\index{control.h@{control.h}!steering@{steering}}
+\index{steering@{steering}!control.h@{control.h}}
+\doxysubsubsection{\texorpdfstring{steering}{steering}}
+{\footnotesize\ttfamily float steering\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Controls the vehicle using keyboard input. 
+
+Processes user keyboard inputs to modify the vehicle\textquotesingle{}s position and orientation. The function updates the car\textquotesingle{}s x and y coordinates, as well as its angular orientation (in degrees).
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & Pointer to the car\textquotesingle{}s x-\/coordinate. \\
+\hline
+{\em car\+\_\+y} & Pointer to the car\textquotesingle{}s y-\/coordinate. \\
+\hline
+{\em car\+\_\+angle} & Pointer to the car\textquotesingle{}s current angle (in degrees).\\
+\hline
+\end{DoxyParams}
+Controls the vehicle autonomously along a given trajectory.
+
+Uses the provided trajectory (a sequence of waypoints) to automatically adjust the vehicle\textquotesingle{}s steering and pedal inputs. This function updates the car\textquotesingle{}s position and orientation by computing the necessary control actions based on the navigation path.
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & Pointer to the car\textquotesingle{}s x-\/coordinate. \\
+\hline
+{\em car\+\_\+y} & Pointer to the car\textquotesingle{}s y-\/coordinate. \\
+\hline
+{\em car\+\_\+angle} & Pointer to the car\textquotesingle{}s current orientation angle (in degrees). \\
+\hline
+{\em trajectory} & Pointer to the waypoint structure that defines the trajectory. \\
+\hline
+\end{DoxyParams}

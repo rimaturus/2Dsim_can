@@ -1,0 +1,226 @@
+\hypertarget{group__PerceptionModule}{}\doxysection{Cone Detection and Mapping}
+\label{group__PerceptionModule}\index{Cone Detection and Mapping@{Cone Detection and Mapping}}
+Collaboration diagram for Cone Detection and Mapping\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=342pt]{group__PerceptionModule}
+\end{center}
+\end{figure}
+\doxysubsection*{Modules}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{group__Perception__Functions}{Cone Detection and Mapping}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Files}
+\begin{DoxyCompactItemize}
+\item 
+file \mbox{\hyperlink{perception_8c}{perception.\+c}}
+\begin{DoxyCompactList}\small\item\em Implements Li\+DAR-\/based cone detection and mapping using circle Hough transform. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Represents a point in the Hough circle transformation space. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_gaf16a2babc7e4a480309f889a0e848c72}{check\+\_\+nearest\+\_\+point}} (int angle, float new\+\_\+point\+\_\+x, float new\+\_\+point\+\_\+y, int color, \mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$cone\+\_\+borders)
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_gad42bf825ec1093bf25b80bc192f3f952}{lidar}} (float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} $\ast$\mbox{\hyperlink{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}{measures}})
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga72a3e7493207b8631b9866f4518aac0b}{init\+\_\+cone\+\_\+borders}} (\mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$cone\+\_\+borders)
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga20d12d3efa9f379955fbe5808dbf06f8}{calculate\+\_\+circle\+\_\+points}} (float center\+\_\+x, float center\+\_\+y, int color, \mbox{\hyperlink{structcone}{cone}} $\ast$circle\+\_\+points)
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_gaa60f00cff3dda67fbae856574b3dfab6}{find\+\_\+closest\+\_\+points}} (\mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$circumference\+\_\+points, float point\+\_\+x, float point\+\_\+y, \mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$reference\+\_\+points, int ref\+\_\+size)
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga6d3463008b5a741855cf97777c2ab141}{find\+\_\+local\+\_\+minima}} (\mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$points, int $\ast$first\+\_\+min, int $\ast$second\+\_\+min)
+\item 
+float $\ast$ \mbox{\hyperlink{group__PerceptionModule_ga53da800f4ff7588c8d7fec76b1baebfb}{find\+\_\+cone\+\_\+center}} (\mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$possible\+\_\+centers, int center\+\_\+count)
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a}{mapping}} (float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int \mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, \mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}})
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga697c64eba1fb6796e0e5ccc17dc578dd}{update\+\_\+map}} (\mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const int \mbox{\hyperlink{group__PerceptionModule_gafa8ca48959313e0aac2a594db9142263}{sliding\+\_\+window}} = 360
+\item 
+const int \mbox{\hyperlink{group__PerceptionModule_gaed5140a00a2ccfa91dd757fd8232f5df}{angle\+\_\+step}} = 1
+\item 
+int \mbox{\hyperlink{group__PerceptionModule_gac53039214d075800d8b4f87ebd760ef5}{start\+\_\+angle}} = 0
+\item 
+const float \mbox{\hyperlink{group__PerceptionModule_gac7a26ea1e9d968ec27c79a692c3eae5d}{ignore\+\_\+distance}} = 0.\+5f
+\item 
+const float \mbox{\hyperlink{group__PerceptionModule_ga47a64f73ba5947b88299164853564b5a}{distance\+\_\+resolution}} = 0.\+01f
+\item 
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}} \mbox{[}\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}\mbox{]}
+\item 
+int \mbox{\hyperlink{group__PerceptionModule_ga3b891815a84a7ddd4de870b5ed678ec8}{n\+\_\+candidates}} = 0
+\item 
+\mbox{\hyperlink{structcandidate__cone}{candidate\+\_\+cone}} \mbox{\hyperlink{group__PerceptionModule_ga7e5e958d5dd3a4b55641912f20da4e04}{candidates}} \mbox{[}\mbox{\hyperlink{perception_8h_a4f558446da5bfc11540c3b9892043564}{MAX\+\_\+\+CANDIDATES}}\mbox{]}
+\item 
+int \mbox{\hyperlink{group__PerceptionModule_ga7b64bf8a899686d6bf0c7d6c65e9d522}{track\+\_\+map\+\_\+idx}} = 0
+\item 
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{group__PerceptionModule_gaefe2c104bad3e859c0f123af113abc22}{track\+\_\+map}} \mbox{[}\mbox{\hyperlink{perception_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group__PerceptionModule_ga20d12d3efa9f379955fbe5808dbf06f8}\label{group__PerceptionModule_ga20d12d3efa9f379955fbe5808dbf06f8}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!calculate\_circle\_points@{calculate\_circle\_points}}
+\index{calculate\_circle\_points@{calculate\_circle\_points}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{calculate\_circle\_points()}{calculate\_circle\_points()}}
+{\footnotesize\ttfamily void calculate\+\_\+circle\+\_\+points (\begin{DoxyParamCaption}\item[{float}]{center\+\_\+x,  }\item[{float}]{center\+\_\+y,  }\item[{int}]{color,  }\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{circle\+\_\+points }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{group__PerceptionModule_gaf16a2babc7e4a480309f889a0e848c72}\label{group__PerceptionModule_gaf16a2babc7e4a480309f889a0e848c72}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!check\_nearest\_point@{check\_nearest\_point}}
+\index{check\_nearest\_point@{check\_nearest\_point}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{check\_nearest\_point()}{check\_nearest\_point()}}
+{\footnotesize\ttfamily void check\+\_\+nearest\+\_\+point (\begin{DoxyParamCaption}\item[{int}]{angle,  }\item[{float}]{new\+\_\+point\+\_\+x,  }\item[{float}]{new\+\_\+point\+\_\+y,  }\item[{int}]{color,  }\item[{\mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$}]{cone\+\_\+borders }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{group__PerceptionModule_gaf16a2babc7e4a480309f889a0e848c72_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group__PerceptionModule_gaa60f00cff3dda67fbae856574b3dfab6}\label{group__PerceptionModule_gaa60f00cff3dda67fbae856574b3dfab6}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!find\_closest\_points@{find\_closest\_points}}
+\index{find\_closest\_points@{find\_closest\_points}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{find\_closest\_points()}{find\_closest\_points()}}
+{\footnotesize\ttfamily void find\+\_\+closest\+\_\+points (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$}]{circumference\+\_\+points,  }\item[{float}]{point\+\_\+x,  }\item[{float}]{point\+\_\+y,  }\item[{\mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$}]{reference\+\_\+points,  }\item[{int}]{ref\+\_\+size }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{group__PerceptionModule_ga53da800f4ff7588c8d7fec76b1baebfb}\label{group__PerceptionModule_ga53da800f4ff7588c8d7fec76b1baebfb}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!find\_cone\_center@{find\_cone\_center}}
+\index{find\_cone\_center@{find\_cone\_center}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{find\_cone\_center()}{find\_cone\_center()}}
+{\footnotesize\ttfamily float$\ast$ find\+\_\+cone\+\_\+center (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$}]{possible\+\_\+centers,  }\item[{int}]{center\+\_\+count }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{group__PerceptionModule_ga6d3463008b5a741855cf97777c2ab141}\label{group__PerceptionModule_ga6d3463008b5a741855cf97777c2ab141}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!find\_local\_minima@{find\_local\_minima}}
+\index{find\_local\_minima@{find\_local\_minima}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{find\_local\_minima()}{find\_local\_minima()}}
+{\footnotesize\ttfamily void find\+\_\+local\+\_\+minima (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$}]{points,  }\item[{int $\ast$}]{first\+\_\+min,  }\item[{int $\ast$}]{second\+\_\+min }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{group__PerceptionModule_ga72a3e7493207b8631b9866f4518aac0b}\label{group__PerceptionModule_ga72a3e7493207b8631b9866f4518aac0b}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!init\_cone\_borders@{init\_cone\_borders}}
+\index{init\_cone\_borders@{init\_cone\_borders}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{init\_cone\_borders()}{init\_cone\_borders()}}
+{\footnotesize\ttfamily void init\+\_\+cone\+\_\+borders (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$}]{cone\+\_\+borders }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{group__PerceptionModule_gad42bf825ec1093bf25b80bc192f3f952}\label{group__PerceptionModule_gad42bf825ec1093bf25b80bc192f3f952}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!lidar@{lidar}}
+\index{lidar@{lidar}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{lidar()}{lidar()}}
+{\footnotesize\ttfamily void lidar (\begin{DoxyParamCaption}\item[{float}]{car\+\_\+x,  }\item[{float}]{car\+\_\+y,  }\item[{\mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} $\ast$}]{measures }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=326pt]{group__PerceptionModule_gad42bf825ec1093bf25b80bc192f3f952_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a}\label{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!mapping@{mapping}}
+\index{mapping@{mapping}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{mapping()}{mapping()}}
+{\footnotesize\ttfamily void mapping (\begin{DoxyParamCaption}\item[{float}]{car\+\_\+x,  }\item[{float}]{car\+\_\+y,  }\item[{int}]{car\+\_\+angle,  }\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{detected\+\_\+cones }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=292pt]{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=347pt]{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group__PerceptionModule_ga697c64eba1fb6796e0e5ccc17dc578dd}\label{group__PerceptionModule_ga697c64eba1fb6796e0e5ccc17dc578dd}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!update\_map@{update\_map}}
+\index{update\_map@{update\_map}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{update\_map()}{update\_map()}}
+{\footnotesize\ttfamily void update\+\_\+map (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{detected\+\_\+cones }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{group__PerceptionModule_ga697c64eba1fb6796e0e5ccc17dc578dd_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{group__PerceptionModule_gaed5140a00a2ccfa91dd757fd8232f5df}\label{group__PerceptionModule_gaed5140a00a2ccfa91dd757fd8232f5df}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!angle\_step@{angle\_step}}
+\index{angle\_step@{angle\_step}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{angle\_step}{angle\_step}}
+{\footnotesize\ttfamily const int angle\+\_\+step = 1}
+
+\mbox{\Hypertarget{group__PerceptionModule_ga7e5e958d5dd3a4b55641912f20da4e04}\label{group__PerceptionModule_ga7e5e958d5dd3a4b55641912f20da4e04}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!candidates@{candidates}}
+\index{candidates@{candidates}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{candidates}{candidates}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structcandidate__cone}{candidate\+\_\+cone}} candidates\mbox{[}\mbox{\hyperlink{perception_8h_a4f558446da5bfc11540c3b9892043564}{MAX\+\_\+\+CANDIDATES}}\mbox{]}}
+
+\mbox{\Hypertarget{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}\label{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!detected\_cones@{detected\_cones}}
+\index{detected\_cones@{detected\_cones}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{detected\_cones}{detected\_cones}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structcone}{cone}} detected\+\_\+cones\mbox{[}\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}\mbox{]}}
+
+\mbox{\Hypertarget{group__PerceptionModule_ga47a64f73ba5947b88299164853564b5a}\label{group__PerceptionModule_ga47a64f73ba5947b88299164853564b5a}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!distance\_resolution@{distance\_resolution}}
+\index{distance\_resolution@{distance\_resolution}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{distance\_resolution}{distance\_resolution}}
+{\footnotesize\ttfamily const float distance\+\_\+resolution = 0.\+01f}
+
+\mbox{\Hypertarget{group__PerceptionModule_gac7a26ea1e9d968ec27c79a692c3eae5d}\label{group__PerceptionModule_gac7a26ea1e9d968ec27c79a692c3eae5d}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!ignore\_distance@{ignore\_distance}}
+\index{ignore\_distance@{ignore\_distance}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{ignore\_distance}{ignore\_distance}}
+{\footnotesize\ttfamily const float ignore\+\_\+distance = 0.\+5f}
+
+\mbox{\Hypertarget{group__PerceptionModule_ga3b891815a84a7ddd4de870b5ed678ec8}\label{group__PerceptionModule_ga3b891815a84a7ddd4de870b5ed678ec8}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!n\_candidates@{n\_candidates}}
+\index{n\_candidates@{n\_candidates}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{n\_candidates}{n\_candidates}}
+{\footnotesize\ttfamily int n\+\_\+candidates = 0}
+
+\mbox{\Hypertarget{group__PerceptionModule_gafa8ca48959313e0aac2a594db9142263}\label{group__PerceptionModule_gafa8ca48959313e0aac2a594db9142263}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!sliding\_window@{sliding\_window}}
+\index{sliding\_window@{sliding\_window}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{sliding\_window}{sliding\_window}}
+{\footnotesize\ttfamily const int sliding\+\_\+window = 360}
+
+\mbox{\Hypertarget{group__PerceptionModule_gac53039214d075800d8b4f87ebd760ef5}\label{group__PerceptionModule_gac53039214d075800d8b4f87ebd760ef5}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!start\_angle@{start\_angle}}
+\index{start\_angle@{start\_angle}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{start\_angle}{start\_angle}}
+{\footnotesize\ttfamily int start\+\_\+angle = 0}
+
+\mbox{\Hypertarget{group__PerceptionModule_gaefe2c104bad3e859c0f123af113abc22}\label{group__PerceptionModule_gaefe2c104bad3e859c0f123af113abc22}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!track\_map@{track\_map}}
+\index{track\_map@{track\_map}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{track\_map}{track\_map}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structcone}{cone}} track\+\_\+map\mbox{[}\mbox{\hyperlink{perception_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}}
+
+\mbox{\Hypertarget{group__PerceptionModule_ga7b64bf8a899686d6bf0c7d6c65e9d522}\label{group__PerceptionModule_ga7b64bf8a899686d6bf0c7d6c65e9d522}} 
+\index{Cone Detection and Mapping@{Cone Detection and Mapping}!track\_map\_idx@{track\_map\_idx}}
+\index{track\_map\_idx@{track\_map\_idx}!Cone Detection and Mapping@{Cone Detection and Mapping}}
+\doxysubsubsection{\texorpdfstring{track\_map\_idx}{track\_map\_idx}}
+{\footnotesize\ttfamily int track\+\_\+map\+\_\+idx = 0}
+

@@ -1,0 +1,320 @@
+\hypertarget{main_8c}{}\doxysection{src/main.c File Reference}
+\label{main_8c}\index{src/main.c@{src/main.c}}
+
+
+Main implementation of the 2D FSAE Simulation.  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$allegro.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}control.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}display.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}globals.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}perception.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}tasks.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}trajectory.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}utilities.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}vehicle.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}ptask.\+h\char`\"{}}\newline
+Include dependency graph for main.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{main_8c_a56e75a6913a3cb4da05b9f7d02116e7a}{init\+\_\+allegro}} ()
+\item 
+void \mbox{\hyperlink{main_8c_a7f21658ab78ff07401a1c66eba62c0dd}{init\+\_\+track}} ()
+\item 
+void \mbox{\hyperlink{main_8c_a7cb642cbefeb5eca23c4a56384ce8b6b}{init\+\_\+car}} ()
+\item 
+void \mbox{\hyperlink{main_8c_a8a4df149a98808357f97ece821bc653a}{init\+\_\+perception}} ()
+\item 
+void \mbox{\hyperlink{main_8c_a632e1b0925c0e3555aa4bfda0ebf5375}{init\+\_\+visual\+\_\+controls}} ()
+\item 
+void \mbox{\hyperlink{main_8c_a6ba20fd6daf4d6ab1e47675b3c1f1ca6}{init\+\_\+bitmaps}} ()
+\item 
+void \mbox{\hyperlink{main_8c_a10da25e92e69613be93d099bb029feb2}{update\+\_\+screen}} ()
+\item 
+int \mbox{\hyperlink{main_8c_a840291bc02cba5474a4cb46a9b9566fe}{main}} (void)
+\item 
+void \mbox{\hyperlink{main_8c_af157d4a7f2f1670050ead305cbe70248}{init\+\_\+trajectory}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const char \mbox{\hyperlink{main_8c_aee5ee0d6a8a10e195acbec5ee97f65d9}{filename}} \mbox{[}100\mbox{]} = \char`\"{}track/cones.\+yaml\char`\"{}
+\begin{DoxyCompactList}\small\item\em Application entry point. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{main_8c_a6e623663b0b1a3e2449b3a0aeed072b8}{car\+\_\+x\+\_\+px}}
+\item 
+int \mbox{\hyperlink{main_8c_a16f747457af3fec4e501df296273d884}{car\+\_\+y\+\_\+px}}
+\item 
+int \mbox{\hyperlink{main_8c_aebc4ddfcc9e8dbfbf7bdc903253ddc88}{car\+\_\+bitmap\+\_\+x}}
+\item 
+int \mbox{\hyperlink{main_8c_a9b8d5e8283b8122d832daee99cc3f0d3}{car\+\_\+bitmap\+\_\+y}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Main implementation of the 2D FSAE Simulation. 
+
+This file initializes the Allegro graphics library, sets up various bitmaps for simulation elements, and creates periodic tasks for perception, trajectory, control, and display. It also handles input, such as waiting for the user to press ESC to exit the simulation.
+
+These routines configure the graphical environment, load assets (bitmaps), and initialize the simulation track including cones from an external YAML file. The program makes use of a periodic task system (using SCHED\+\_\+\+OTHER) and employs mutexes to synchronize drawing operations. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{main_8c_a56e75a6913a3cb4da05b9f7d02116e7a}\label{main_8c_a56e75a6913a3cb4da05b9f7d02116e7a}} 
+\index{main.c@{main.c}!init\_allegro@{init\_allegro}}
+\index{init\_allegro@{init\_allegro}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{init\_allegro()}{init\_allegro()}}
+{\footnotesize\ttfamily void init\+\_\+allegro (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=228pt]{main_8c_a56e75a6913a3cb4da05b9f7d02116e7a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8c_a6ba20fd6daf4d6ab1e47675b3c1f1ca6}\label{main_8c_a6ba20fd6daf4d6ab1e47675b3c1f1ca6}} 
+\index{main.c@{main.c}!init\_bitmaps@{init\_bitmaps}}
+\index{init\_bitmaps@{init\_bitmaps}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{init\_bitmaps()}{init\_bitmaps()}}
+{\footnotesize\ttfamily void init\+\_\+bitmaps (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8c_a6ba20fd6daf4d6ab1e47675b3c1f1ca6_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=234pt]{main_8c_a6ba20fd6daf4d6ab1e47675b3c1f1ca6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8c_a7cb642cbefeb5eca23c4a56384ce8b6b}\label{main_8c_a7cb642cbefeb5eca23c4a56384ce8b6b}} 
+\index{main.c@{main.c}!init\_car@{init\_car}}
+\index{init\_car@{init\_car}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{init\_car()}{init\_car()}}
+{\footnotesize\ttfamily void init\+\_\+car (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=323pt]{main_8c_a7cb642cbefeb5eca23c4a56384ce8b6b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8c_a8a4df149a98808357f97ece821bc653a}\label{main_8c_a8a4df149a98808357f97ece821bc653a}} 
+\index{main.c@{main.c}!init\_perception@{init\_perception}}
+\index{init\_perception@{init\_perception}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{init\_perception()}{init\_perception()}}
+{\footnotesize\ttfamily void init\+\_\+perception (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8c_a8a4df149a98808357f97ece821bc653a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8c_a7f21658ab78ff07401a1c66eba62c0dd}\label{main_8c_a7f21658ab78ff07401a1c66eba62c0dd}} 
+\index{main.c@{main.c}!init\_track@{init\_track}}
+\index{init\_track@{init\_track}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{init\_track()}{init\_track()}}
+{\footnotesize\ttfamily void init\+\_\+track (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=299pt]{main_8c_a7f21658ab78ff07401a1c66eba62c0dd_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=332pt]{main_8c_a7f21658ab78ff07401a1c66eba62c0dd_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8c_af157d4a7f2f1670050ead305cbe70248}\label{main_8c_af157d4a7f2f1670050ead305cbe70248}} 
+\index{main.c@{main.c}!init\_trajectory@{init\_trajectory}}
+\index{init\_trajectory@{init\_trajectory}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{init\_trajectory()}{init\_trajectory()}}
+{\footnotesize\ttfamily void init\+\_\+trajectory (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8c_af157d4a7f2f1670050ead305cbe70248_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8c_a632e1b0925c0e3555aa4bfda0ebf5375}\label{main_8c_a632e1b0925c0e3555aa4bfda0ebf5375}} 
+\index{main.c@{main.c}!init\_visual\_controls@{init\_visual\_controls}}
+\index{init\_visual\_controls@{init\_visual\_controls}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{init\_visual\_controls()}{init\_visual\_controls()}}
+{\footnotesize\ttfamily void init\+\_\+visual\+\_\+controls (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8c_a632e1b0925c0e3555aa4bfda0ebf5375_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8c_a840291bc02cba5474a4cb46a9b9566fe}\label{main_8c_a840291bc02cba5474a4cb46a9b9566fe}} 
+\index{main.c@{main.c}!main@{main}}
+\index{main@{main}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8c_a840291bc02cba5474a4cb46a9b9566fe_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8c_a10da25e92e69613be93d099bb029feb2}\label{main_8c_a10da25e92e69613be93d099bb029feb2}} 
+\index{main.c@{main.c}!update\_screen@{update\_screen}}
+\index{update\_screen@{update\_screen}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{update\_screen()}{update\_screen()}}
+{\footnotesize\ttfamily void update\+\_\+screen (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=324pt]{main_8c_a10da25e92e69613be93d099bb029feb2_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=245pt]{main_8c_a10da25e92e69613be93d099bb029feb2_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{main_8c_aebc4ddfcc9e8dbfbf7bdc903253ddc88}\label{main_8c_aebc4ddfcc9e8dbfbf7bdc903253ddc88}} 
+\index{main.c@{main.c}!car\_bitmap\_x@{car\_bitmap\_x}}
+\index{car\_bitmap\_x@{car\_bitmap\_x}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{car\_bitmap\_x}{car\_bitmap\_x}}
+{\footnotesize\ttfamily int car\+\_\+bitmap\+\_\+x}
+
+\mbox{\Hypertarget{main_8c_a9b8d5e8283b8122d832daee99cc3f0d3}\label{main_8c_a9b8d5e8283b8122d832daee99cc3f0d3}} 
+\index{main.c@{main.c}!car\_bitmap\_y@{car\_bitmap\_y}}
+\index{car\_bitmap\_y@{car\_bitmap\_y}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{car\_bitmap\_y}{car\_bitmap\_y}}
+{\footnotesize\ttfamily int car\+\_\+bitmap\+\_\+y}
+
+\mbox{\Hypertarget{main_8c_a6e623663b0b1a3e2449b3a0aeed072b8}\label{main_8c_a6e623663b0b1a3e2449b3a0aeed072b8}} 
+\index{main.c@{main.c}!car\_x\_px@{car\_x\_px}}
+\index{car\_x\_px@{car\_x\_px}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{car\_x\_px}{car\_x\_px}}
+{\footnotesize\ttfamily int car\+\_\+x\+\_\+px}
+
+\mbox{\Hypertarget{main_8c_a16f747457af3fec4e501df296273d884}\label{main_8c_a16f747457af3fec4e501df296273d884}} 
+\index{main.c@{main.c}!car\_y\_px@{car\_y\_px}}
+\index{car\_y\_px@{car\_y\_px}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{car\_y\_px}{car\_y\_px}}
+{\footnotesize\ttfamily int car\+\_\+y\+\_\+px}
+
+\mbox{\Hypertarget{main_8c_aee5ee0d6a8a10e195acbec5ee97f65d9}\label{main_8c_aee5ee0d6a8a10e195acbec5ee97f65d9}} 
+\index{main.c@{main.c}!filename@{filename}}
+\index{filename@{filename}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{filename}{filename}}
+{\footnotesize\ttfamily const char filename\mbox{[}100\mbox{]} = \char`\"{}track/cones.\+yaml\char`\"{}}
+
+
+
+Application entry point. 
+
+The \mbox{\hyperlink{main_8c_a840291bc02cba5474a4cb46a9b9566fe}{main()}} function initializes the graphics system, creates display bitmaps, and sets up periodic tasks for different simulation modules\+:
+\begin{DoxyItemize}
+\item Perception\+: processes sensor data to detect environment features.
+\item Trajectory\+: calculates the planned path for the vehicle.
+\item Control\+: manages vehicle control based on perception and trajectory.
+\item Display\+: updates the visual representation of the simulation.
+\end{DoxyItemize}
+
+After task creation, the main loop waits for all tasks to terminate (typically on ESC key press), cleans up the graphical buffers, and exits the simulation.
+
+\begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{main_8c_a56e75a6913a3cb4da05b9f7d02116e7a}{init\+\_\+allegro()}}, \mbox{\hyperlink{main_8c_a6ba20fd6daf4d6ab1e47675b3c1f1ca6}{init\+\_\+bitmaps()}}, \mbox{\hyperlink{main_8c_a10da25e92e69613be93d099bb029feb2}{update\+\_\+screen()}}, \mbox{\hyperlink{ptask_8h_a88099c7c946b1d8c34a3717e5d3b8b83}{task\+\_\+create()}}, \mbox{\hyperlink{ptask_8h_a9142a39d7c9be6b98ce01f0c7541d8f7}{wait\+\_\+for\+\_\+task\+\_\+end()}}
+\end{DoxySeeAlso}
+Initializes the Allegro graphics system.
+
+Sets up the graphics data structures, installs keyboard and mouse handlers, and configures the graphics mode. It defines the color depth and initializes several colors (e.\+g., grass green, asphalt gray, pink) used throughout the simulation. The display window is created with a title and switch mode, and finally the screen is cleared.
+
+\begin{DoxySeeAlso}{See also}
+allegro\+\_\+init(), install\+\_\+keyboard(), install\+\_\+mouse(), set\+\_\+gfx\+\_\+mode(), set\+\_\+window\+\_\+title(), clear\+\_\+to\+\_\+color()
+\end{DoxySeeAlso}
+Initializes the track bitmap.
+
+Creates a bitmap representing the track and clears it to an asphalt color. It loads cone positions from an external YAML configuration file and plots track cones on the track bitmap. Only valid cones (with a valid color) are rendered, using a radius scaled to pixels per meter.
+
+\begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{utilities_8h_a77d50bbb4a4844ce7ddab4a7b3d52d24}{load\+\_\+cones\+\_\+positions()}}, \mbox{\hyperlink{utilities_8h_a5297509bfed850c9f8cb92b994b7fd75}{init\+\_\+cones()}}, clear\+\_\+bitmap(), circlefill()
+\end{DoxySeeAlso}
+Initializes the car bitmap and positions.
+
+Loads the car sprite bitmap from a file. It computes the car position in pixels, ensuring that the car\textquotesingle{}s graphical representation is centered on its logical position by offsetting the bitmap’s top-\/left coordinates.
+
+\begin{DoxySeeAlso}{See also}
+load\+\_\+bitmap(), clear\+\_\+bitmap(), circlefill()
+\end{DoxySeeAlso}
+Initializes the perception bitmap.
+
+Creates a dedicated bitmap for representing the perceptual data (e.\+g., sensor outputs) of the simulation. The dimensions are based on the maximum range of the sensor (scaled by pixels per meter), ensuring that the bitmap covers the necessary area for sensor information. The bitmap is cleared and set to a transparent color.
+
+\begin{DoxySeeAlso}{See also}
+create\+\_\+bitmap(), clear\+\_\+bitmap(), clear\+\_\+to\+\_\+color()
+\end{DoxySeeAlso}
+Initializes the trajectory bitmap.
+
+This function creates and configures the bitmap that visualizes the calculated trajectory path. The bitmap is cleared and its background is set transparent (using the designated pink color).
+
+\begin{DoxySeeAlso}{See also}
+create\+\_\+bitmap(), clear\+\_\+bitmap(), clear\+\_\+to\+\_\+color()
+\end{DoxySeeAlso}
+Initializes visual control elements.
+
+Loads and initializes bitmaps for user visual controls such as the steering wheel (bitmap for steering) and a visual throttle gauge. In case of any loading error, the application exits with an error message.
+
+\begin{DoxySeeAlso}{See also}
+load\+\_\+bitmap(), create\+\_\+bitmap(), clear\+\_\+bitmap(), clear\+\_\+to\+\_\+color()
+\end{DoxySeeAlso}
+Initializes all bitmaps used for displaying the simulation.
+
+Creates the display buffer and background bitmaps, clearing them to the proper color. Then, it calls several initialization functions that prepare all simulation-\/specific bitmaps (track, car, perception, trajectory, and visual controls).
+
+\begin{DoxySeeAlso}{See also}
+create\+\_\+bitmap(), \mbox{\hyperlink{main_8c_a7f21658ab78ff07401a1c66eba62c0dd}{init\+\_\+track()}}, \mbox{\hyperlink{main_8c_a7cb642cbefeb5eca23c4a56384ce8b6b}{init\+\_\+car()}}, \mbox{\hyperlink{main_8c_a8a4df149a98808357f97ece821bc653a}{init\+\_\+perception()}}, \mbox{\hyperlink{main_8c_af157d4a7f2f1670050ead305cbe70248}{init\+\_\+trajectory()}}, \mbox{\hyperlink{main_8c_a632e1b0925c0e3555aa4bfda0ebf5375}{init\+\_\+visual\+\_\+controls()}}
+\end{DoxySeeAlso}
+Updates the display screen.
+
+Locks a mutex to prevent concurrent drawing modifications, clears the display buffer, and performs a series of drawing operations\+:
+\begin{DoxyItemize}
+\item Renders the steering wheel with rotation and scaling.
+\item Draws the background and track bitmaps.
+\item Rotates, scales, and draws the car sprite ensuring correct orientation.
+\item Draws the perception and trajectory bitmaps. Finally, the updated display buffer is blitted to the actual screen, and the mutex is unlocked.
+\end{DoxyItemize}
+
+\begin{DoxySeeAlso}{See also}
+pthread\+\_\+mutex\+\_\+lock(), clear\+\_\+to\+\_\+color(), rotate\+\_\+scaled\+\_\+sprite(), draw\+\_\+sprite(), blit(), pthread\+\_\+mutex\+\_\+unlock() 
+\end{DoxySeeAlso}

@@ -1,0 +1,59 @@
+\hypertarget{group__VehicleModule}{}\doxysection{Vehicle model and control}
+\label{group__VehicleModule}\index{Vehicle model and control@{Vehicle model and control}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group__VehicleModule_ga4a1f78c4260229ebd2850350d181cc86}{vehicle\+\_\+model}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, float \mbox{\hyperlink{control_8c_aa469e51bab916bcd3fc763e8563db01b}{pedal}}, float \mbox{\hyperlink{control_8c_abf65b77f4a341762b97d645dd857e021}{steering}})
+\begin{DoxyCompactList}\small\item\em Updates the vehicle\textquotesingle{}s position and orientation based on pedal and steering inputs. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group__VehicleModule_ga4a1f78c4260229ebd2850350d181cc86}\label{group__VehicleModule_ga4a1f78c4260229ebd2850350d181cc86}} 
+\index{Vehicle model and control@{Vehicle model and control}!vehicle\_model@{vehicle\_model}}
+\index{vehicle\_model@{vehicle\_model}!Vehicle model and control@{Vehicle model and control}}
+\doxysubsubsection{\texorpdfstring{vehicle\_model()}{vehicle\_model()}}
+{\footnotesize\ttfamily void vehicle\+\_\+model (\begin{DoxyParamCaption}\item[{float $\ast$}]{car\+\_\+x,  }\item[{float $\ast$}]{car\+\_\+y,  }\item[{int $\ast$}]{car\+\_\+angle,  }\item[{float}]{pedal,  }\item[{float}]{steering }\end{DoxyParamCaption})}
+
+
+
+Updates the vehicle\textquotesingle{}s position and orientation based on pedal and steering inputs. 
+
+Simulates the vehicle\textquotesingle{}s movement by updating its position and orientation.
+
+This function simulates the movement of a vehicle using a simple bicycle model (Ackermann steering). It updates the current position (car\+\_\+x, car\+\_\+y) and the heading (car\+\_\+angle) of the vehicle according to the pedal input (acceleration or braking) and the steering angle over a fixed time step.
+
+The simulation parameters include\+:
+\begin{DoxyItemize}
+\item A time step (dt) for the simulation.
+\item A mass of the vehicle, which is used to compute acceleration from the force.
+\item A fixed wheelbase, representing the distance between the front and rear axles.
+\item A maximum achievable speed and a maximum braking force.
+\end{DoxyItemize}
+
+When the pedal input is positive, the vehicle accelerates towards a speed that is a proportion of max\+Speed. If the pedal input is not positive, the vehicle is assumed to be braking, and the deceleration is computed using the current speed and a maximum braking factor.
+
+The vehicle\textquotesingle{}s position is updated based on its current speed and orientation. The steering angle influences the change in the vehicle\textquotesingle{}s heading only if the vehicle is moving above a small threshold speed. The angle conversion between degrees and radians is used to interface with the trigonometric functions.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in,out}}  & {\em car\+\_\+x} & Pointer to the vehicle\textquotesingle{}s x-\/coordinate. Updated based on the vehicle\textquotesingle{}s motion. \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em car\+\_\+y} & Pointer to the vehicle\textquotesingle{}s y-\/coordinate. Updated based on the vehicle\textquotesingle{}s motion. \\
+\hline
+\mbox{\texttt{ in,out}}  & {\em car\+\_\+angle} & Pointer to the vehicle\textquotesingle{}s heading in degrees. Updated based on the computed orientation. \\
+\hline
+\mbox{\texttt{ in}}  & {\em pedal} & The pedal input; a positive value corresponds to acceleration while a non-\/positive value initiates braking. \\
+\hline
+\mbox{\texttt{ in}}  & {\em steering} & The steering input that determines the rate of change of the vehicle\textquotesingle{}s heading. \\
+\hline
+\end{DoxyParams}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{group__VehicleModule_ga4a1f78c4260229ebd2850350d181cc86_icgraph}
+\end{center}
+\end{figure}

@@ -1,0 +1,322 @@
+\hypertarget{globals_8c}{}\doxysection{src/globals.c File Reference}
+\label{globals_8c}\index{src/globals.c@{src/globals.c}}
+
+
+Global definitions and state variables for the 2D FSAE simulation.  
+
+
+{\ttfamily \#include \char`\"{}globals.\+h\char`\"{}}\newline
+Include dependency graph for globals.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=319pt]{globals_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const char $\ast$ \mbox{\hyperlink{globals_8c_a8214780964530800368b406c681fd1d9}{title}} = \char`\"{}2D FSAE sim by rimaturus\char`\"{}
+\item 
+const int \mbox{\hyperlink{globals_8c_a367debe5309d3d03036794f63420bad4}{X\+\_\+\+MAX}} = (19 $\ast$ \mbox{\hyperlink{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})
+\item 
+const int \mbox{\hyperlink{globals_8c_af2068572bded057c07f9af467ef531bd}{Y\+\_\+\+MAX}} = (12 $\ast$ \mbox{\hyperlink{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})
+\item 
+const float \mbox{\hyperlink{globals_8c_aee7b5f297a1877e9b4a1995379ea5dff}{cone\+\_\+radius}} = 0.\+05f
+\item 
+float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}} = 4.\+5f
+\item 
+float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}} = 3.\+0f
+\item 
+int \mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}} = 0
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8c_a182abe709ed708c527ce8b52120b6e92}{control\+\_\+panel}} = NULL
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8c_ab23c15b6b1f9187c1d5c1fcfb1b9117e}{steering\+\_\+wheel}} = NULL
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8c_a4b52417704267ba432604ef39e46c024}{throttle\+\_\+gauge}} = NULL
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8c_a435f6810c39ce9f18cdf4a8e36da3b0d}{background}} = NULL
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8c_a912f1519711b3b217d14888948962e3b}{track}} = NULL
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8c_a7880081e0337661e36ecdecbb26157b2}{car}} = NULL
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8c_a99560cbcada94239c16ac20b88dfd9cf}{perception}} = NULL
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8c_a32dfc16b535c51089d3124225778da42}{trajectory\+\_\+bmp}} = NULL
+\item 
+BITMAP $\ast$ \mbox{\hyperlink{globals_8c_a9a4eb9ed171e76eef809cd4148645bd2}{display\+\_\+buffer}} = NULL
+\item 
+int \mbox{\hyperlink{globals_8c_aa74dbd17ed3476453ec71b893ab9446b}{grass\+\_\+green}}
+\item 
+int \mbox{\hyperlink{globals_8c_a2c68c05ef3599e92e4e531256103a9b2}{asphalt\+\_\+gray}}
+\item 
+int \mbox{\hyperlink{globals_8c_a52b8a1dc217164197e6e5ba60ec911bf}{white}}
+\item 
+int \mbox{\hyperlink{globals_8c_af0d8b62806f3b2c95d55dc52164fbf32}{pink}}
+\item 
+int \mbox{\hyperlink{globals_8c_a34167711871149458e41ef5d3e3541fe}{yellow}}
+\item 
+int \mbox{\hyperlink{globals_8c_a16043f28bf0a6b55db852853f0683fc2}{blue}}
+\item 
+\mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} \mbox{\hyperlink{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}{measures}} \mbox{[}360\mbox{]}
+\item 
+sem\+\_\+t \mbox{\hyperlink{globals_8c_a88234d9ca4c491b833932c377e5d71f5}{lidar\+\_\+sem}}
+\item 
+pthread\+\_\+mutex\+\_\+t \mbox{\hyperlink{globals_8c_ad4db8311e07824b47f416a7485ebfa31}{draw\+\_\+mutex}} = PTHREAD\+\_\+\+MUTEX\+\_\+\+INITIALIZER
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Global definitions and state variables for the 2D FSAE simulation. 
+
+This file declares and initializes global constants, variables, and resources used by the simulation.
+
+
+\begin{DoxyItemize}
+\item Simulation Information\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{globals_8c_a2c68c05ef3599e92e4e531256103a9b2}\label{globals_8c_a2c68c05ef3599e92e4e531256103a9b2}} 
+\index{globals.c@{globals.c}!asphalt\_gray@{asphalt\_gray}}
+\index{asphalt\_gray@{asphalt\_gray}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{asphalt\_gray}{asphalt\_gray}}
+{\footnotesize\ttfamily int asphalt\+\_\+gray}
+
+\mbox{\Hypertarget{globals_8c_a435f6810c39ce9f18cdf4a8e36da3b0d}\label{globals_8c_a435f6810c39ce9f18cdf4a8e36da3b0d}} 
+\index{globals.c@{globals.c}!background@{background}}
+\index{background@{background}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{background}{background}}
+{\footnotesize\ttfamily BITMAP$\ast$ background = NULL}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a16043f28bf0a6b55db852853f0683fc2}\label{globals_8c_a16043f28bf0a6b55db852853f0683fc2}} 
+\index{globals.c@{globals.c}!blue@{blue}}
+\index{blue@{blue}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{blue}{blue}}
+{\footnotesize\ttfamily int blue}
+
+\mbox{\Hypertarget{globals_8c_a7880081e0337661e36ecdecbb26157b2}\label{globals_8c_a7880081e0337661e36ecdecbb26157b2}} 
+\index{globals.c@{globals.c}!car@{car}}
+\index{car@{car}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{car}{car}}
+{\footnotesize\ttfamily BITMAP$\ast$ car = NULL}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}\label{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}} 
+\index{globals.c@{globals.c}!car\_angle@{car\_angle}}
+\index{car\_angle@{car\_angle}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{car\_angle}{car\_angle}}
+{\footnotesize\ttfamily int car\+\_\+angle = 0}
+
+The initial orientation angle of the car (in degrees).
+
+
+\begin{DoxyItemize}
+\item Graphical Resources\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a4a4a6918df3caa78a889c76207349a02}\label{globals_8c_a4a4a6918df3caa78a889c76207349a02}} 
+\index{globals.c@{globals.c}!car\_x@{car\_x}}
+\index{car\_x@{car\_x}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{car\_x}{car\_x}}
+{\footnotesize\ttfamily float car\+\_\+x = 4.\+5f}
+
+The initial X-\/coordinate position of the car within the simulation.
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}\label{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}} 
+\index{globals.c@{globals.c}!car\_y@{car\_y}}
+\index{car\_y@{car\_y}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{car\_y}{car\_y}}
+{\footnotesize\ttfamily float car\+\_\+y = 3.\+0f}
+
+\mbox{\Hypertarget{globals_8c_aee7b5f297a1877e9b4a1995379ea5dff}\label{globals_8c_aee7b5f297a1877e9b4a1995379ea5dff}} 
+\index{globals.c@{globals.c}!cone\_radius@{cone\_radius}}
+\index{cone\_radius@{cone\_radius}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{cone\_radius}{cone\_radius}}
+{\footnotesize\ttfamily const float cone\+\_\+radius = 0.\+05f}
+
+The radius (in meters) for cone-\/related calculations, set to 0.\+05.
+
+
+\begin{DoxyItemize}
+\item Car Initial State\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a182abe709ed708c527ce8b52120b6e92}\label{globals_8c_a182abe709ed708c527ce8b52120b6e92}} 
+\index{globals.c@{globals.c}!control\_panel@{control\_panel}}
+\index{control\_panel@{control\_panel}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{control\_panel}{control\_panel}}
+{\footnotesize\ttfamily BITMAP$\ast$ control\+\_\+panel = NULL}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a9a4eb9ed171e76eef809cd4148645bd2}\label{globals_8c_a9a4eb9ed171e76eef809cd4148645bd2}} 
+\index{globals.c@{globals.c}!display\_buffer@{display\_buffer}}
+\index{display\_buffer@{display\_buffer}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{display\_buffer}{display\_buffer}}
+{\footnotesize\ttfamily BITMAP$\ast$ display\+\_\+buffer = NULL}
+
+Bitmap pointers used for rendering various components of the simulation such as the background, track markings, car image, perception overlays, trajectory visualizations, and the overall display buffer.
+
+
+\begin{DoxyItemize}
+\item Color Definitions\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_ad4db8311e07824b47f416a7485ebfa31}\label{globals_8c_ad4db8311e07824b47f416a7485ebfa31}} 
+\index{globals.c@{globals.c}!draw\_mutex@{draw\_mutex}}
+\index{draw\_mutex@{draw\_mutex}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{draw\_mutex}{draw\_mutex}}
+{\footnotesize\ttfamily pthread\+\_\+mutex\+\_\+t draw\+\_\+mutex = PTHREAD\+\_\+\+MUTEX\+\_\+\+INITIALIZER}
+
+A POSIX mutex that ensures mutual exclusion during drawing operations.
+
+\begin{DoxyNote}{Note}
+The multiplier \textquotesingle{}px\+\_\+per\+\_\+meter\textquotesingle{} used for computing X\+\_\+\+MAX and Y\+\_\+\+MAX is defined elsewhere. 
+\end{DoxyNote}
+\mbox{\Hypertarget{globals_8c_aa74dbd17ed3476453ec71b893ab9446b}\label{globals_8c_aa74dbd17ed3476453ec71b893ab9446b}} 
+\index{globals.c@{globals.c}!grass\_green@{grass\_green}}
+\index{grass\_green@{grass\_green}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{grass\_green}{grass\_green}}
+{\footnotesize\ttfamily int grass\+\_\+green}
+
+\mbox{\Hypertarget{globals_8c_a88234d9ca4c491b833932c377e5d71f5}\label{globals_8c_a88234d9ca4c491b833932c377e5d71f5}} 
+\index{globals.c@{globals.c}!lidar\_sem@{lidar\_sem}}
+\index{lidar\_sem@{lidar\_sem}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{lidar\_sem}{lidar\_sem}}
+{\footnotesize\ttfamily sem\+\_\+t lidar\+\_\+sem}
+
+A POSIX semaphore used to synchronize access to Li\+DAR data.
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}\label{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}} 
+\index{globals.c@{globals.c}!measures@{measures}}
+\index{measures@{measures}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{measures}{measures}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} measures\mbox{[}360\mbox{]}}
+
+An array of 360 Li\+DAR measurements (one per degree) representing the simulated point cloud data.
+
+
+\begin{DoxyItemize}
+\item Thread Synchronization\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a99560cbcada94239c16ac20b88dfd9cf}\label{globals_8c_a99560cbcada94239c16ac20b88dfd9cf}} 
+\index{globals.c@{globals.c}!perception@{perception}}
+\index{perception@{perception}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{perception}{perception}}
+{\footnotesize\ttfamily BITMAP$\ast$ perception = NULL}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_af0d8b62806f3b2c95d55dc52164fbf32}\label{globals_8c_af0d8b62806f3b2c95d55dc52164fbf32}} 
+\index{globals.c@{globals.c}!pink@{pink}}
+\index{pink@{pink}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{pink}{pink}}
+{\footnotesize\ttfamily int pink}
+
+\mbox{\Hypertarget{globals_8c_ab23c15b6b1f9187c1d5c1fcfb1b9117e}\label{globals_8c_ab23c15b6b1f9187c1d5c1fcfb1b9117e}} 
+\index{globals.c@{globals.c}!steering\_wheel@{steering\_wheel}}
+\index{steering\_wheel@{steering\_wheel}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{steering\_wheel}{steering\_wheel}}
+{\footnotesize\ttfamily BITMAP$\ast$ steering\+\_\+wheel = NULL}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a4b52417704267ba432604ef39e46c024}\label{globals_8c_a4b52417704267ba432604ef39e46c024}} 
+\index{globals.c@{globals.c}!throttle\_gauge@{throttle\_gauge}}
+\index{throttle\_gauge@{throttle\_gauge}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{throttle\_gauge}{throttle\_gauge}}
+{\footnotesize\ttfamily BITMAP$\ast$ throttle\+\_\+gauge = NULL}
+
+Bitmap pointers for UI elements including the control panel, steering wheel, and throttle gauge.
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a8214780964530800368b406c681fd1d9}\label{globals_8c_a8214780964530800368b406c681fd1d9}} 
+\index{globals.c@{globals.c}!title@{title}}
+\index{title@{title}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{title}{title}}
+{\footnotesize\ttfamily const char$\ast$ title = \char`\"{}2D FSAE sim by rimaturus\char`\"{}}
+
+The simulation title (\char`\"{}2\+D FSAE sim by rimaturus\char`\"{}).
+
+
+\begin{DoxyItemize}
+\item Simulation Dimensions\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a912f1519711b3b217d14888948962e3b}\label{globals_8c_a912f1519711b3b217d14888948962e3b}} 
+\index{globals.c@{globals.c}!track@{track}}
+\index{track@{track}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{track}{track}}
+{\footnotesize\ttfamily BITMAP$\ast$ track = NULL}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a32dfc16b535c51089d3124225778da42}\label{globals_8c_a32dfc16b535c51089d3124225778da42}} 
+\index{globals.c@{globals.c}!trajectory\_bmp@{trajectory\_bmp}}
+\index{trajectory\_bmp@{trajectory\_bmp}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{trajectory\_bmp}{trajectory\_bmp}}
+{\footnotesize\ttfamily BITMAP$\ast$ trajectory\+\_\+bmp = NULL}
+
+
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a52b8a1dc217164197e6e5ba60ec911bf}\label{globals_8c_a52b8a1dc217164197e6e5ba60ec911bf}} 
+\index{globals.c@{globals.c}!white@{white}}
+\index{white@{white}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{white}{white}}
+{\footnotesize\ttfamily int white}
+
+\mbox{\Hypertarget{globals_8c_a367debe5309d3d03036794f63420bad4}\label{globals_8c_a367debe5309d3d03036794f63420bad4}} 
+\index{globals.c@{globals.c}!X\_MAX@{X\_MAX}}
+\index{X\_MAX@{X\_MAX}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{X\_MAX}{X\_MAX}}
+{\footnotesize\ttfamily const int X\+\_\+\+MAX = (19 $\ast$ \mbox{\hyperlink{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})}
+
+The maximum horizontal dimension of the simulation in pixels, computed as 19 $\ast$ px\+\_\+per\+\_\+meter.
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_af2068572bded057c07f9af467ef531bd}\label{globals_8c_af2068572bded057c07f9af467ef531bd}} 
+\index{globals.c@{globals.c}!Y\_MAX@{Y\_MAX}}
+\index{Y\_MAX@{Y\_MAX}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{Y\_MAX}{Y\_MAX}}
+{\footnotesize\ttfamily const int Y\+\_\+\+MAX = (12 $\ast$ \mbox{\hyperlink{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})}
+
+The maximum vertical dimension of the simulation in pixels, computed as 12 $\ast$ px\+\_\+per\+\_\+meter.
+
+
+\begin{DoxyItemize}
+\item Physics and Geometry\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a34167711871149458e41ef5d3e3541fe}\label{globals_8c_a34167711871149458e41ef5d3e3541fe}} 
+\index{globals.c@{globals.c}!yellow@{yellow}}
+\index{yellow@{yellow}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{yellow}{yellow}}
+{\footnotesize\ttfamily int yellow}
+

@@ -1,3 +1,68 @@
+/**
+ * @file utilities.c
+ *
+ * @brief Utility functions for cone initialization, YAML cone loading, angle rotation conversion,
+ *        and runtime performance measurement.
+ *
+ * This file provides utility functions that include:
+ * - Initializing an array of cone structures.
+ * - Parsing a YAML file to load cone positions and colors.
+ * - Converting an angle into a sprite rotation value.
+ * - Timing code performance using the POSIX clock.
+ *
+ */
+
+/**
+ * @brief Initializes an array of cone structures.
+ *
+ * This function initializes each cone in the provided array by setting its x and y coordinates
+ * to 0.0f and its color to -1.
+ *
+ * @param cones Pointer to the array of cone structures to be initialized.
+ */
+ 
+/**
+ * @brief Loads cone positions and colors from a YAML file.
+ *
+ * This function parses the specified YAML file to extract cone position (x and y) and color data.
+ * The YAML file is expected to have a top-level key "cones" containing a sequence of cone mappings.
+ * Each cone mapping should provide:
+ *   - "x": A string representing the x coordinate (converted to float and scaled).
+ *   - "y": A string representing the y coordinate (converted to float and scaled).
+ *   - "color": A string representing the cone color (e.g., "yellow" or "blue").
+ *
+ * The function prints out diagnostic messages to the standard output regarding the file being loaded,
+ * and reports any errors encountered during file opening or YAML parsing.
+ *
+ * @param filename  Path to the YAML file containing cone data.
+ * @param cones     Pointer to the array of cone structures to be populated.
+ * @param max_cones Maximum number of cones to load into the array.
+ */
+ 
+/**
+ * @brief Converts an angle (in degrees) to a sprite rotation value.
+ *
+ * This helper function transforms an input angle (in degrees) into a corresponding sprite rotation value.
+ * The conversion is based on the formula: sprite_rotation = 64.0f - (128.0f * angle / 180.0f).
+ *
+ * @param angle Angle in degrees.
+ *
+ * @return Sprite rotation value as a floating-point number.
+ */
+ 
+/**
+ * @brief Measures code performance based on a runtime signal.
+ *
+ * This function is a helper to measure code execution performance if the PROFILING macro is defined.
+ * When called with a start signal (stop_signal = 0), it records the current time and prints a "START" message.
+ * When called with a stop signal (stop_signal != 0), it calculates the difference from the start time,
+ * prints an "END" message, and optionally prints the elapsed runtime in microseconds.
+ *
+ * @note This function depends on the POSIX clock_gettime() function and is active only if PROFILING is defined.
+ *
+ * @param stop_signal A flag indicating whether to start (0) or stop (non-zero) the runtime measurement.
+ * @param task_name   A string representing the name of the task for which the runtime is being measured.
+ */
 #include <stdio.h>
 #include <math.h>
 #include <string.h>

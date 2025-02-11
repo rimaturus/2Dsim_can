@@ -1,0 +1,88 @@
+\hypertarget{perception_8c}{}\doxysection{src/perception.c File Reference}
+\label{perception_8c}\index{src/perception.c@{src/perception.c}}
+
+
+Implements Li\+DAR-\/based cone detection and mapping using circle Hough transform.  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}globals.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}perception.\+h\char`\"{}}\newline
+Include dependency graph for perception.\+c\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{perception_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Represents a point in the Hough circle transformation space. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_gaf16a2babc7e4a480309f889a0e848c72}{check\+\_\+nearest\+\_\+point}} (int angle, float new\+\_\+point\+\_\+x, float new\+\_\+point\+\_\+y, int color, \mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$cone\+\_\+borders)
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_gad42bf825ec1093bf25b80bc192f3f952}{lidar}} (float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} $\ast$\mbox{\hyperlink{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}{measures}})
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga72a3e7493207b8631b9866f4518aac0b}{init\+\_\+cone\+\_\+borders}} (\mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$cone\+\_\+borders)
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga20d12d3efa9f379955fbe5808dbf06f8}{calculate\+\_\+circle\+\_\+points}} (float center\+\_\+x, float center\+\_\+y, int color, \mbox{\hyperlink{structcone}{cone}} $\ast$circle\+\_\+points)
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_gaa60f00cff3dda67fbae856574b3dfab6}{find\+\_\+closest\+\_\+points}} (\mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$circumference\+\_\+points, float point\+\_\+x, float point\+\_\+y, \mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$reference\+\_\+points, int ref\+\_\+size)
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga6d3463008b5a741855cf97777c2ab141}{find\+\_\+local\+\_\+minima}} (\mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$points, int $\ast$first\+\_\+min, int $\ast$second\+\_\+min)
+\item 
+float $\ast$ \mbox{\hyperlink{group__PerceptionModule_ga53da800f4ff7588c8d7fec76b1baebfb}{find\+\_\+cone\+\_\+center}} (\mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$possible\+\_\+centers, int center\+\_\+count)
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a}{mapping}} (float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int \mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, \mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}})
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga697c64eba1fb6796e0e5ccc17dc578dd}{update\+\_\+map}} (\mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const int \mbox{\hyperlink{group__PerceptionModule_gafa8ca48959313e0aac2a594db9142263}{sliding\+\_\+window}} = 360
+\item 
+const int \mbox{\hyperlink{group__PerceptionModule_gaed5140a00a2ccfa91dd757fd8232f5df}{angle\+\_\+step}} = 1
+\item 
+int \mbox{\hyperlink{group__PerceptionModule_gac53039214d075800d8b4f87ebd760ef5}{start\+\_\+angle}} = 0
+\item 
+const float \mbox{\hyperlink{group__PerceptionModule_gac7a26ea1e9d968ec27c79a692c3eae5d}{ignore\+\_\+distance}} = 0.\+5f
+\item 
+const float \mbox{\hyperlink{group__PerceptionModule_ga47a64f73ba5947b88299164853564b5a}{distance\+\_\+resolution}} = 0.\+01f
+\item 
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}} \mbox{[}\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}\mbox{]}
+\item 
+int \mbox{\hyperlink{group__PerceptionModule_ga3b891815a84a7ddd4de870b5ed678ec8}{n\+\_\+candidates}} = 0
+\item 
+\mbox{\hyperlink{structcandidate__cone}{candidate\+\_\+cone}} \mbox{\hyperlink{group__PerceptionModule_ga7e5e958d5dd3a4b55641912f20da4e04}{candidates}} \mbox{[}\mbox{\hyperlink{perception_8h_a4f558446da5bfc11540c3b9892043564}{MAX\+\_\+\+CANDIDATES}}\mbox{]}
+\item 
+int \mbox{\hyperlink{group__PerceptionModule_ga7b64bf8a899686d6bf0c7d6c65e9d522}{track\+\_\+map\+\_\+idx}} = 0
+\item 
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{group__PerceptionModule_gaefe2c104bad3e859c0f123af113abc22}{track\+\_\+map}} \mbox{[}\mbox{\hyperlink{perception_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implements Li\+DAR-\/based cone detection and mapping using circle Hough transform. 
+
+This file contains functions to process Li\+DAR measurements, cluster points belonging to the same cone, compute cone centers with a Hough circle parameterization, and update a global map of detected cones.
+
+Global variables\+:
+\begin{DoxyItemize}
+\item sliding\+\_\+window\+: Number of angles scanned (360 degrees).
+\item angle\+\_\+step\+: Step in degrees for each Li\+DAR scan.
+\item start\+\_\+angle\+: Starting angle of the Li\+DAR scan.
+\item ignore\+\_\+distance\+: Minimum distance threshold for detection.
+\item distance\+\_\+resolution\+: Increment step for distances along Li\+DAR rays.
+\item detected\+\_\+cones\+: Array that holds final detected cone positions and colors.
+\item n\+\_\+candidates\+: Number of candidate cones currently tracked.
+\item candidates\+: Array that holds candidate cone detections.
+\item track\+\_\+map\+\_\+idx\+: Index for the global map where detected cones are stored.
+\item track\+\_\+map\+: Global map of cone positions and colors. 
+\end{DoxyItemize}

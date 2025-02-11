@@ -1,3 +1,12 @@
+/**
+ * @file display.c
+ * @brief Rendering and display update functions for the 2D simulation using Allegro.
+ *
+ * This file contains functions responsible for drawing various elements of the simulation,
+ * including the car sprite, direction indicator, track, lidar/perception display, trajectory, 
+ * and user controls (e.g., steering wheel and pedal gauge). It also handles the final composition
+ * of the display buffer and its transfer to the screen.
+ */
 #include <allegro.h>
 #include <math.h>
 #include <stdio.h>
@@ -8,6 +17,107 @@
 #include "trajectory.h"
 #include "utilities.h"
 #include "control.h"
+
+
+/**
+ * @brief Draws a directional arrow representing the car's orientation.
+ *
+ * Computes the arrow's start (at the car's position) and end points based on the car angle,
+ * using cosine and sine functions. The arrow shaft and head are drawn as thick green lines,
+ * with the head drawn at two angles to form a head shape.
+ */
+void draw_dir_arrow();
+
+/**
+ * @brief Renders the car sprite rotated to its current angle.
+ *
+ * Calculates the proper position for the car sprite based on its coordinates in the world space
+ * (scaled by pixels per meter) and draws it using Allegro's rotate_scaled_sprite function.
+ * In DEBUG mode, the function also draws view angle lines to indicate the car's field of view.
+ *
+ * @param car_x The car's x-coordinate in world units.
+ * @param car_y The car's y-coordinate in world units.
+ * @param car_angle The car's angle in degrees.
+ */
+void draw_car(float car_x, float car_y, int car_angle);
+
+/**
+ * @brief Draws the track.
+ *
+ * Checks that the track bitmap has valid dimensions, and if so, draws the track image onto 
+ * the display buffer. If the bitmap dimensions are invalid, an error message is shown.
+ */
+void draw_track();
+
+/**
+ * @brief Draws the lidar/perception view.
+ *
+ * Clears the perception bitmap and centers it on the car's position. For each lidar measurement,
+ * computes the global-to-perception window mapping for the detected point and draws a line from the
+ * car's center to that point. The color of the line depends on whether a cone was detected or not.
+ *
+ * @param measures Pointer to an array of lidar measurements.
+ */
+void draw_lidar(pointcloud_t *measures);
+
+/**
+ * @brief Renders the detected cones on the perception bitmap.
+ *
+ * Iterates through the array of detected cones and draws a filled circle at each cone's location,
+ * after mapping the coordinates from the simulation world to the perception window.
+ *
+ * @param detected_cones Pointer to an array of detected cone structures.
+ */
+void draw_detected_cones(cone *detected_cones);
+
+/**
+ * @brief Draws the cone map overlay.
+ *
+ * Iterates through the track map data and draws a white filled circle at each cone's position,
+ * properly mapping simulation world coordinates to the perception window.
+ *
+ * @param track_map Pointer to an array of cones representing the track map.
+ * @param track_map_idx The number of valid entries in the track map array.
+ */
+void draw_cone_map(cone *track_map, int track_map_idx);
+
+/**
+ * @brief Renders the complete perception layer.
+ *
+ * Combines the lidar lines, detected cones, and cone map visualizations to create the perception
+ * overlay. Afterwards, the perception bitmap is blended onto the main display buffer offset in 
+ * relation to the car's position.
+ */
+void draw_perception();
+
+/**
+ * @brief Draws the trajectory of the car.
+ *
+ * Clears and sets the background for the trajectory bitmap and iterates over each trajectory waypoint,
+ * drawing each as a filled circle. In DEBUG mode, the waypoint index is also displayed and an extra line
+ * is drawn from the car sprite center.
+ *
+ * @param trajectory Pointer to an array of waypoint structures representing the car's trajectory.
+ */
+void draw_trajectory(waypoint *trajectory);
+
+/**
+ * @brief Draws user control indicators.
+ *
+ * Renders the steering wheel sprite with the correct rotation and draws a gauge for pedal control.
+ * The gauge's fill color indicates the pedal level (green for positive, red for non-positive).
+ */
+void draw_controls();
+
+/**
+ * @brief Updates the entire display.
+ *
+ * Locks the drawing mutex and sequentially renders the background, track, car,
+ * perception, trajectory, title text, and controls on the display buffer.
+ * Once all elements are rendered, the display buffer is blitted to the screen,
+ * and the mutex is subsequently unlocked.
+ */
+void update_display();
 
 
 void draw_dir_arrow()

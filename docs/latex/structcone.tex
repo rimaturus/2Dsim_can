@@ -1,0 +1,112 @@
+\hypertarget{structcone}{}\doxysection{cone Struct Reference}
+\label{structcone}\index{cone@{cone}}
+
+
+Processes the Li\+DAR measurements.  
+
+
+
+
+{\ttfamily \#include $<$perception.\+h$>$}
+
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{structcone_a94315074bcb258b9af4bb579bbbe8c6b}{x}}
+\item 
+float \mbox{\hyperlink{structcone_a18095f2974a70790133279834650bb35}{y}}
+\item 
+int \mbox{\hyperlink{structcone_ab07155dae609fd3b044b1e0cdfa9395d}{color}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Processes the Li\+DAR measurements. 
+
+Represents a cone detected in the environment.
+
+This function simulates or processes a Li\+DAR scan, updating the point cloud information based on the car\textquotesingle{}s current position.
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & The X coordinate of the car\textquotesingle{}s position. \\
+\hline
+{\em car\+\_\+y} & The Y coordinate of the car\textquotesingle{}s position. \\
+\hline
+{\em measures} & Pointer to the point cloud structure to be updated with the Li\+DAR measurements.\\
+\hline
+\end{DoxyParams}
+Performs real-\/time mapping using detected cones.
+
+This function updates the array of detected cones by correlating the car’s current position and orientation with cone positions.
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & The X coordinate of the car\textquotesingle{}s position. \\
+\hline
+{\em car\+\_\+y} & The Y coordinate of the car\textquotesingle{}s position. \\
+\hline
+{\em car\+\_\+angle} & The orientation angle of the car (in degrees or radians as defined elsewhere). \\
+\hline
+{\em detected\+\_\+cones} & Pointer to the array where detected cones are stored.\\
+\hline
+\end{DoxyParams}
+Checks and updates the nearest point for a given Li\+DAR scan angle.
+
+This function compares a new detected point against existing data to determine if it belongs to a known cone border, updating the cone border data accordingly.
+
+
+\begin{DoxyParams}{Parameters}
+{\em angle} & The scan angle index from the Li\+DAR measurement. \\
+\hline
+{\em new\+\_\+point\+\_\+x} & The X coordinate of the new detected point. \\
+\hline
+{\em new\+\_\+point\+\_\+y} & The Y coordinate of the new detected point. \\
+\hline
+{\em color} & The color associated with the new detected point. \\
+\hline
+{\em cone\+\_\+borders} & Pointer to the \mbox{\hyperlink{structcone__border}{cone\+\_\+border}} structure to be updated.\\
+\hline
+\end{DoxyParams}
+Updates the global track map with the latest detected cones.
+
+This function takes the newly detected cones and integrates them into the overall track map, which represents the accumulated perception of the environment.
+
+
+\begin{DoxyParams}{Parameters}
+{\em detected\+\_\+cones} & Pointer to the array of cones that have been newly detected.\\
+\hline
+\end{DoxyParams}
+This structure stores the position and color information for a cone. The positions are stored in floating point values in meters and can be converted to pixels when rendering. The color is represented using the Allegro color format.
+
+Members\+:
+\begin{DoxyItemize}
+\item x\+: X position of the cone.
+\item y\+: Y position of the cone.
+\item color\+: Color of the cone (using Allegro color format). 
+\end{DoxyItemize}
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{structcone_ab07155dae609fd3b044b1e0cdfa9395d}\label{structcone_ab07155dae609fd3b044b1e0cdfa9395d}} 
+\index{cone@{cone}!color@{color}}
+\index{color@{color}!cone@{cone}}
+\doxysubsubsection{\texorpdfstring{color}{color}}
+{\footnotesize\ttfamily int cone\+::color}
+
+Color (in Allegro color format) \mbox{\Hypertarget{structcone_a94315074bcb258b9af4bb579bbbe8c6b}\label{structcone_a94315074bcb258b9af4bb579bbbe8c6b}} 
+\index{cone@{cone}!x@{x}}
+\index{x@{x}!cone@{cone}}
+\doxysubsubsection{\texorpdfstring{x}{x}}
+{\footnotesize\ttfamily float cone\+::x}
+
+X position of the cone (in meters, converted to px when drawn) \mbox{\Hypertarget{structcone_a18095f2974a70790133279834650bb35}\label{structcone_a18095f2974a70790133279834650bb35}} 
+\index{cone@{cone}!y@{y}}
+\index{y@{y}!cone@{cone}}
+\doxysubsubsection{\texorpdfstring{y}{y}}
+{\footnotesize\ttfamily float cone\+::y}
+
+Y position of the cone 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{perception_8h}{perception.\+h}}\end{DoxyCompactItemize}

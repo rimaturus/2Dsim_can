@@ -1,0 +1,135 @@
+\hypertarget{perception_8h}{}\doxysection{include/perception.h File Reference}
+\label{perception_8h}\index{include/perception.h@{include/perception.h}}
+
+
+Header file for perception-\/related types, constants, and function declarations.  
+
+
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}globals.\+h\char`\"{}}\newline
+Include dependency graph for perception.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=319pt]{perception_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{perception_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structcone}{cone}}
+\begin{DoxyCompactList}\small\item\em Processes the Li\+DAR measurements. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcone__border}{cone\+\_\+border}}
+\begin{DoxyCompactList}\small\item\em Represents a border of a cone as seen in a Li\+DAR scan. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcandidate__cone}{candidate\+\_\+cone}}
+\begin{DoxyCompactList}\small\item\em Represents a candidate cone that might be validated after multiple detections. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Represents a point in the Hough circle transformation space. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{perception_8h_afad93aca604f7ebdbe7874bd2b117991}{MAX\+\_\+\+POINTS\+\_\+\+PER\+\_\+\+CONE}}~180
+\item 
+\#define \mbox{\hyperlink{perception_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}~3000
+\item 
+\#define \mbox{\hyperlink{perception_8h_a8527a7553e15e86810eaeb88f7894009}{max\+Range}}~10.\+0f
+\item 
+\#define \mbox{\hyperlink{perception_8h_a4f558446da5bfc11540c3b9892043564}{MAX\+\_\+\+CANDIDATES}}~100000
+\item 
+\#define \mbox{\hyperlink{perception_8h_a8afaa1431c0a52288c7a25797070be5e}{DETECTIONS\+\_\+\+THRESHOLD}}~10
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_gad42bf825ec1093bf25b80bc192f3f952}{lidar}} (float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} $\ast$\mbox{\hyperlink{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}{measures}})
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a}{mapping}} (float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int \mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, \mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}})
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_gaf16a2babc7e4a480309f889a0e848c72}{check\+\_\+nearest\+\_\+point}} (int angle, float new\+\_\+point\+\_\+x, float new\+\_\+point\+\_\+y, int color, \mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$cone\+\_\+borders)
+\item 
+void \mbox{\hyperlink{group__PerceptionModule_ga697c64eba1fb6796e0e5ccc17dc578dd}{update\+\_\+map}} (\mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const float \mbox{\hyperlink{group__PerceptionModule_gac7a26ea1e9d968ec27c79a692c3eae5d}{ignore\+\_\+distance}}
+\item 
+const int \mbox{\hyperlink{group__PerceptionModule_gafa8ca48959313e0aac2a594db9142263}{sliding\+\_\+window}}
+\item 
+const int \mbox{\hyperlink{group__PerceptionModule_gaed5140a00a2ccfa91dd757fd8232f5df}{angle\+\_\+step}}
+\item 
+int \mbox{\hyperlink{group__PerceptionModule_gac53039214d075800d8b4f87ebd760ef5}{start\+\_\+angle}}
+\item 
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}} \mbox{[}\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}\mbox{]}
+\item 
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{group__PerceptionModule_gaefe2c104bad3e859c0f123af113abc22}{track\+\_\+map}} \mbox{[}\mbox{\hyperlink{perception_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}
+\item 
+int \mbox{\hyperlink{group__PerceptionModule_ga7b64bf8a899686d6bf0c7d6c65e9d522}{track\+\_\+map\+\_\+idx}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Header file for perception-\/related types, constants, and function declarations. 
+
+This file contains the datatypes and function prototypes used for perception in the 2D simulation. It includes structures to represent cones, cone borders, candidate cones, and mapping functionalities such as Li\+DAR scanning, real-\/time mapping, and track map updating.
+
+Global constants and configurable parameters\+:
+\begin{DoxyItemize}
+\item MAX\+\_\+\+POINTS\+\_\+\+PER\+\_\+\+CONE\+: Maximum number of points (angles) that can define the border of a cone.
+\item MAX\+\_\+\+CONES\+\_\+\+MAP\+: Maximum number of cones that can be stored in the track map.
+\item max\+Range\+: Maximum detection range (in meters) for the Li\+DAR.
+\item ignore\+\_\+distance\+: Distance threshold below which detected points may be ignored.
+\item sliding\+\_\+window, angle\+\_\+step, start\+\_\+angle\+: Parameters that control the Li\+DAR scanning and cone detection algorithm.
+\end{DoxyItemize}
+
+Global arrays\+:
+\begin{DoxyItemize}
+\item detected\+\_\+cones\+: Array containing the cones detected by perception.
+\item track\+\_\+map\+: Array representing the global track map of cones.
+\item track\+\_\+map\+\_\+idx\+: Current index in the track\+\_\+map array.
+\end{DoxyItemize}
+
+Other constants\+:
+\begin{DoxyItemize}
+\item MAX\+\_\+\+CANDIDATES\+: Maximum number of candidate cones tracked.
+\item DETECTIONS\+\_\+\+THRESHOLD\+: Minimum number of detections required to consider a candidate cone valid. 
+\end{DoxyItemize}
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{perception_8h_a8afaa1431c0a52288c7a25797070be5e}\label{perception_8h_a8afaa1431c0a52288c7a25797070be5e}} 
+\index{perception.h@{perception.h}!DETECTIONS\_THRESHOLD@{DETECTIONS\_THRESHOLD}}
+\index{DETECTIONS\_THRESHOLD@{DETECTIONS\_THRESHOLD}!perception.h@{perception.h}}
+\doxysubsubsection{\texorpdfstring{DETECTIONS\_THRESHOLD}{DETECTIONS\_THRESHOLD}}
+{\footnotesize\ttfamily \#define DETECTIONS\+\_\+\+THRESHOLD~10}
+
+\mbox{\Hypertarget{perception_8h_a4f558446da5bfc11540c3b9892043564}\label{perception_8h_a4f558446da5bfc11540c3b9892043564}} 
+\index{perception.h@{perception.h}!MAX\_CANDIDATES@{MAX\_CANDIDATES}}
+\index{MAX\_CANDIDATES@{MAX\_CANDIDATES}!perception.h@{perception.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_CANDIDATES}{MAX\_CANDIDATES}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+CANDIDATES~100000}
+
+\mbox{\Hypertarget{perception_8h_af35d3efb02d45acebff24eebfb0a1f33}\label{perception_8h_af35d3efb02d45acebff24eebfb0a1f33}} 
+\index{perception.h@{perception.h}!MAX\_CONES\_MAP@{MAX\_CONES\_MAP}}
+\index{MAX\_CONES\_MAP@{MAX\_CONES\_MAP}!perception.h@{perception.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_CONES\_MAP}{MAX\_CONES\_MAP}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+CONES\+\_\+\+MAP~3000}
+
+\mbox{\Hypertarget{perception_8h_afad93aca604f7ebdbe7874bd2b117991}\label{perception_8h_afad93aca604f7ebdbe7874bd2b117991}} 
+\index{perception.h@{perception.h}!MAX\_POINTS\_PER\_CONE@{MAX\_POINTS\_PER\_CONE}}
+\index{MAX\_POINTS\_PER\_CONE@{MAX\_POINTS\_PER\_CONE}!perception.h@{perception.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_POINTS\_PER\_CONE}{MAX\_POINTS\_PER\_CONE}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+POINTS\+\_\+\+PER\+\_\+\+CONE~180}
+
+\mbox{\Hypertarget{perception_8h_a8527a7553e15e86810eaeb88f7894009}\label{perception_8h_a8527a7553e15e86810eaeb88f7894009}} 
+\index{perception.h@{perception.h}!maxRange@{maxRange}}
+\index{maxRange@{maxRange}!perception.h@{perception.h}}
+\doxysubsubsection{\texorpdfstring{maxRange}{maxRange}}
+{\footnotesize\ttfamily \#define max\+Range~10.\+0f}
+
