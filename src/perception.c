@@ -189,7 +189,7 @@ void 	check_nearest_point(int angle, float new_point_x, float new_point_y, int c
 				float cone_point_x = measures[cone_borders[i].angles[insertion_point]].point_x;
 				float cone_point_y = measures[cone_borders[i].angles[insertion_point]].point_y;
 
-				float distance = sqrt(pow(new_point_x - cone_point_x, 2) + pow(new_point_y - cone_point_y, 2));
+				distance = sqrt(pow(new_point_x - cone_point_x, 2) + pow(new_point_y - cone_point_y, 2));
 
 				if (distance < 2*cone_radius){
 					// the point is near to the i-th cone
@@ -216,7 +216,7 @@ void    lidar(float car_x, float car_y, pointcloud_t *measures)
 	for (int i = 0; i < sliding_window; i += angle_step)
 	{
 		int		lidar_angle = (start_angle + i)%360;
-		int 	current_distance = 0; // initialize distance at 0
+		// int 	current_distance = 0; // initialize distance at 0
 
 		// Initialize the measure with the maximum range and no color
 		measures[lidar_angle].distance = maxRange;
@@ -378,70 +378,12 @@ float* find_cone_center(Hough_circle_point_t *possible_centers, int center_count
 	return result;
 }
 
-// Main mapping function
-/*
-void mapping(float car_x, float car_y, int car_angle, cone *detected_cones) 
-{
-	cone_border cone_borders[MAX_DETECTED_CONES];
 
-	init_cone_borders(cone_borders);
-
-	// Process measures and group points
-	for (int angle = 0; angle < 360; angle += angle_step) 
-	{
-		if (measures[angle].color != -1) 
-		{
-			check_nearest_point(angle, measures[angle].point_x, 
-							  	measures[angle].point_y, measures[angle].color, cone_borders);
-		}
-	}
-
-	int detected_cone_idx = 0;
-
-	for (int cone_idx = 0; cone_idx < MAX_DETECTED_CONES-1 && cone_borders[cone_idx].color != -1; cone_idx++) 
-	{
-		int N_border_points = 0;
-		while (N_border_points < MAX_POINTS_PER_CONE-1 && cone_borders[cone_idx].angles[N_border_points] != -1) N_border_points++; // count border points
-
-		if (N_border_points > 2) 
-		{
-			Hough_circle_point_t possible_centers[(N_border_points-1)*2];
-			int center_count = 0;
-
-			// Process points and find intersections
-			for (int point_idx = 1; point_idx < N_border_points; point_idx++) 
-			{
-				Hough_circle_point_t circ_points[360];
-
-				find_closest_points(circ_points, 
-								  measures[cone_borders[cone_idx].angles[point_idx]].point_x,
-								  measures[cone_borders[cone_idx].angles[point_idx]].point_y,
-								  possible_centers, center_count);
-
-				int first_min, second_min;
-				find_local_minima(circ_points, &first_min, &second_min);
-
-				if (first_min != -1 && second_min != -1) 
-				{
-					possible_centers[center_count++] = circ_points[first_min];
-					possible_centers[center_count++] = circ_points[second_min];
-				}
-			}
-
-			// Find final cone center
-			float *center = find_cone_center(possible_centers, center_count);
-			detected_cones[detected_cone_idx].x = center[0];
-			detected_cones[detected_cone_idx].y = center[1];
-			detected_cones[detected_cone_idx].color = cone_borders[cone_idx].color;
-			detected_cone_idx++;
-		}
-	}
-
-	update_map(detected_cones);
-}
-*/
 void 	mapping(float car_x, float car_y, int car_angle, cone *detected_cones)
 {
+(void)car_x;       // Silence unused parameter warnings
+(void)car_y;
+(void)car_angle; 
 cone_border cone_borders[MAX_DETECTED_CONES]; // maximum number of cones viewed at each position
 
 // init cone borders
@@ -484,9 +426,6 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 	
 	// for each cone detected
 	while( (cone_idx < MAX_DETECTED_CONES-1) && (cone_borders[cone_idx].color != -1) ){
-		int cone_cx = 0; // center of the cone
-		int cone_cy = 0;
-
 			// count the number of points in the border of the cone
 			int N_border_points = 0;
 
@@ -499,7 +438,7 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 		{
 			// ----------------- LOCAL MINIMA VARIABLE -----------------
 			// 			necessary to find the center of the cone
-			float LMS_prev_dist, LMS_actual_dist;
+			// float LMS_prev_dist, LMS_actual_dist;
 			int LMS_first_min_idx = -1, LMS_second_min_idx = -1;
 			int LMS_first_max_idx = -1, LMS_second_max_idx = -1; // LMS == Local Minima Search
 			// ---------------------------------------------------------

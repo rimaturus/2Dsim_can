@@ -63,6 +63,7 @@
  * @param stop_signal A flag indicating whether to start (0) or stop (non-zero) the runtime measurement.
  * @param task_name   A string representing the name of the task for which the runtime is being measured.
  */
+#define _POSIX_C_SOURCE 199309L
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
@@ -228,13 +229,11 @@ void runtime (int stop_signal, char* task_name)
 										(iter_start.tv_nsec) / 1000;
 		printf("[%s],START,%lu\n", task_name, iter_start_time_us);
 	}
-	else{
+	else
+	{
 		clock_gettime(CLOCK_MONOTONIC, &iter_end);
-		unsigned long iter_runtime_us = (iter_end.tv_sec - iter_start.tv_sec) * 1000000UL +
-										(iter_end.tv_nsec - iter_start.tv_nsec) / 1000;
-
 		unsigned long iter_end_time_us = (iter_end.tv_sec) * 1000000UL +
-										(iter_end.tv_nsec) / 1000;
+									(iter_end.tv_nsec) / 1000;
 		printf("[%s],END,%lu\n", task_name, iter_end_time_us);
 		// printf("[%s]\t Runtime: %lu us\n", task_name, iter_runtime_us);
 	}

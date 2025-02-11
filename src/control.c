@@ -273,108 +273,66 @@ static int is_in_front(float car_angle_deg, float wx, float wy, float cx, float 
 
 //---------------------------------------------------------------------
 // The new autonomous control routine that uses the centerline logic.
-void autonomous_control(float *car_x, float *car_y, int *car_angle, 
-                                     waypoint *center_waypoints)
+void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *center_waypoints)
 {
-	int num_waypoints = 0;
-	while (center_waypoints[num_waypoints].x >= 0.0f) num_waypoints++;
+    int num_waypoints = 0;
+    while (center_waypoints[num_waypoints].x >= 0.0f)
+        num_waypoints++;
 
-    // Make sure we have at least one waypoint.
     if (num_waypoints <= 0) {
-        // Fallback: do nothing.
         vehicle_model(car_x, car_y, car_angle, 0.0f, 0.0f);
         return;
     }
-    
-    // 1) Filter the center_waypoints to obtain only the ones "ahead" of the car.
-    // Also, find the one closest to the car (in front).
-    int n_waypoint_index = -1;  // index (in center_waypoints) of the closest ahead point
-    float min_dist = 1e6;
-    int count_ahead = 0;
-    // (Optional: if you need the list of ahead waypoints, you can store them in an array.)
-    waypoint ahead_waypoints[100];
 
+    // 1) Filter the center_waypoints to obtain only those ahead of the car.
+    int count_ahead = 0;
+    waypoint ahead_waypoints[100];
     for (int i = 0; i < num_waypoints; i++) {
         if (is_in_front((float)*car_angle, center_waypoints[i].x, center_waypoints[i].y, *car_x, *car_y)) {
             ahead_waypoints[count_ahead++] = center_waypoints[i];
-            float dx = center_waypoints[i].x - *car_x;
-            float dy = center_waypoints[i].y - *car_y;
-            float d = sqrtf(dx * dx + dy * dy);
-            if (d < min_dist) {
-                min_dist = d;
-                n_waypoint_index = i;
-            }
         }
     }
 
-    // If no ahead waypoints are found, then use a fallback (e.g., go straight)
-    if (count_ahead == 0 || n_waypoint_index < 0) {
+    // If no waypoints ahead, fall back: do nothing.
+    if (count_ahead == 0) {
         vehicle_model(car_x, car_y, car_angle, 0.0f, 0.0f);
         return;
     }
 
-    // 2) Determine the desired (reference) trajectory vector.
-    float ref_vec_x = 0.0f, ref_vec_y = 0.0f;
+    // 2) Select the waypoint to pursue:
+    // Choose the 3rd waypoint in the ahead_waypoints list if available;
+    // otherwise, use the farthest available.
+    int target_idx = (count_ahead >= 3) ? 2 : (count_ahead - 1);
+    waypoint target_wp = ahead_waypoints[target_idx];
 
-    if ((count_ahead > 2) && (n_waypoint_index > 0) && (n_waypoint_index + 1 < num_waypoints)) {
-        // Case A: We have at least 3 points (previous, current, next).
-        // Use the points [n_waypoint_index-1, n_waypoint_index, n_waypoint_index+1].
-        // One simple way is to define the desired direction as the vector from the previous
-        // waypoint to the next one (i.e. “smoothing” the trajectory).
-        waypoint prev = center_waypoints[n_waypoint_index - 1];
-        waypoint next = center_waypoints[n_waypoint_index + 1];
-        ref_vec_x = next.x - prev.x;
-        ref_vec_y = next.y - prev.y;
-    }
-    else {
-        if (num_waypoints > 2) {
-            // Case B: If there is only one or two ahead points, use the last two waypoints of the full centerline.
-            waypoint last_wp = center_waypoints[num_waypoints - 1];
-            waypoint second_last = center_waypoints[num_waypoints - 2];
-            // Here we add the vector from the car to the last waypoint with the segment between the last two points.
-            ref_vec_x = (last_wp.x - *car_x) + (last_wp.x - second_last.x);
-            ref_vec_y = (last_wp.y - *car_y) + (last_wp.y - second_last.y);
-        }
-        else {
-            // Case C: Only one waypoint is available.
-            waypoint last_wp = center_waypoints[num_waypoints - 1];
-            ref_vec_x = last_wp.x - *car_x;
-            ref_vec_y = last_wp.y - *car_y;
-        }
-    }
-    
-    // Normalize the reference trajectory vector.
+    // 3) Compute the reference vector from the car's current position to the target waypoint.
+    float ref_vec_x = target_wp.x - *car_x;
+    float ref_vec_y = target_wp.y - *car_y;
+
+    // Normalize the reference vector; use default if normalization fails.
     if (!nomalize(&ref_vec_x, &ref_vec_y)) {
-        // If normalization fails, set a default forward direction.
         ref_vec_x = 1.0f;
         ref_vec_y = 0.0f;
     }
-    
-    // 3) Compute the car’s current heading unit vector.
-    // Here, car_angle is in degrees so we convert it to radians.
+
+    // 4) Compute the car's heading vector from its angle (in degrees).
     float car_angle_rad = (*car_angle) * deg2rad;
     float dir_x = cosf(car_angle_rad);
     float dir_y = sinf(car_angle_rad);
-    
-    // 4) Compute the cross product between the reference vector and the current direction.
-    // In 2D the cross product (scalar) is: ref_x*dir_y - ref_y*dir_x.
-    float cross = ref_vec_x * dir_y - ref_vec_y * dir_x;
-    
-    // Since both vectors are unit length, sin(theta) = cross. Compute the angle difference.
-    float delta = asinf(cross);  // desired steering correction (in radians)
-    
-    // (Optional: If you have a PID controller, you can process delta here.)
-    // delta = pid_compute(desired, delta);
 
-    
-    // 6) (Optional) Choose a pedal value – here we use a constant.
-    float pedal = 0.1f;   // adjust as needed
-    
+    // 5) Compute the steering correction using the 2D cross product.
+    float cross = ref_vec_x * dir_y - ref_vec_y * dir_x;
+    float delta = asinf(cross);
+
+    // 6) Set a constant pedal value.
+    float pedal = 0.1f;
+
 #ifdef DEBUG
     printf("Car pos=(%.2f, %.2f), car_angle=%d\n", *car_x, *car_y, *car_angle);
+    printf("Target waypoint: (%.2f, %.2f)\n", target_wp.x, target_wp.y);
     printf("Ref vector: (%.2f, %.2f), Delta=%.2f rad\n", ref_vec_x, ref_vec_y, delta);
 #endif
 
-    // 7) Finally, update the vehicle’s model with the computed control signals.
+    // 7) Update the vehicle with the computed control signals.
     vehicle_model(car_x, car_y, car_angle, pedal, delta);
 }

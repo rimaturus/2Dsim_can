@@ -1,6 +1,6 @@
 TARGET    = 2D_sim
 CC        = gcc
-CFLAGS    = -g -O3 -Wall #-Wextra -Werror -std=c99
+CFLAGS    = -g -O3 -Wall -Wextra -Werror -std=c99
 LIBS      = `allegro-config --libs` -lyaml -lm -lpthread
 
 SRCS      = $(wildcard src/*.c)

@@ -221,11 +221,11 @@ void draw_lidar(pointcloud_t *measures)
 		makecol(0,255,0)
 	); 
 
-int lidar_angle = (start_angle % 360);
+int lidar_angle;
 
-	for (lidar_angle; lidar_angle < sliding_window; lidar_angle += angle_step)
+	for (int i = 0; i < sliding_window; i += angle_step)
 	{   
-		lidar_angle = (lidar_angle) % 360;
+		lidar_angle = (start_angle + i) % 360;
 		// printf("Lidar angle: %d \t %f\n", lidar_angle, measures[lidar_angle].distance);
 
 		// plot lines from car to detected point

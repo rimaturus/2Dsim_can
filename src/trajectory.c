@@ -47,6 +47,10 @@ waypoint trajectory[2*MAX_DETECTED_CONES];
 
 void 	trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory)
 {
+	(void) car_x;
+	(void) car_y;
+	(void) car_angle;
+	(void) detected_cones;
 	// Initialize trajectory points to invalid values
 	for (int i = 0; i < MAX_DETECTED_CONES; i++) {
 		trajectory[i].x = -1;
