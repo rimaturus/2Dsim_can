@@ -1,8 +1,5 @@
 {
-    "files.associations": {
-        "chrono": "cpp",
-        "thread": "cpp",
-        "iterator": "c",
-        "sched.h": "c"
-    }
+	"files.associations": {
+		"globals.h": "c"
+	}
 }
