@@ -160,8 +160,8 @@ pthread_mutex_t draw_mutex = PTHREAD_MUTEX_INITIALIZER;
  */
 const char* text = "2D FSAE sim by rimaturus"; // Title of the window
 
-const int XMAX = (19 * px_per_meter); /**< 10 m in x-direction, scaled */
-const int YMAX = (12 * px_per_meter); /**< 10 m in y-direction, scaled */
+const int X_MAX = (19 * px_per_meter); /**< 10 m in x-direction, scaled */
+const int Y_MAX = (12 * px_per_meter); /**< 10 m in y-direction, scaled */
 
 /* CAR initial position */
 float  car_x        = 4.5f;   /**< Car's initial X position [m] */
@@ -199,7 +199,7 @@ int yellow, blue;
  * -------------------------------- */
 
 /** 
- * \struct pointcloud
+ * \struct pointcloud_t
  * \brief Represents a single LiDAR measurement for a particular angle.
  */
 typedef struct {
@@ -207,15 +207,15 @@ typedef struct {
     float point_y;   /**< Y coordinate of the detected point */
     float distance;  /**< Detected distance in meters */
     int   color;     /**< Allegro color if a cone is detected, -1 otherwise */
-} pointcloud;
+} pointcloud_t;
 
 const int   angle_step           = 1;        /**< Angular resolution of LiDAR [deg] */
-const float MAXrange             = 10.0f;     /**< Maximum LiDAR range [m] */
+const float maxRange             = 10.0f;     /**< Maximum LiDAR range [m] */
 const float distance_resolution  = 0.01f;    /**< Distance step for LiDAR [m] */
 const int   N_angles             = 360;      /**< Number of possible angles [0..359] */
-const int   distance_steps       = (int)(MAXrange / distance_resolution);      /**< Discrete steps in the range (MAXrange / distance_resolution) */
+const int   distance_steps       = (int)(maxRange / distance_resolution);      /**< Discrete steps in the range (maxRange / distance_resolution) */
 
-pointcloud measures[360]; /**< Global array storing the current LiDAR scan data */
+pointcloud_t measures[360]; /**< Global array storing the current LiDAR scan data */
 
 /**
  * \brief Starting angle for the "sliding window" of LiDAR visualization.
@@ -242,6 +242,10 @@ typedef struct {
 	float x;
 	float y;
 } waypoint;
+
+void init_cones(cone *cones, int max_cones);
+void load_cones_positions(const char *filename, cone *cones, int max_cones);
+
 
 waypoint trajectory[2*MAX_DETECTED_CONES]; // trajectory
 int trajectory_idx = 0;
@@ -287,7 +291,7 @@ void load_cones_positions(const char *filename, cone *cones, int max_cones);
  * \param car_y Car's Y position in meters.
  * \param measures Global array that will be populated with measurement data.
  */
-void lidar(float car_x, float car_y, pointcloud *measures);
+void lidar(float car_x, float car_y, pointcloud_t *measures);
 
 /**
  * \brief Identifies cone borders from LiDAR `measures` and computes cone centers.
@@ -345,6 +349,21 @@ void	trajectory_planning(float car_x, float car_y, float car_angle, cone *detect
  */
 void runtime (int stop_signal, char* task_name);
 
+
+void init_cones(cone *cones, int max_cones);
+void load_cones_positions(const char *filename, cone *cones, int max_cones);
+void lidar(float car_x, float car_y, pointcloud_t *measures);
+void mapping(float car_x, float car_y, int car_angle, cone *detected_cones);
+void keyboard_control(float *car_x, float *car_y, int *car_angle);
+void vehicle_model(float *car_x, float *car_y, int *car_angle, float speed, float steering);
+void check_nearest_point(int angle, float new_point_x, float new_point_y, int color, cone_border *cone_borders);
+void trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory);
+void runtime(int stop_signal, char* task_name);
+void draw_dir_arrow();
+void update_map(cone *detected_cones);
+void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *trajectory);
+float angle_rotation_sprite(float angle);
+
 /* --------------------------------
  * MAIN FUNCTION
  * -------------------------------- */
@@ -378,7 +397,7 @@ int main()
 	yellow = makecol(254, 221, 0); // yellow for cones
 	blue = makecol(46, 103, 248); // blue for cones
 		
-		set_gfx_mode(GFX_AUTODETECT_WINDOWED, XMAX, YMAX, 0, 0);
+		set_gfx_mode(GFX_AUTODETECT_WINDOWED, X_MAX, Y_MAX, 0, 0);
 		
 		set_window_title("2D FSAE Simulation"); // Optional: sets window title
 		set_display_switch_mode(SWITCH_BACKGROUND); // Allows window to be minimized/switched
@@ -388,7 +407,7 @@ int main()
 		clear_to_color(screen, pink); // clear the screen making all pixels to white
 
 		// Create the off-screen display buffer
-	display_buffer = create_bitmap(XMAX, YMAX);
+	display_buffer = create_bitmap(X_MAX, Y_MAX);
 		clear_to_color(display_buffer, pink);
 
 		draw_sprite(screen, display_buffer, 0, 0);
@@ -396,7 +415,7 @@ int main()
 		//readkey();
 
 		// background
-	background = create_bitmap(XMAX, YMAX); 
+	background = create_bitmap(X_MAX, Y_MAX); 
 		clear_bitmap(background);
 		clear_to_color(background, grass_green);
 
@@ -405,7 +424,7 @@ int main()
 		//readkey();
 
 		// track
-	track = create_bitmap(XMAX, YMAX);
+	track = create_bitmap(X_MAX, Y_MAX);
 		clear_bitmap(track);
 		clear_to_color(track, asphalt_gray);
 		
@@ -469,7 +488,7 @@ int main()
 		// Perception bitmap 
 		// the bitmap size need to be 2x the max range of the LiDAR to 
 		// contain all the possible detections
-	perception = create_bitmap(2*MAXrange*px_per_meter, 2*MAXrange*px_per_meter);
+	perception = create_bitmap(2*maxRange*px_per_meter, 2*maxRange*px_per_meter);
 		clear_bitmap(perception);
 		clear_to_color(perception, pink); // pink color to make it transparent (True color notation)
 		
@@ -493,8 +512,8 @@ int main()
 			draw_sprite(
 				display_buffer, 
 				perception, 
-				car_x_px - MAXrange*px_per_meter,
-				car_y_px - MAXrange*px_per_meter
+				car_x_px - maxRange*px_per_meter,
+				car_y_px - maxRange*px_per_meter
 			);
 		pthread_mutex_unlock(&draw_mutex);
 
@@ -639,8 +658,8 @@ void *perception_task(void *arg)
 					// printf("Detected cone at: %f, %f\n", detected_cones[detected_cone_idx].x, detected_cones[detected_cone_idx].y);
 					circlefill(
 						perception, 
-						(int)(detected_cones[detected_cone_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter), 
-						(int)(detected_cones[detected_cone_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter), 
+						(int)(detected_cones[detected_cone_idx].x * px_per_meter) - (int)(car_x * px_per_meter - maxRange*px_per_meter), 
+						(int)(detected_cones[detected_cone_idx].y * px_per_meter) - (int)(car_y * px_per_meter - maxRange*px_per_meter), 
 						3, 
 						makecol(255, 0, 0) //detected_cones[detected_cone_idx].color
 					);
@@ -654,8 +673,8 @@ void *perception_task(void *arg)
 				// printf("Detected cone at: %f, %f\n", detected_cones[detected_cone_idx].x, detected_cones[detected_cone_idx].y);
 				circlefill(
 					perception, 
-					(int)(track_map[map_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter), 
-					(int)(track_map[map_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter), 
+					(int)(track_map[map_idx].x * px_per_meter) - (int)(car_x * px_per_meter - maxRange*px_per_meter), 
+					(int)(track_map[map_idx].y * px_per_meter) - (int)(car_y * px_per_meter - maxRange*px_per_meter), 
 					3, 
 					makecol(255, 255, 255) //detected_cones[detected_cone_idx].color
 				);
@@ -693,8 +712,8 @@ void *trajectory_task(void *arg)
 			{
 				circlefill(
 					screen,
-					(int)(trajectory[traj_point_idx].x * px_per_meter),// - (int)(car_x * px_per_meter - MAXrange*px_per_meter),
-					(int)(trajectory[traj_point_idx].y * px_per_meter),// - (int)(car_y * px_per_meter - MAXrange*px_per_meter),
+					(int)(trajectory[traj_point_idx].x * px_per_meter),// - (int)(car_x * px_per_meter - maxRange*px_per_meter),
+					(int)(trajectory[traj_point_idx].y * px_per_meter),// - (int)(car_y * px_per_meter - maxRange*px_per_meter),
 					3,
 					makecol(0, 255, 0)
 				);
@@ -707,8 +726,8 @@ void *trajectory_task(void *arg)
 					perception, 
 					font, 
 					text, 
-					(int)(trajectory[traj_point_idx].x * px_per_meter) - (int)(car_x * px_per_meter - MAXrange*px_per_meter), 
-					(int)(trajectory[traj_point_idx].y * px_per_meter) - (int)(car_y * px_per_meter - MAXrange*px_per_meter), 
+					(int)(trajectory[traj_point_idx].x * px_per_meter) - (int)(car_x * px_per_meter - maxRange*px_per_meter), 
+					(int)(trajectory[traj_point_idx].y * px_per_meter) - (int)(car_y * px_per_meter - maxRange*px_per_meter), 
 					makecol(255, 0, 0), 
 					makecol(255, 255, 255)
 				);
@@ -796,8 +815,8 @@ void *display_task(void *arg)
     int task_id = get_task_index(arg);
     wait_for_activation(task_id);
 
-    int XMAX = display_buffer->w;
-    int YMAX = display_buffer->h;
+    int X_MAX = display_buffer->w;
+    int Y_MAX = display_buffer->h;
 
     while (!key[KEY_ESC])
     {	
@@ -821,13 +840,13 @@ void *display_task(void *arg)
 			draw_sprite(
 				display_buffer, 
 				perception, 
-				(int)(car_x * px_per_meter) - (int)(MAXrange)*px_per_meter,
-				(int)(car_y * px_per_meter) - (int)(MAXrange)*px_per_meter
+				(int)(car_x * px_per_meter) - (int)(maxRange)*px_per_meter,
+				(int)(car_y * px_per_meter) - (int)(maxRange)*px_per_meter
 			);
 
 			draw_dir_arrow();
 
-			blit(display_buffer, screen, 0, 0, 0, 0, XMAX, YMAX);
+			blit(display_buffer, screen, 0, 0, 0, 0, X_MAX, Y_MAX);
 			
 			int text_width = text_length(font, text);
 			textout_ex(
@@ -896,7 +915,7 @@ void draw_dir_arrow()
 
 // Sensors
 // LiDAR
-void    lidar(float car_x, float car_y, pointcloud *measures)
+void    lidar(float car_x, float car_y, pointcloud_t *measures)
 {
 	int stop_distance; 
 
@@ -907,13 +926,13 @@ void    lidar(float car_x, float car_y, pointcloud *measures)
 		int 	current_distance = 0; // initialize distance at 0
 
 		// Initialize the measure with the maximum range and no color
-		measures[lidar_angle].distance = MAXrange;
+		measures[lidar_angle].distance = maxRange;
 		measures[lidar_angle].color = -1; // cone not detected
 
 		stop_distance = 0;
 
-		// Check each pixel in the range [0, MAXrange] with a step of distance_resolution
-		for (float distance = ignore_distance; distance < MAXrange; distance += distance_resolution)
+		// Check each pixel in the range [0, maxRange] with a step of distance_resolution
+		for (float distance = ignore_distance; distance < maxRange; distance += distance_resolution)
 		{
 			// Calculate the x and y coordinates of the pixel at the current distance and angle
 			float x = car_x + ( distance * cos((float)(lidar_angle) * deg2rad) );
@@ -1108,7 +1127,7 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 
 	}
 
-	// at this step the cone_borders contain the points of the pointcloud that are closer each other
+	// at this step the cone_borders contain the points of the pointcloud_t that are closer each other
 	// classified by cone
 	// now we need to calculate the center of the cones
 
@@ -1181,7 +1200,7 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 					float new_x, new_y, new_distance;
 
 					for (int i = 0; i < 360; i++){ // initialize the possible points
-						circumference_points[i].distance = 2*MAXrange;
+						circumference_points[i].distance = 2*maxRange;
 						circumference_points[i].x = 0;
 						circumference_points[i].y = 0;
 					}
@@ -1213,7 +1232,7 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 					float new_x, new_y, new_distance;
 
 					for (int i = 0; i < 360; i++){ // initialize the possible points
-						circumference_points[i].distance = 2*MAXrange;
+						circumference_points[i].distance = 2*maxRange;
 						circumference_points[i].x = 0;
 						circumference_points[i].y = 0;
 					}
@@ -1559,7 +1578,7 @@ void 	check_nearest_point(int angle, float new_point_x, float new_point_y, int c
 		else // a cone is detected at this position
 		{
 			int insertion_point = 0;	// find the first free position to put this new point in the border array
-			float distance = 2*MAXrange;	// max distance between two points detected
+			float distance = 2*maxRange;	// max distance between two points detected
 
 			int isPointOnCone = 0;		// flag to check if the point is near to a cone
 
