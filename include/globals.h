@@ -71,7 +71,7 @@
 #include <semaphore.h>
 
 // #define DEBUG
-#define PROFILING
+// #define PROFILING
 
 // ------------------------
 // 	TASKs COSTANTS
@@ -110,8 +110,6 @@ extern const char* 	title;
 extern const int 	X_MAX; // pixels
 extern const int 	Y_MAX; // pixels
 
-extern const float cone_radius;
-
 /* Global bitmaps */
 extern BITMAP *control_panel;
 extern BITMAP *steering_wheel;
@@ -132,6 +130,17 @@ extern int yellow, blue;
 /* Car pose */
 extern float car_x, car_y;	// meters
 extern int car_angle; 		// degrees
+
+/* Cones */
+typedef struct {
+    float x;      /**< X position of the cone (in meters, converted to px when drawn) */
+    float y;      /**< Y position of the cone */
+    int   color;  /**< Color (in Allegro color format) */
+} cone;
+
+extern const float cone_radius;
+#define MAX_CONES_MAP 3000
+extern cone	cones[MAX_CONES_MAP];
 
 // ------------------------
 // 	PERCEPTION COSTANTS

@@ -17,6 +17,7 @@
 #include "trajectory.h"
 #include "utilities.h"
 #include "control.h"
+#include "vehicle.h"
 
 
 /**
@@ -204,6 +205,7 @@ void draw_track()
 			allegro_message("Track bitmap has invalid dimensions");
 			return;
 		}
+
 		draw_sprite(display_buffer, track, 0, 0);
 	}
 }
@@ -423,6 +425,8 @@ void draw_controls(){
 
 void update_display()
 {
+	check_collisions();
+
 	pthread_mutex_lock(&draw_mutex);
 		clear_to_color(display_buffer, pink);
     
@@ -431,7 +435,7 @@ void update_display()
 		draw_track();
 		draw_car(car_x, car_y, car_angle);
 
-		draw_perception();
+		// draw_perception();
 		draw_trajectory(trajectory);
 
 		int text_width = text_length(font, title);

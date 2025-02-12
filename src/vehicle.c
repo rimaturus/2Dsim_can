@@ -82,4 +82,71 @@ float speed, acceleration;
 
 }
 
+void check_collisions()
+{
+	int detectedCollision = 0; // Flag to indicate a collision
+
+	// Check for collisions with cones
+	for (int i = 0; i < MAX_DETECTED_CONES; i++)
+	{
+		if (cones[i].color != -1)
+		{
+			float dx = car_x - cones[i].x/px_per_meter;
+			float dy = car_y - cones[i].y/px_per_meter;
+			float distance = sqrt(dx * dx + dy * dy);
+
+			// Calculate angle between car and cone
+			float angle_to_cone = atan2(dy, dx) / deg2rad;  // Convert to degrees
+			float relative_angle = fmod(angle_to_cone - car_angle + 360, 360);  // Normalize to [0,360]
+			
+			// Set threshold distance based on angle
+			float threshold;
+
+			if (relative_angle <= 30 || relative_angle >= 330 ||  // Front cone [-30,+30]
+				(relative_angle >= 210 && relative_angle <= 360)) { // Back cone [210,360]
+				threshold = cone_radius + 0.25;  // Add 0.5 meter for front/back collisions (simulation car length)
+			}
+			else {
+				threshold = cone_radius;  // Side cone
+			}
+
+			if (distance < threshold)
+			{
+				detectedCollision = 1; // Collision detected
+				float car_heading = car_angle * deg2rad;
+
+				// Push the cone in the direction of the car's movement
+				float push_distance = threshold;  // How far to push the cone
+				cones[i].x += (push_distance * cos(-car_heading)) * px_per_meter;
+				cones[i].y += (push_distance * sin(-car_heading)) * px_per_meter;
+
+				#ifdef DEBUG
+				printf("Collision detected with cone %d", i);
+				printf(" - Cone pushed to (%.2f, %.2f)\n", cones[i].x, cones[i].y);
+				#endif /* DEBUG */
+			}
+		}
+	}
+
+	if (detectedCollision)
+	{
+		clear_bitmap(track);
+		clear_to_color(track, asphalt_gray);
+		
+		for (int i = 0; i < MAX_CONES_MAP; i++)
+		{
+			if (cones[i].color != -1) // plot only track cones
+			{
+				circlefill(
+					track, 
+					(int)(cones[i].x), 
+					(int)(cones[i].y), 
+					cone_radius * px_per_meter, // radius = 5 cm
+					cones[i].color
+				);
+			}
+		}
+	}
+}
+
 /** @} */

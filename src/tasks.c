@@ -102,6 +102,8 @@ void *perception_task(void *arg)
 
 		wait_for_period(task_id);
 	}
+
+	sem_post(&lidar_sem);
 	return NULL;
 }
 
@@ -121,6 +123,8 @@ void *trajectory_task(void *arg)
 
 		wait_for_period(task_id);
 	}
+
+	sem_post(&lidar_sem);
 	return NULL;
 }
 
@@ -144,6 +148,8 @@ void *control_task(void *arg)
 
         wait_for_period(task_id);
     }
+
+	sem_post(&lidar_sem);
     return NULL;
 }
 
@@ -163,5 +169,7 @@ void *display_task(void *arg)
 		wait_for_period(task_id);
 
 	}
+
+	sem_post(&lidar_sem);
 	return NULL;
 }

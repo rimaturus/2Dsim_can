@@ -117,14 +117,7 @@
 #include <math.h>
 #include "globals.h"
 
-typedef struct {
-    float x;      /**< X position of the cone (in meters, converted to px when drawn) */
-    float y;      /**< Y position of the cone */
-    int   color;  /**< Color (in Allegro color format) */
-} cone;
-
 #define MAX_POINTS_PER_CONE 180
-#define MAX_CONES_MAP 3000
 
 #define maxRange 10.0f
 extern const float ignore_distance;

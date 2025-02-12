@@ -229,10 +229,8 @@ void init_track()
 	track = create_bitmap(X_MAX, Y_MAX);
 		clear_bitmap(track);
 		clear_to_color(track, asphalt_gray);
+	
 		
-	cone	cones[MAX_CONES_MAP];
-
-
 		init_cones(cones);
 		load_cones_positions(filename, cones, MAX_CONES_MAP);
 		printf("Cones loaded\n");
@@ -246,8 +244,8 @@ void init_track()
 				// circlefill(screen, i * px_per_meter, i * px_per_meter, 5, makecol(255,0,0));
 				circlefill(
 					track, 
-					cones[i].x, 
-					cones[i].y, 
+					(int)(cones[i].x), 
+					(int)(cones[i].y), 
 					cone_radius * px_per_meter, // radius = 5 cm
 					cones[i].color
 				);

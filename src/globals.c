@@ -75,6 +75,8 @@ float  car_x        = 4.5f;
 float  car_y        = 3.0f;
 int    car_angle    = 0;
 
+cone	cones[MAX_CONES_MAP];
+
 /* Global bitmaps */
 BITMAP *control_panel   = NULL;
 BITMAP *steering_wheel  = NULL;
