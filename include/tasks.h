@@ -54,6 +54,17 @@
  * @param arg Pointer to display specific parameters or context information.
  * @return Pointer indicating the outcome of the display operation, generally unused.
  */
+
+ /**
+ * @brief Task managing simulation settings and configuration
+ * 
+ * @param arg Pointer to task arguments (void pointer for thread compatibility)
+ * @return void* Return value of the thread (unused)
+ * 
+ * Thread task that handles simulation settings and configuration updates.
+ * Should be used with pthread_create().
+ */
+
 #ifndef TASKS_H
 #define TASKS_H
 
@@ -65,5 +76,6 @@ void *perception_task(void *arg);
 void *trajectory_task(void *arg);
 void *control_task(void *arg);
 void *display_task(void *arg);
+void *settings_task(void *arg);
 
 #endif // TASKS_H

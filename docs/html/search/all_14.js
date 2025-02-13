@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['x_180',['x',['../structcone.html#a94315074bcb258b9af4bb579bbbe8c6b',1,'cone::x()'],['../structcandidate__cone.html#a8db7a1ec66310980ecc370f7828daf66',1,'candidate_cone::x()'],['../structHough__circle__point__t.html#a0468b7594eb2021a62306a3266fb383a',1,'Hough_circle_point_t::x()'],['../structwaypoint.html#a4870343b078fed6ed6b305bcf011a583',1,'waypoint::x()']]],
-  ['x_5fmax_181',['X_MAX',['../globals_8h.html#a06a12873f8a85695ebe48194046f9903',1,'X_MAX():&#160;globals.c'],['../globals_8c.html#a367debe5309d3d03036794f63420bad4',1,'X_MAX():&#160;globals.c']]]
+  ['value_195',['value',['../structButton.html#ac34de38447549e3d08445c11819a864a',1,'Button']]],
+  ['vehicle_20model_20and_20control_196',['Vehicle model and control',['../group__VehicleModule.html',1,'']]],
+  ['vehicle_2ec_197',['vehicle.c',['../vehicle_8c.html',1,'']]],
+  ['vehicle_2eh_198',['vehicle.h',['../vehicle_8h.html',1,'']]],
+  ['vehicle_5fmodel_199',['vehicle_model',['../group__VehicleModule.html#ga4a1f78c4260229ebd2850350d181cc86',1,'vehicle_model(float *car_x, float *car_y, int *car_angle, float pedal, float steering):&#160;vehicle.c'],['../group__VehicleModule.html#ga4a1f78c4260229ebd2850350d181cc86',1,'vehicle_model(float *car_x, float *car_y, int *car_angle, float pedal, float steering):&#160;vehicle.c']]]
 ];

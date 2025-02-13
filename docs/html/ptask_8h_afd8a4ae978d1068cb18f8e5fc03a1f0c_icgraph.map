@@ -1,8 +1,9 @@
 <map id="wait_for_period" name="wait_for_period">
-<area shape="rect" id="node1" title=" " alt="" coords="283,81,405,108"/>
+<area shape="rect" id="node1" title=" " alt="" coords="283,107,405,133"/>
 <area shape="rect" id="node2" href="$tasks_8h.html#a91e3918bad881fbf7304d534268de11d" title=" " alt="" coords="120,5,223,32"/>
 <area shape="rect" id="node4" href="$tasks_8h.html#a16cbac3bef85b555e76fe999965c1b7e" title=" " alt="" coords="119,56,223,83"/>
 <area shape="rect" id="node5" href="$tasks_8h.html#a746b11c2b14e499dab89746ee003716d" title="Perception task." alt="" coords="108,107,235,133"/>
-<area shape="rect" id="node6" href="$tasks_8h.html#ad095128da13e00a037e732dd25ffcbf6" title=" " alt="" coords="111,157,231,184"/>
-<area shape="rect" id="node3" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title=" " alt="" coords="5,81,60,108"/>
+<area shape="rect" id="node6" href="$tasks_8h.html#a0fc6c027e96e920540028bd808a43c5f" title=" " alt="" coords="117,157,226,184"/>
+<area shape="rect" id="node7" href="$tasks_8h.html#ad095128da13e00a037e732dd25ffcbf6" title=" " alt="" coords="111,208,231,235"/>
+<area shape="rect" id="node3" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title=" " alt="" coords="5,107,60,133"/>
 </map>

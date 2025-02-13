@@ -66,7 +66,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">display.c File Reference</div>  </div>
 </div><!--header-->
@@ -83,10 +84,13 @@ $(function() {
 <code>#include &quot;<a class="el" href="trajectory_8h_source.html">trajectory.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utilities_8h_source.html">utilities.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="control_8h_source.html">control.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="vehicle_8h_source.html">vehicle.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="display_8h_source.html">display.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for display.c:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c__incl.svg" width="599" height="411"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c__incl.svg" width="824" height="411"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -121,11 +125,89 @@ Functions</h2></td></tr>
 <tr class="memitem:aa2eb9ba074b23fc3b4a91c98e0c83c8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="display_8c.html#aa2eb9ba074b23fc3b4a91c98e0c83c8b">update_display</a> ()</td></tr>
 <tr class="memdesc:aa2eb9ba074b23fc3b4a91c98e0c83c8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the entire display.  <a href="display_8c.html#aa2eb9ba074b23fc3b4a91c98e0c83c8b">More...</a><br /></td></tr>
 <tr class="separator:aa2eb9ba074b23fc3b4a91c98e0c83c8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdb9fae5dfda6a7b08efb162b243c776"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="display_8c.html#abdb9fae5dfda6a7b08efb162b243c776">display_pedal</a> (BITMAP *bitmap)</td></tr>
+<tr class="separator:abdb9fae5dfda6a7b08efb162b243c776"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bcee09191f66649a2968b6f2ba32935"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="display_8c.html#a5bcee09191f66649a2968b6f2ba32935">draw_button</a> (<a class="el" href="structButton.html">Button</a> *btn, BITMAP *buffer)</td></tr>
+<tr class="separator:a5bcee09191f66649a2968b6f2ba32935"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a8d31ca92b9f08b9b8dc134fdbd743bdd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="display_8c.html#a8d31ca92b9f08b9b8dc134fdbd743bdd">btn_state_cones</a> = 0</td></tr>
+<tr class="separator:a8d31ca92b9f08b9b8dc134fdbd743bdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affd8bbaa3d95ef6b438022021db1c543"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="display_8c.html#affd8bbaa3d95ef6b438022021db1c543">btn_state_perception</a> = 1</td></tr>
+<tr class="separator:affd8bbaa3d95ef6b438022021db1c543"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5570a5cf15524c61e14cffd271dbf78"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="display_8c.html#ac5570a5cf15524c61e14cffd271dbf78">btn_state_map</a> = 1</td></tr>
+<tr class="separator:ac5570a5cf15524c61e14cffd271dbf78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9910257ef3a26317a779fc9e77d41d58"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="display_8c.html#a9910257ef3a26317a779fc9e77d41d58">btn_state_traj</a> = 1</td></tr>
+<tr class="separator:a9910257ef3a26317a779fc9e77d41d58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02a9f77d39f15a1769d8dba7aec487cb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="display_8c.html#a02a9f77d39f15a1769d8dba7aec487cb">btn_state_autonomous</a> = 0</td></tr>
+<tr class="separator:a02a9f77d39f15a1769d8dba7aec487cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68347b0753ca586ab50f8651e3bb4a53"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structButton.html">Button</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="display_8c.html#a68347b0753ca586ab50f8651e3bb4a53">buttons</a> [<a class="el" href="display_8h.html#afd296c470a4af69caa281bd5ecd5212e">num_buttons</a>]</td></tr>
+<tr class="memdesc:a68347b0753ca586ab50f8651e3bb4a53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Periodic perception task.  <a href="display_8c.html#a68347b0753ca586ab50f8651e3bb4a53">More...</a><br /></td></tr>
+<tr class="separator:a68347b0753ca586ab50f8651e3bb4a53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Rendering and display update functions for the 2D simulation using Allegro. </p>
 <p>This file contains functions responsible for drawing various elements of the simulation, including the car sprite, direction indicator, track, lidar/perception display, trajectory, and user controls (e.g., steering wheel and pedal gauge). It also handles the final composition of the display buffer and its transfer to the screen. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="abdb9fae5dfda6a7b08efb162b243c776"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abdb9fae5dfda6a7b08efb162b243c776">&#9670;&nbsp;</a></span>display_pedal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void display_pedal </td>
+          <td>(</td>
+          <td class="paramtype">BITMAP *&#160;</td>
+          <td class="paramname"><em>bitmap</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_abdb9fae5dfda6a7b08efb162b243c776_icgraph.svg" width="708" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a5bcee09191f66649a2968b6f2ba32935"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bcee09191f66649a2968b6f2ba32935">&#9670;&nbsp;</a></span>draw_button()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void draw_button </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structButton.html">Button</a> *&#160;</td>
+          <td class="paramname"><em>btn</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">BITMAP *&#160;</td>
+          <td class="paramname"><em>buffer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a5bcee09191f66649a2968b6f2ba32935_icgraph.svg" width="699" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
 <a id="a01a4e859fcc5ddef923afe9a8a674826"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a01a4e859fcc5ddef923afe9a8a674826">&#9670;&nbsp;</a></span>draw_car()</h2>
 
@@ -172,12 +254,14 @@ Functions</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a01a4e859fcc5ddef923afe9a8a674826_cgraph.svg" width="300" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a01a4e859fcc5ddef923afe9a8a674826_cgraph.svg" width="300" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a01a4e859fcc5ddef923afe9a8a674826_icgraph.svg" width="516" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a01a4e859fcc5ddef923afe9a8a674826_icgraph.svg" width="516" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 
 </div>
@@ -221,7 +305,8 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_aa45d316f5e50fa968e686d790d57457b_icgraph.svg" width="742" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_aa45d316f5e50fa968e686d790d57457b_icgraph.svg" width="742" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 
 </div>
@@ -246,12 +331,14 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a385702fb79f2c451da015c3147f80515_cgraph.svg" width="332" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a385702fb79f2c451da015c3147f80515_cgraph.svg" width="332" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a385702fb79f2c451da015c3147f80515_icgraph.svg" width="548" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a385702fb79f2c451da015c3147f80515_icgraph.svg" width="548" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 
 </div>
@@ -284,7 +371,8 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a298532c4740f2a6785e5c1b0ff7fea9a_icgraph.svg" width="776" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a298532c4740f2a6785e5c1b0ff7fea9a_icgraph.svg" width="776" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 
 </div>
@@ -307,6 +395,12 @@ Here is the caller graph for this function:</div>
 <p>Draws a directional arrow representing the car's orientation. </p>
 <p>Draws a directional arrow.</p>
 <p>Computes the arrow's start (at the car's position) and end points based on the car angle, using cosine and sine functions. The arrow shaft and head are drawn as thick green lines, with the head drawn at two angles to form a head shape. </p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a264238ff7dcf301bbc2f190ea7dcea4c_icgraph.svg" width="687" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -338,7 +432,8 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a5c07cb2dc1adb076383bced84f4a8154_icgraph.svg" width="704" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a5c07cb2dc1adb076383bced84f4a8154_icgraph.svg" width="704" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 
 </div>
@@ -369,7 +464,8 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_acd5437d29ba24cfc00dbd2f9f6b0cd28_icgraph.svg" width="566" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_acd5437d29ba24cfc00dbd2f9f6b0cd28_icgraph.svg" width="566" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 
 </div>
@@ -394,7 +490,8 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a92e08b949df5d8a8e5edec1dd86bc360_icgraph.svg" width="530" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a92e08b949df5d8a8e5edec1dd86bc360_icgraph.svg" width="530" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 
 </div>
@@ -427,7 +524,8 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a2d077fa92b741d504d6ef5c5f2fdd74c_icgraph.svg" width="559" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_a2d077fa92b741d504d6ef5c5f2fdd74c_icgraph.svg" width="559" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 
 </div>
@@ -453,13 +551,153 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b_cgraph.svg" width="522" height="240"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b_cgraph.svg" width="522" height="342"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b_icgraph.svg" width="387" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b_icgraph.svg" width="387" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
+</div>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a02a9f77d39f15a1769d8dba7aec487cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02a9f77d39f15a1769d8dba7aec487cb">&#9670;&nbsp;</a></span>btn_state_autonomous</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int btn_state_autonomous = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8d31ca92b9f08b9b8dc134fdbd743bdd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d31ca92b9f08b9b8dc134fdbd743bdd">&#9670;&nbsp;</a></span>btn_state_cones</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int btn_state_cones = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac5570a5cf15524c61e14cffd271dbf78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5570a5cf15524c61e14cffd271dbf78">&#9670;&nbsp;</a></span>btn_state_map</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int btn_state_map = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="affd8bbaa3d95ef6b438022021db1c543"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affd8bbaa3d95ef6b438022021db1c543">&#9670;&nbsp;</a></span>btn_state_perception</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int btn_state_perception = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9910257ef3a26317a779fc9e77d41d58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9910257ef3a26317a779fc9e77d41d58">&#9670;&nbsp;</a></span>btn_state_traj</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int btn_state_traj = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a68347b0753ca586ab50f8651e3bb4a53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68347b0753ca586ab50f8651e3bb4a53">&#9670;&nbsp;</a></span>buttons</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structButton.html">Button</a> buttons[<a class="el" href="display_8h.html#afd296c470a4af69caa281bd5ecd5212e">num_buttons</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    {20, 20, 150, 30, <span class="stringliteral">&quot;Clean track&quot;</span>, &amp;<a class="code" href="display_8c.html#a8d31ca92b9f08b9b8dc134fdbd743bdd">btn_state_cones</a>},</div>
+<div class="line">    {20, 60, 150, 30, <span class="stringliteral">&quot;Lidar&quot;</span>, &amp;<a class="code" href="display_8c.html#affd8bbaa3d95ef6b438022021db1c543">btn_state_perception</a>},</div>
+<div class="line">    {20, 100, 150, 30, <span class="stringliteral">&quot;Mapping&quot;</span>, &amp;<a class="code" href="display_8c.html#ac5570a5cf15524c61e14cffd271dbf78">btn_state_map</a>},</div>
+<div class="line">    {20, 140, 150, 30, <span class="stringliteral">&quot;Trajectory&quot;</span>, &amp;<a class="code" href="display_8c.html#a9910257ef3a26317a779fc9e77d41d58">btn_state_traj</a>},</div>
+<div class="line">    {20, 180, 150, 30, <span class="stringliteral">&quot;Full Autonomous&quot;</span>, &amp;<a class="code" href="display_8c.html#a02a9f77d39f15a1769d8dba7aec487cb">btn_state_autonomous</a>}</div>
+<div class="line">}</div>
+<div class="ttc" id="adisplay_8c_html_a02a9f77d39f15a1769d8dba7aec487cb"><div class="ttname"><a href="display_8c.html#a02a9f77d39f15a1769d8dba7aec487cb">btn_state_autonomous</a></div><div class="ttdeci">int btn_state_autonomous</div><div class="ttdef"><b>Definition:</b> display.c:28</div></div>
+<div class="ttc" id="adisplay_8c_html_a8d31ca92b9f08b9b8dc134fdbd743bdd"><div class="ttname"><a href="display_8c.html#a8d31ca92b9f08b9b8dc134fdbd743bdd">btn_state_cones</a></div><div class="ttdeci">int btn_state_cones</div><div class="ttdef"><b>Definition:</b> display.c:24</div></div>
+<div class="ttc" id="adisplay_8c_html_a9910257ef3a26317a779fc9e77d41d58"><div class="ttname"><a href="display_8c.html#a9910257ef3a26317a779fc9e77d41d58">btn_state_traj</a></div><div class="ttdeci">int btn_state_traj</div><div class="ttdef"><b>Definition:</b> display.c:27</div></div>
+<div class="ttc" id="adisplay_8c_html_ac5570a5cf15524c61e14cffd271dbf78"><div class="ttname"><a href="display_8c.html#ac5570a5cf15524c61e14cffd271dbf78">btn_state_map</a></div><div class="ttdeci">int btn_state_map</div><div class="ttdef"><b>Definition:</b> display.c:26</div></div>
+<div class="ttc" id="adisplay_8c_html_affd8bbaa3d95ef6b438022021db1c543"><div class="ttname"><a href="display_8c.html#affd8bbaa3d95ef6b438022021db1c543">btn_state_perception</a></div><div class="ttdeci">int btn_state_perception</div><div class="ttdef"><b>Definition:</b> display.c:25</div></div>
+</div><!-- fragment -->
+<p>Periodic perception task. </p>
+<p>This task acquires LiDAR measurements, resets the array of detected cones, and performs mapping based on the current position and orientation of the vehicle. After processing the sensor data, it signals the trajectory planning task using a semaphore. The task executes continuously until the ESC key is pressed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">arg</td><td>Pointer used to determine the task's index.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Always returns NULL.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The function uses a runtime measurement call to monitor its execution time.</dd></dl>
+<p>Periodic trajectory planning task.</p>
+<p>This task waits for a signal from the perception task to ensure updated sensor data is available. It then calculates a new trajectory for the vehicle based on its current position, orientation, and the detected cones from the environment. The task runs periodically and terminates when the ESC key is pressed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">arg</td><td>Pointer used to determine the task's index.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Always returns NULL.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The task's operation is encapsulated between runtime measurement calls.</dd></dl>
+<p>Periodic control task.</p>
+<p>This task is responsible for controlling the vehicle's movement. It chooses between keyboard-based control and autonomous control based on the state of the 'A' key. If autonomous mode is active (i.e., 'A' is pressed), it uses the computed trajectory, otherwise it relies on user input to drive the vehicle. Execution continues until the ESC key is pressed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">arg</td><td>Pointer used to determine the task's index.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Always returns NULL.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The function uses runtime measurement calls to monitor execution time per cycle.</dd></dl>
+<p>Periodic display task.</p>
+<p>This task updates the graphical display of the simulation environment. It refreshes the on-screen information such as the vehicle's position, sensor data, and other simulation elements. The task continues running until the ESC key is pressed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">arg</td><td>Pointer used to determine the task's index.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Always returns NULL.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Like the other tasks, execution time is tracked using runtime measurement calls. </dd></dl>
 
 </div>
 </div>

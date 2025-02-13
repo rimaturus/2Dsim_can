@@ -66,6 +66,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
@@ -80,20 +81,29 @@ $(function() {
 <code>#include &lt;string.h&gt;</code><br />
 <code>#include &lt;time.h&gt;</code><br />
 <code>#include &lt;yaml.h&gt;</code><br />
+<code>#include &lt;errno.h&gt;</code><br />
+<code>#include &lt;locale.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="globals_8h_source.html">globals.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perception_8h_source.html">perception.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for utilities.c:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="utilities_8c__incl.svg" width="696" height="262"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="utilities_8c__incl.svg" width="886" height="262"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a3024ccd4a9af5109d24e6c57565d74a1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8c.html#a3024ccd4a9af5109d24e6c57565d74a1">_POSIX_C_SOURCE</a>&#160;&#160;&#160;199309L</td></tr>
+<tr class="memdesc:a3024ccd4a9af5109d24e6c57565d74a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an array of cone structures.  <a href="utilities_8c.html#a3024ccd4a9af5109d24e6c57565d74a1">More...</a><br /></td></tr>
+<tr class="separator:a3024ccd4a9af5109d24e6c57565d74a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5297509bfed850c9f8cb92b994b7fd75"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8c.html#a5297509bfed850c9f8cb92b994b7fd75">init_cones</a> (<a class="el" href="structcone.html">cone</a> *cones)</td></tr>
+<tr class="memitem:a5297509bfed850c9f8cb92b994b7fd75"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8c.html#a5297509bfed850c9f8cb92b994b7fd75">init_cones</a> (<a class="el" href="structcone.html">cone</a> *<a class="el" href="globals_8c.html#a6bff9042bc7c83b01b7c3c5285f48e82">cones</a>)</td></tr>
 <tr class="memdesc:a5297509bfed850c9f8cb92b994b7fd75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an array of cone structures.  <a href="utilities_8c.html#a5297509bfed850c9f8cb92b994b7fd75">More...</a><br /></td></tr>
 <tr class="separator:a5297509bfed850c9f8cb92b994b7fd75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77d50bbb4a4844ce7ddab4a7b3d52d24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8c.html#a77d50bbb4a4844ce7ddab4a7b3d52d24">load_cones_positions</a> (const char *<a class="el" href="main_8c.html#aee5ee0d6a8a10e195acbec5ee97f65d9">filename</a>, <a class="el" href="structcone.html">cone</a> *cones, int max_cones)</td></tr>
+<tr class="memitem:a77d50bbb4a4844ce7ddab4a7b3d52d24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8c.html#a77d50bbb4a4844ce7ddab4a7b3d52d24">load_cones_positions</a> (const char *<a class="el" href="main_8c.html#aee5ee0d6a8a10e195acbec5ee97f65d9">filename</a>, <a class="el" href="structcone.html">cone</a> *<a class="el" href="globals_8c.html#a6bff9042bc7c83b01b7c3c5285f48e82">cones</a>, int max_cones)</td></tr>
 <tr class="separator:a77d50bbb4a4844ce7ddab4a7b3d52d24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33090597864cdfd30d87ff99c14eeecb"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8c.html#a33090597864cdfd30d87ff99c14eeecb">angle_rotation_sprite</a> (float angle)</td></tr>
 <tr class="separator:a33090597864cdfd30d87ff99c14eeecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -102,8 +112,10 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a8052eacfb33fd0f8bc1dbef9d2bd55d4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8c.html#a8052eacfb33fd0f8bc1dbef9d2bd55d4">tmp_scale</a> = 1.5 / 100</td></tr>
-<tr class="separator:a8052eacfb33fd0f8bc1dbef9d2bd55d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97c90462af6645ccf34582fab57aa2a2"><td class="memItemLeft" align="right" valign="top">volatile float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8c.html#a97c90462af6645ccf34582fab57aa2a2">offset_x</a> = 0.5f</td></tr>
+<tr class="separator:a97c90462af6645ccf34582fab57aa2a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6b5415476c02977d2398b6c84d234bb"><td class="memItemLeft" align="right" valign="top">volatile float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8c.html#ab6b5415476c02977d2398b6c84d234bb">offset_y</a> = 0.5f</td></tr>
+<tr class="separator:ab6b5415476c02977d2398b6c84d234bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Utility functions for cone initialization, YAML cone loading, angle rotation conversion, and runtime performance measurement. </p>
@@ -113,42 +125,15 @@ Variables</h2></td></tr>
 <li>Converting an angle into a sprite rotation value.</li>
 <li>Timing code performance using the POSIX clock. </li>
 </ul>
-</div><h2 class="groupheader">Function Documentation</h2>
-<a id="a33090597864cdfd30d87ff99c14eeecb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33090597864cdfd30d87ff99c14eeecb">&#9670;&nbsp;</a></span>angle_rotation_sprite()</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a3024ccd4a9af5109d24e6c57565d74a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3024ccd4a9af5109d24e6c57565d74a1">&#9670;&nbsp;</a></span>_POSIX_C_SOURCE</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float angle_rotation_sprite </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>angle</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="utilities_8c_a33090597864cdfd30d87ff99c14eeecb_icgraph.svg" width="756" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="a5297509bfed850c9f8cb92b994b7fd75"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5297509bfed850c9f8cb92b994b7fd75">&#9670;&nbsp;</a></span>init_cones()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void init_cones </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structcone.html">cone</a> *&#160;</td>
-          <td class="paramname"><em>cones</em></td><td>)</td>
-          <td></td>
+          <td class="memname">#define _POSIX_C_SOURCE&#160;&#160;&#160;199309L</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -192,6 +177,86 @@ Here is the caller graph for this function:</div>
   <table class="params">
     <tr><td class="paramname">stop_signal</td><td>A flag indicating whether to start (0) or stop (non-zero) the runtime measurement. </td></tr>
     <tr><td class="paramname">task_name</td><td>A string representing the name of the task for which the runtime is being measured. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a33090597864cdfd30d87ff99c14eeecb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33090597864cdfd30d87ff99c14eeecb">&#9670;&nbsp;</a></span>angle_rotation_sprite()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float angle_rotation_sprite </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>angle</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="utilities_8c_a33090597864cdfd30d87ff99c14eeecb_icgraph.svg" width="756" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a5297509bfed850c9f8cb92b994b7fd75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5297509bfed850c9f8cb92b994b7fd75">&#9670;&nbsp;</a></span>init_cones()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void init_cones </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcone.html">cone</a> *&#160;</td>
+          <td class="paramname"><em>cones</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes an array of cone structures. </p>
+<p>This function sets up the specified array of cones so that each cone is properly initialized.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cones</td><td>Pointer to the first element of an array of cone structures.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Loads cone positions from a file.</p>
+<p>Reads cone position data from the provided file and populates the cone array accordingly. Only up to <code>max_cones</code> entries are loaded, ensuring the array bounds are respected.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>Path to the file containing cone position data. </td></tr>
+    <tr><td class="paramname">cones</td><td>Pointer to an array of cone structures where the positions will be stored. </td></tr>
+    <tr><td class="paramname">max_cones</td><td>The maximum number of cones to load from the file.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Computes the sprite rotation angle.</p>
+<p>Calculates and returns a new rotation angle for a sprite based on the input <code>angle</code>. The calculation may involve normalization or other transformations suitable for sprite handling.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">angle</td><td>The initial angle value (in degrees or radians, as defined by the application's convention). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The adjusted angle after applying the rotation transformation.</dd></dl>
+<p>Handles runtime processes based on a stop signal.</p>
+<p>Executes runtime tasks, potentially including logging or task management, until a stop condition defined by <code>stop_signal</code> is met. The associated task description is provided via <code>task_name</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stop_signal</td><td>Signal value indicating when to terminate the runtime process. </td></tr>
+    <tr><td class="paramname">task_name</td><td>A string identifier for the task being executed. </td></tr>
   </table>
   </dd>
 </dl>
@@ -270,20 +335,35 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="utilities_8c_a28b6717d007598c8d776ee5b8652be51_icgraph.svg" width="362" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="utilities_8c_a28b6717d007598c8d776ee5b8652be51_icgraph.svg" width="362" height="240"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a8052eacfb33fd0f8bc1dbef9d2bd55d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8052eacfb33fd0f8bc1dbef9d2bd55d4">&#9670;&nbsp;</a></span>tmp_scale</h2>
+<a id="a97c90462af6645ccf34582fab57aa2a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97c90462af6645ccf34582fab57aa2a2">&#9670;&nbsp;</a></span>offset_x</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float tmp_scale = 1.5 / 100</td>
+          <td class="memname">volatile float offset_x = 0.5f</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab6b5415476c02977d2398b6c84d234bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6b5415476c02977d2398b6c84d234bb">&#9670;&nbsp;</a></span>offset_y</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">volatile float offset_y = 0.5f</td>
         </tr>
       </table>
 </div><div class="memdoc">

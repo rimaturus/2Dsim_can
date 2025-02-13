@@ -18,7 +18,23 @@
 #include "utilities.h"
 #include "control.h"
 #include "vehicle.h"
+#include "display.h"
 
+// Create buttons
+int btn_state_cones = 0;
+int btn_state_perception = 1;
+int btn_state_map = 1;
+int btn_state_traj = 1;
+int btn_state_autonomous = 0;
+
+// (They stay in the left half of control panel)
+Button buttons[num_buttons] = {
+	{20, 20, 150, 30, "Clean track", &btn_state_cones},
+	{20, 60, 150, 30, "Lidar", &btn_state_perception},
+	{20, 100, 150, 30, "Mapping", &btn_state_map},
+	{20, 140, 150, 30, "Trajectory", &btn_state_traj},
+	{20, 180, 150, 30, "Full Autonomous", &btn_state_autonomous}
+};
 
 /**
  * @brief Draws a directional arrow representing the car's orientation.
@@ -175,9 +191,10 @@ void draw_car(float car_x, float car_y, int car_angle)
 				ftofix(angle_rotation_sprite(car_angle)),  // deg to fixed point
 				ftofix(1)
 			);
-	// draw_dir_arrow();
-
 #ifdef DEBUG
+	
+	draw_dir_arrow();
+
 	// Draw view angle lines
 	float view_length = 500.0;
 	float rad_angle_left = (-car_angle - 90.0) * deg2rad;
@@ -194,11 +211,34 @@ void draw_car(float car_x, float car_y, int car_angle)
 		car_x * px_per_meter + view_length * cos(rad_angle_right),
 		car_y * px_per_meter + view_length * sin(rad_angle_right),
 		makecol(0, 255, 0));
+		
 #endif /* DEBUG */
 }
 
 void draw_track()
 {
+	if (btn_state_cones)
+	{
+		clear_bitmap(track);
+		clear_to_color(track, pink);
+
+		memcpy(cones, starting_cone_positions, sizeof(cone) * MAX_CONES_MAP);
+
+		for (int i = 0; i < MAX_CONES_MAP; i++)
+		{
+			if (starting_cone_positions[i].color != -1) // plot only track cones
+			{
+				circlefill(
+					track, 
+					(int)(starting_cone_positions[i].x), 
+					(int)(starting_cone_positions[i].y), 
+					cone_radius * px_per_meter, // radius = 5 cm
+					cones[i].color
+				);
+			}
+		}
+	}
+
 	if (track != NULL) 
 	{
 		if (track->w == 0 || track->h == 0) {
@@ -312,11 +352,17 @@ int map_idx = 0;
 
 void draw_perception()
 {
-	draw_lidar(measures);
+	if (btn_state_perception)
+	{
+		draw_lidar(measures);
+		draw_detected_cones(detected_cones);
+	}
+	else {
+		clear_bitmap(perception);
+		clear_to_color(perception, pink);
+	}
 
-	draw_detected_cones(detected_cones);
-
-	draw_cone_map(track_map, track_map_idx);
+	if (btn_state_map) draw_cone_map(track_map, track_map_idx);
 
 	draw_sprite(
 			display_buffer, 
@@ -371,56 +417,94 @@ void draw_trajectory(waypoint *trajectory)
 	draw_sprite(display_buffer, trajectory_bmp, 0, 0);
 }
 
-void draw_controls(){
-	rotate_scaled_sprite(
-		display_buffer, 
-		steering_wheel, 
-		100, 
-		100, 
-		ftofix(angle_rotation_sprite(( ( (int)(steering/deg2rad) + 90 ) %360 ))) ,  // deg to fixed point
-		ftofix(1)
-	);
+void display_pedal(BITMAP *bitmap)
+{
+    int gauge_width = 30;
+    int gauge_height = 2 * maxThrottleHeight;
+    
+    // Position in right section
+    int gauge_x = bitmap->w * 5/8;  
+    int gauge_y = (bitmap->h - gauge_height) / 2;
+    
+    int fill_height = (int)(pedal * gauge_height/2);
 
+    // Draw gauge outline
+    rect(
+        bitmap, 
+        gauge_x, 
+        gauge_y, 
+        gauge_x + gauge_width, 
+        gauge_y + gauge_height, 
+        makecol(255, 255, 255)
+    );
 
-	int gauge_x = 50;
-	int gauge_y = 200;
-	int gauge_width = 30;
-	int gauge_height = 100;
-	int fill_height = (int)(pedal * gauge_height);
+    // Fill gauge based on pedal level
+    int middle_y = gauge_y + gauge_height/2;
+    if (pedal > 0) {
+        rectfill(
+            bitmap,
+            gauge_x,
+            middle_y - fill_height,  // Start from middle, go up
+            gauge_x + gauge_width,
+            middle_y,                // Stop at middle
+            makecol(0, 255, 0)      // Green for positive
+        );
+    } else {
+        rectfill(
+            bitmap,
+            gauge_x,
+            middle_y,               // Start from middle
+            gauge_x + gauge_width,
+            middle_y + abs(fill_height),  // Go down from middle
+            makecol(255, 0, 0)     // Red for negative
+        );
+    }
+}
 
-	// Draw gauge outline
-	rect(
-		display_buffer, 
-		gauge_x, 
-		gauge_y, 
-		gauge_x + gauge_width, 
-		gauge_y + 2 * gauge_height, 
-		makecol(255, 255, 255)
-	);
+void draw_button(Button* btn, BITMAP* buffer) {
+	rect(buffer, btn->x, btn->y, btn->x + btn->width, btn->y + btn->height, (*(btn->value))? green : red);
+	textout_centre_ex(buffer, font, btn->text, 
+					 btn->x + btn->width/2, 
+					 btn->y + btn->height/2 - 4, 
+					 makecol(255, 255, 255), -1);
+	
+	char value_str[32];
+	sprintf(value_str, "%d", *(btn->value));
+	textout_ex(buffer, font, value_str, 
+			   btn->x + btn->width + 10, 
+			   btn->y + btn->height/2 - 4, 
+			   makecol(255, 255, 255), -1);
+}
 
-	// Fill gauge based on pedal level
-	if (pedal > 0.0)
-	{
-		rectfill(
-			display_buffer, 
-			gauge_x, 
-			gauge_y + gauge_height - fill_height,
-			gauge_x + gauge_width, 
-			gauge_y + gauge_height,
-			makecol(0, 255, 0)
-		);
-	}
-	else
-	{
-		rectfill(
-			display_buffer, 
-			gauge_x, 
-			gauge_y + gauge_height - fill_height,
-			gauge_x + gauge_width, 
-			gauge_y + gauge_height,
-			makecol(255, 0, 0)
-		);
-	}
+void draw_controls()
+{
+    clear_bitmap(control_panel);
+    clear_to_color(control_panel, pink);
+
+    // Draw buttons in left section
+    for (int i = 0; i < num_buttons; i++) {
+        draw_button(&buttons[i], control_panel);
+    }
+
+    display_pedal(control_panel);
+
+    // Position steering wheel in right section
+    rotate_scaled_sprite(
+        control_panel, 
+        steering_wheel, 
+        control_panel->w * 3/4, // Right section of the right section of the control panel
+        control_panel->h/2 - steering_wheel->h/2,      // Vertical center
+        ftofix(angle_rotation_sprite(((int)(steering/deg2rad) + 90) % 360)),
+        ftofix(1)
+    );
+
+    // Draw the control panel at the bottom of the screen
+    masked_blit(
+        control_panel, display_buffer, 
+        0, 0, 
+        X_MAX - control_panel->w, Y_MAX - control_panel->h, 
+        control_panel->w, control_panel->h
+    );    
 }
 
 void update_display()
@@ -435,8 +519,13 @@ void update_display()
 		draw_track();
 		draw_car(car_x, car_y, car_angle);
 
-		// draw_perception();
-		draw_trajectory(trajectory);
+		draw_perception();
+
+		if (btn_state_traj) draw_trajectory(trajectory);
+		else {
+			clear_bitmap(trajectory_bmp);
+			clear_to_color(trajectory_bmp, pink);
+		}
 
 		int text_width = text_length(font, title);
 		textout_ex(

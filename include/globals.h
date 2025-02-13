@@ -71,28 +71,31 @@
 #include <semaphore.h>
 
 // #define DEBUG
-// #define PROFILING
+#define PROFILING
 
 // ------------------------
 // 	TASKs COSTANTS
 // ------------------------
 /* Task periods (ms) */
-#define PERCEPTION_PERIOD    50
-#define TRAJECTORY_PERIOD    10
-#define CONTROL_PERIOD       10
-#define DISPLAY_PERIOD       17
+#define PERCEPTION_PERIOD	100
+#define TRAJECTORY_PERIOD	100
+#define CONTROL_PERIOD		10
+#define DISPLAY_PERIOD		17
+#define SETTINGS_PERIOD		100
 
 /* Deadlines (ms) */
 #define PERCEPTION_DEADLINE		PERCEPTION_PERIOD
 #define TRAJECTORY_DEADLINE  	TRAJECTORY_PERIOD
 #define CONTROL_DEADLINE     	CONTROL_PERIOD
 #define DISPLAY_DEADLINE     	DISPLAY_PERIOD
+#define SETTINGS_DEADLINE     	SETTINGS_PERIOD
 
 /* Priorities (lower number = higher priority) */
 #define PERCEPTION_PRIORITY	15
 #define TRAJECTORY_PRIORITY	20
-#define CONTROL_PRIORITY	25
-#define DISPLAY_PRIORITY    30
+#define CONTROL_PRIORITY	5
+#define DISPLAY_PRIORITY	30
+#define SETTINGS_PRIORITY	35
 
 /* Drawing mutex */
 extern pthread_mutex_t draw_mutex;
@@ -126,6 +129,7 @@ extern BITMAP *display_buffer;
 /* Color */
 extern int grass_green, asphalt_gray, white, pink;
 extern int yellow, blue;
+extern int red, green;
 
 /* Car pose */
 extern float car_x, car_y;	// meters
@@ -141,6 +145,7 @@ typedef struct {
 extern const float cone_radius;
 #define MAX_CONES_MAP 3000
 extern cone	cones[MAX_CONES_MAP];
+extern cone starting_cone_positions[MAX_CONES_MAP]; /**< Store the default cone positions before collisions */
 
 // ------------------------
 // 	PERCEPTION COSTANTS

@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['hough_5fcircle_5fpoint_5ft_188',['Hough_circle_point_t',['../structHough__circle__point__t.html',1,'']]]
+  ['candidate_5fcone_212',['candidate_cone',['../structcandidate__cone.html',1,'']]],
+  ['cone_213',['cone',['../structcone.html',1,'']]],
+  ['cone_5fborder_214',['cone_border',['../structcone__border.html',1,'']]]
 ];

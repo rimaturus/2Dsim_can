@@ -77,6 +77,14 @@
 #include "display.h"	// to draw on screen
 #include "ptask.h"		// for periodic tasks
 
+extern Button buttons[];
+
+extern int btn_state_cones;
+extern int btn_state_perception;
+extern int btn_state_map;
+extern int btn_state_traj;
+extern int btn_state_autonomous;
+
 // Periodic task functions (using ptask.h notation)
 void *perception_task(void *arg)
 {
@@ -84,21 +92,28 @@ void *perception_task(void *arg)
 	wait_for_activation(task_id);
 
 	while (!key[KEY_ESC])
-	{
-		runtime(0, "PERCEPTION");
-		
-		lidar(car_x, car_y, measures);
+	{		
+		if (btn_state_perception){
+			runtime(0, "PERCEPTION");
 
-		for (int i = 0; i < MAX_DETECTED_CONES; i++){
-			detected_cones[i].x = -1;
-			detected_cones[i].y = -1;
-			detected_cones[i].color = -1;
+			lidar(car_x, car_y, measures);
+
+			for (int i = 0; i < MAX_DETECTED_CONES; i++){
+				detected_cones[i].x = -1;
+				detected_cones[i].y = -1;
+				detected_cones[i].color = -1;
+			}
+			
+			if (btn_state_map) mapping(car_x, car_y, car_angle, detected_cones); // Pass the address of first element
+
+			sem_post(&lidar_sem);
+
+			runtime(1, "PERCEPTION");
 		}
-
-		mapping(car_x, car_y, car_angle, detected_cones); // Pass the address of first element
-		sem_post(&lidar_sem);
-
-		runtime(1, "PERCEPTION");
+		else
+		{
+			sem_post(&lidar_sem);
+		}
 
 		wait_for_period(task_id);
 	}
@@ -114,12 +129,15 @@ void *trajectory_task(void *arg)
 
 	while (!key[KEY_ESC])
 	{
-		runtime(0, "TRAJ_PLANNING");
+		if (btn_state_traj) 
+		{
+			runtime(0, "TRAJ_PLANNING");
 
-		sem_wait(&lidar_sem);
-		trajectory_planning(car_x, car_y, car_angle, detected_cones, trajectory);
+			sem_wait(&lidar_sem);
+			trajectory_planning(car_x, car_y, car_angle, detected_cones, trajectory);
 
-		runtime(1, "TRAJ_PLANNING");
+			runtime(1, "TRAJ_PLANNING");
+		}
 
 		wait_for_period(task_id);
 	}
@@ -137,12 +155,10 @@ void *control_task(void *arg)
     {
 		runtime(0, "CONTROL");
 
-		if (!key[KEY_A]){
-        	keyboard_control(&car_x, &car_y, &car_angle);
-		}
-		else
+		if (btn_state_autonomous)
 			autonomous_control(&car_x, &car_y, &car_angle, trajectory);
-		
+		else
+			keyboard_control(&car_x, &car_y, &car_angle);
 
 		runtime(1, "CONTROL");
 
@@ -173,3 +189,74 @@ void *display_task(void *arg)
 	sem_post(&lidar_sem);
 	return NULL;
 }
+
+// Helper function for button handling
+int is_mouse_over_button(Button* btn, int mouse_x, int mouse_y) 
+{
+    if (!btn) {
+        fprintf(stderr, "Error: 'btn' is NULL.\n");
+        return 0;
+    }
+    
+    // Adjust mouse coordinates relative to control panel position
+    const int panel_x = X_MAX - control_panel->w;
+    const int panel_y = Y_MAX - control_panel->h;
+    
+    // Convert screen coordinates to control panel coordinates
+    int relative_x = mouse_x - panel_x;
+    int relative_y = mouse_y - panel_y;
+    
+    return (relative_x >= btn->x && relative_x <= btn->x + btn->width &&
+            relative_y >= btn->y && relative_y <= btn->y + btn->height);
+}
+
+void *settings_task(void *arg)
+{
+	int task_id = get_task_index(arg);
+	wait_for_activation(task_id);
+
+	static int cursor_visible = 0;
+	enable_hardware_cursor();
+	set_mouse_range(0, 0, SCREEN_W-1, SCREEN_H-1);
+
+	while (!key[KEY_ESC])
+	{
+		runtime(0, "SETTINGS");
+
+		if (key[KEY_M]) { // if 'M' key is pressed
+            cursor_visible = !cursor_visible;
+            show_mouse(cursor_visible ? screen : NULL);
+            rest(100); // Debounce key press
+        }
+
+		// Handle mouse input
+		if ((mouse_b & 1) != 0) 
+		{
+			for (int i = 0; i < num_buttons; i++) 
+			{
+				if (is_mouse_over_button(&buttons[i], mouse_x, mouse_y)) 
+				{
+					*(buttons[i].value) = !(*(buttons[i].value));
+					rest(500); // Debounce
+				}
+			}
+		}
+
+		if (key[KEY_A]) {btn_state_autonomous = !btn_state_autonomous; rest(500);}
+		if (key[KEY_C]) {btn_state_cones = !btn_state_cones; rest(500);}
+		if (key[KEY_L]) {btn_state_perception = !btn_state_perception; rest(500);}
+		if (key[KEY_M]) {btn_state_map = !btn_state_map; rest(500);}
+		if (key[KEY_T]) {btn_state_traj = !btn_state_traj; rest(500);}
+
+		// TODO: add the button and check if they are pressed
+
+		runtime(1, "SETTINGS");
+
+		wait_for_period(task_id);
+
+	}
+
+	sem_post(&lidar_sem);
+	return NULL;
+}
+

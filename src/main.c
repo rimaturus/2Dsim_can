@@ -148,17 +148,16 @@ void init_allegro();
 void init_track();
 void init_car();
 void init_perception();
-void init_visual_controls();
+void init_control_panel();
 
 void init_bitmaps();
-void update_screen();
 
 int main(void)
 {
 	init_allegro();
 
 	init_bitmaps();
-	update_screen();
+	update_display();
 
 	// Initialize the periodic task system (using SCHED_OTHER)
 	ptask_init(SCHED_OTHER);
@@ -185,11 +184,17 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
+	if (task_create(5, settings_task, SETTINGS_PERIOD, SETTINGS_DEADLINE, SETTINGS_PRIORITY, ACT) != 0) {
+		fprintf(stderr, "Failed to create SETTINGS Task\n");
+		exit(EXIT_FAILURE);
+	}
+
 	// Wait for tasks to terminate (they will exit when ESC is pressed)
 	wait_for_task_end(1);
 	wait_for_task_end(2);
 	wait_for_task_end(3);
 	wait_for_task_end(4);
+	wait_for_task_end(5);
 
 	printf("Exiting simulation...\n");
 	clear_keybuf();
@@ -215,6 +220,8 @@ void init_allegro()
 	pink = makecol(255, 0, 255); // pink
 	yellow = makecol(254, 221, 0); // yellow for cones
 	blue = makecol(46, 103, 248); // blue for cones
+	green = makecol(0, 255, 0); // green for buttons
+	red = makecol(255, 0, 0); // red for buttons
 	
 	set_gfx_mode(GFX_AUTODETECT_WINDOWED, X_MAX, Y_MAX, 0, 0);
 	
@@ -290,18 +297,35 @@ void init_trajectory()
 		clear_to_color(trajectory_bmp, pink);
 }
 
-void init_visual_controls()
+void init_control_panel()
 {
-	steering_wheel = load_bitmap("bitmaps/f1_steer.bmp", NULL); // load a bitmap image
-	if (steering_wheel == NULL) {
-		printf("Error loading sprite\n");
-		exit(1);
-	}  	
-	// Visual pedal gauge
-	throttle_gauge = create_bitmap(50, 2 * maxThrottleHeight);
-		clear_bitmap(throttle_gauge);
-		clear_to_color(throttle_gauge, pink);
+    steering_wheel = load_bitmap("bitmaps/f1_steer.bmp", NULL);
+    if (steering_wheel == NULL) {
+        printf("Error loading sprite\n");
+        exit(1);
+    }
+
+    // Visual pedal gauge
+    throttle_gauge = create_bitmap(50, 2 * maxThrottleHeight);
+    clear_bitmap(throttle_gauge);
+    clear_to_color(throttle_gauge, pink);
+
+    // Calculate optimal dimensions
+    const int border_thickness = 10;
+    const int button_section_width = 200;  // Space for buttons and their values
+    const int control_section_width = steering_wheel->w + 100;  // Space for steering wheel and pedal
+    
+    int cp_width = border_thickness + button_section_width + control_section_width + border_thickness;
+    int cp_height = border_thickness + 
+                   fmax(5 * 50,  // Height needed for buttons (5 buttons * 40px each)
+                       fmax(steering_wheel->h, throttle_gauge->h)) + 
+                   border_thickness;
+
+    control_panel = create_bitmap(cp_width, cp_height);
+    clear_bitmap(control_panel);
+    clear_to_color(control_panel, white);
 }
+
 
 void init_bitmaps()
 {
@@ -319,47 +343,5 @@ void init_bitmaps()
 	init_perception();
 	init_trajectory();
 
-	init_visual_controls();
-}
-
-void update_screen()
-{
-	pthread_mutex_lock(&draw_mutex);
-		
-		clear_to_color(display_buffer, pink);
-
-		rotate_scaled_sprite(
-			display_buffer, 
-			steering_wheel, 
-			100, 
-			100, 
-			ftofix(angle_rotation_sprite((int)(steering) / deg2rad)),  // deg to fixed point
-			ftofix(0.5)
-		);
-
-		draw_sprite(display_buffer, background, 0, 0);
-		draw_sprite(display_buffer, track, 0, 0);
-
-		rotate_scaled_sprite(
-			display_buffer, 
-			car, 
-			(int)(car_bitmap_x), 
-			(int)(car_bitmap_y), 
-			ftofix(angle_rotation_sprite(car_angle)),  // deg to fixed point
-			ftofix(1)
-		);
-
-		draw_sprite(
-			display_buffer, 
-			perception, 
-			car_x_px - maxRange*px_per_meter,
-			car_y_px - maxRange*px_per_meter
-		);
-
-		draw_sprite(display_buffer, trajectory_bmp, 0, 0);
-
-		// Draw the display buffer to the screen
-		blit(display_buffer, screen, 0, 0, 0, 0, X_MAX, Y_MAX);
-
-	pthread_mutex_unlock(&draw_mutex);
+	init_control_panel();
 }

@@ -1,5 +1,7 @@
 {
 	"files.associations": {
-		"globals.h": "c"
+		"globals.h": "c",
+		"cmath": "c",
+		"complex": "c"
 	}
 }

@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['get_5fsystime_68',['get_systime',['../ptask_8h.html#aef5009a10fad931c146fdaa9e5a20e61',1,'ptask.h']]],
-  ['get_5ftask_5findex_69',['get_task_index',['../ptask_8h.html#a55744cf37a298cca48b46a38ecd1cbd7',1,'ptask.h']]],
-  ['globals_2ec_70',['globals.c',['../globals_8c.html',1,'']]],
-  ['globals_2eh_71',['globals.h',['../globals_8h.html',1,'']]],
-  ['grass_5fgreen_72',['grass_green',['../globals_8h.html#aa74dbd17ed3476453ec71b893ab9446b',1,'grass_green():&#160;globals.c'],['../globals_8c.html#aa74dbd17ed3476453ec71b893ab9446b',1,'grass_green():&#160;globals.c']]]
+  ['filename_76',['filename',['../main_8c.html#aee5ee0d6a8a10e195acbec5ee97f65d9',1,'main.c']]],
+  ['find_5fclosest_5fpoints_77',['find_closest_points',['../group__PerceptionModule.html#gaa60f00cff3dda67fbae856574b3dfab6',1,'perception.c']]],
+  ['find_5fcone_5fcenter_78',['find_cone_center',['../group__PerceptionModule.html#ga53da800f4ff7588c8d7fec76b1baebfb',1,'perception.c']]],
+  ['find_5flocal_5fminima_79',['find_local_minima',['../group__PerceptionModule.html#ga6d3463008b5a741855cf97777c2ab141',1,'perception.c']]]
 ];

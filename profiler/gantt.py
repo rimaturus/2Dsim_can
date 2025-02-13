@@ -12,7 +12,7 @@ def read_intervals(csv_file):
         if not reader:
             return []
         # Use the third field from the first row as baseline
-        baseline = float(reader[0][2])
+        baseline = float(reader[3][2]) # the first 3 rows are headers
     
     start_times = {}
     intervals = []
@@ -22,6 +22,7 @@ def read_intervals(csv_file):
         # Skip every line that doesn't start with "["
         if not row[0].startswith('['):
             continue
+
         task, event, t = row
         t = float(t) - baseline  # normalized time in microseconds
         if event == "START":
@@ -46,7 +47,6 @@ def compute_stats(intervals):
         runtimes = stats_by_task[task]
         count = len(runtimes)
         mean_rt = sum(runtimes) / count
-        # variance_rt = statistics.variance(runtimes) if count > 1 else 0.0
         dev_std = statistics.stdev(runtimes) if count > 1 else 0.0
         percentile_99 = np.percentile(runtimes, 99)
         
@@ -82,7 +82,7 @@ def plot_gantt(intervals):
     ax.set_ylabel("Tasks")
     ax.set_title("Real-Time Task Execution Timeline")
     
-    # Set grid with 1000 µs spacing.
+    # Set grid with 1000 µs == 1 ms spacing.
     # Find the overall time bounds.
     min_time = min(start for _, start, _ in intervals)
     max_time = max(end for _, _, end in intervals)

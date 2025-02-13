@@ -1,4 +1,5 @@
 <map id="draw_car" name="draw_car">
-<area shape="rect" id="node1" title="Renders the car sprite rotated to its current angle." alt="" coords="5,5,87,32"/>
+<area shape="rect" id="node1" title="Renders the car sprite rotated to its current angle." alt="" coords="5,31,87,57"/>
 <area shape="rect" id="node2" href="$utilities_8h.html#a33090597864cdfd30d87ff99c14eeecb" title=" " alt="" coords="135,5,295,32"/>
+<area shape="rect" id="node3" href="$display_8c.html#a264238ff7dcf301bbc2f190ea7dcea4c" title="Draws a directional arrow representing the car&#39;s orientation." alt="" coords="153,56,276,83"/>
 </map>

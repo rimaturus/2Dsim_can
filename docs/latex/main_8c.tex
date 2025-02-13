@@ -34,11 +34,9 @@ void \mbox{\hyperlink{main_8c_a7cb642cbefeb5eca23c4a56384ce8b6b}{init\+\_\+car}}
 \item 
 void \mbox{\hyperlink{main_8c_a8a4df149a98808357f97ece821bc653a}{init\+\_\+perception}} ()
 \item 
-void \mbox{\hyperlink{main_8c_a632e1b0925c0e3555aa4bfda0ebf5375}{init\+\_\+visual\+\_\+controls}} ()
+void \mbox{\hyperlink{main_8c_a123ba10a236b41c94b5da809a6db6528}{init\+\_\+control\+\_\+panel}} ()
 \item 
 void \mbox{\hyperlink{main_8c_a6ba20fd6daf4d6ab1e47675b3c1f1ca6}{init\+\_\+bitmaps}} ()
-\item 
-void \mbox{\hyperlink{main_8c_a10da25e92e69613be93d099bb029feb2}{update\+\_\+screen}} ()
 \item 
 int \mbox{\hyperlink{main_8c_a840291bc02cba5474a4cb46a9b9566fe}{main}} (void)
 \item 
@@ -86,7 +84,8 @@ Here is the caller graph for this function\+:\nopagebreak
 \doxysubsubsection{\texorpdfstring{init\_bitmaps()}{init\_bitmaps()}}
 {\footnotesize\ttfamily void init\+\_\+bitmaps (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -111,6 +110,20 @@ Here is the caller graph for this function\+:\nopagebreak
 \begin{center}
 \leavevmode
 \includegraphics[width=323pt]{main_8c_a7cb642cbefeb5eca23c4a56384ce8b6b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8c_a123ba10a236b41c94b5da809a6db6528}\label{main_8c_a123ba10a236b41c94b5da809a6db6528}} 
+\index{main.c@{main.c}!init\_control\_panel@{init\_control\_panel}}
+\index{init\_control\_panel@{init\_control\_panel}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{init\_control\_panel()}{init\_control\_panel()}}
+{\footnotesize\ttfamily void init\+\_\+control\+\_\+panel (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8c_a123ba10a236b41c94b5da809a6db6528_icgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{main_8c_a8a4df149a98808357f97ece821bc653a}\label{main_8c_a8a4df149a98808357f97ece821bc653a}} 
@@ -159,19 +172,6 @@ Here is the caller graph for this function\+:\nopagebreak
 \includegraphics[width=350pt]{main_8c_af157d4a7f2f1670050ead305cbe70248_icgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{main_8c_a632e1b0925c0e3555aa4bfda0ebf5375}\label{main_8c_a632e1b0925c0e3555aa4bfda0ebf5375}} 
-\index{main.c@{main.c}!init\_visual\_controls@{init\_visual\_controls}}
-\index{init\_visual\_controls@{init\_visual\_controls}!main.c@{main.c}}
-\doxysubsubsection{\texorpdfstring{init\_visual\_controls()}{init\_visual\_controls()}}
-{\footnotesize\ttfamily void init\+\_\+visual\+\_\+controls (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-Here is the caller graph for this function\+:\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{main_8c_a632e1b0925c0e3555aa4bfda0ebf5375_icgraph}
-\end{center}
-\end{figure}
 \mbox{\Hypertarget{main_8c_a840291bc02cba5474a4cb46a9b9566fe}\label{main_8c_a840291bc02cba5474a4cb46a9b9566fe}} 
 \index{main.c@{main.c}!main@{main}}
 \index{main@{main}!main.c@{main.c}}
@@ -184,26 +184,6 @@ Here is the call graph for this function\+:
 \begin{center}
 \leavevmode
 \includegraphics[width=350pt]{main_8c_a840291bc02cba5474a4cb46a9b9566fe_cgraph}
-\end{center}
-\end{figure}
-\mbox{\Hypertarget{main_8c_a10da25e92e69613be93d099bb029feb2}\label{main_8c_a10da25e92e69613be93d099bb029feb2}} 
-\index{main.c@{main.c}!update\_screen@{update\_screen}}
-\index{update\_screen@{update\_screen}!main.c@{main.c}}
-\doxysubsubsection{\texorpdfstring{update\_screen()}{update\_screen()}}
-{\footnotesize\ttfamily void update\+\_\+screen (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-Here is the call graph for this function\+:\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=324pt]{main_8c_a10da25e92e69613be93d099bb029feb2_cgraph}
-\end{center}
-\end{figure}
-Here is the caller graph for this function\+:\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=245pt]{main_8c_a10da25e92e69613be93d099bb029feb2_icgraph}
 \end{center}
 \end{figure}
 
@@ -254,7 +234,7 @@ The \mbox{\hyperlink{main_8c_a840291bc02cba5474a4cb46a9b9566fe}{main()}} functio
 After task creation, the main loop waits for all tasks to terminate (typically on ESC key press), cleans up the graphical buffers, and exits the simulation.
 
 \begin{DoxySeeAlso}{See also}
-\mbox{\hyperlink{main_8c_a56e75a6913a3cb4da05b9f7d02116e7a}{init\+\_\+allegro()}}, \mbox{\hyperlink{main_8c_a6ba20fd6daf4d6ab1e47675b3c1f1ca6}{init\+\_\+bitmaps()}}, \mbox{\hyperlink{main_8c_a10da25e92e69613be93d099bb029feb2}{update\+\_\+screen()}}, \mbox{\hyperlink{ptask_8h_a88099c7c946b1d8c34a3717e5d3b8b83}{task\+\_\+create()}}, \mbox{\hyperlink{ptask_8h_a9142a39d7c9be6b98ce01f0c7541d8f7}{wait\+\_\+for\+\_\+task\+\_\+end()}}
+\mbox{\hyperlink{main_8c_a56e75a6913a3cb4da05b9f7d02116e7a}{init\+\_\+allegro()}}, \mbox{\hyperlink{main_8c_a6ba20fd6daf4d6ab1e47675b3c1f1ca6}{init\+\_\+bitmaps()}}, update\+\_\+screen(), \mbox{\hyperlink{ptask_8h_a88099c7c946b1d8c34a3717e5d3b8b83}{task\+\_\+create()}}, \mbox{\hyperlink{ptask_8h_a9142a39d7c9be6b98ce01f0c7541d8f7}{wait\+\_\+for\+\_\+task\+\_\+end()}}
 \end{DoxySeeAlso}
 Initializes the Allegro graphics system.
 
@@ -303,7 +283,7 @@ Initializes all bitmaps used for displaying the simulation.
 Creates the display buffer and background bitmaps, clearing them to the proper color. Then, it calls several initialization functions that prepare all simulation-\/specific bitmaps (track, car, perception, trajectory, and visual controls).
 
 \begin{DoxySeeAlso}{See also}
-create\+\_\+bitmap(), \mbox{\hyperlink{main_8c_a7f21658ab78ff07401a1c66eba62c0dd}{init\+\_\+track()}}, \mbox{\hyperlink{main_8c_a7cb642cbefeb5eca23c4a56384ce8b6b}{init\+\_\+car()}}, \mbox{\hyperlink{main_8c_a8a4df149a98808357f97ece821bc653a}{init\+\_\+perception()}}, \mbox{\hyperlink{main_8c_af157d4a7f2f1670050ead305cbe70248}{init\+\_\+trajectory()}}, \mbox{\hyperlink{main_8c_a632e1b0925c0e3555aa4bfda0ebf5375}{init\+\_\+visual\+\_\+controls()}}
+create\+\_\+bitmap(), \mbox{\hyperlink{main_8c_a7f21658ab78ff07401a1c66eba62c0dd}{init\+\_\+track()}}, \mbox{\hyperlink{main_8c_a7cb642cbefeb5eca23c4a56384ce8b6b}{init\+\_\+car()}}, \mbox{\hyperlink{main_8c_a8a4df149a98808357f97ece821bc653a}{init\+\_\+perception()}}, \mbox{\hyperlink{main_8c_af157d4a7f2f1670050ead305cbe70248}{init\+\_\+trajectory()}}, init\+\_\+visual\+\_\+controls()
 \end{DoxySeeAlso}
 Updates the display screen.
 

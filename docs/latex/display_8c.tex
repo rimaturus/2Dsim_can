@@ -14,7 +14,10 @@ Rendering and display update functions for the 2D simulation using Allegro.
 {\ttfamily \#include \char`\"{}trajectory.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}utilities.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}control.\+h\char`\"{}}\newline
-Include dependency graph for display.\+c\+:\nopagebreak
+{\ttfamily \#include \char`\"{}vehicle.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}display.\+h\char`\"{}}\newline
+Include dependency graph for display.\+c\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -43,7 +46,26 @@ void \mbox{\hyperlink{display_8c_a2d077fa92b741d504d6ef5c5f2fdd74c}{draw\+\_\+tr
 void \mbox{\hyperlink{display_8c_a385702fb79f2c451da015c3147f80515}{draw\+\_\+controls}} ()
 \begin{DoxyCompactList}\small\item\em Draws user control indicators. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b}{update\+\_\+display}} ()
-\begin{DoxyCompactList}\small\item\em Updates the entire display. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Updates the entire display. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display_8c_abdb9fae5dfda6a7b08efb162b243c776}{display\+\_\+pedal}} (BITMAP $\ast$bitmap)
+\item 
+void \mbox{\hyperlink{display_8c_a5bcee09191f66649a2968b6f2ba32935}{draw\+\_\+button}} (\mbox{\hyperlink{structButton}{Button}} $\ast$btn, BITMAP $\ast$buffer)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{display_8c_a8d31ca92b9f08b9b8dc134fdbd743bdd}{btn\+\_\+state\+\_\+cones}} = 0
+\item 
+int \mbox{\hyperlink{display_8c_affd8bbaa3d95ef6b438022021db1c543}{btn\+\_\+state\+\_\+perception}} = 1
+\item 
+int \mbox{\hyperlink{display_8c_ac5570a5cf15524c61e14cffd271dbf78}{btn\+\_\+state\+\_\+map}} = 1
+\item 
+int \mbox{\hyperlink{display_8c_a9910257ef3a26317a779fc9e77d41d58}{btn\+\_\+state\+\_\+traj}} = 1
+\item 
+int \mbox{\hyperlink{display_8c_a02a9f77d39f15a1769d8dba7aec487cb}{btn\+\_\+state\+\_\+autonomous}} = 0
+\item 
+\mbox{\hyperlink{structButton}{Button}} \mbox{\hyperlink{display_8c_a68347b0753ca586ab50f8651e3bb4a53}{buttons}} \mbox{[}\mbox{\hyperlink{display_8h_afd296c470a4af69caa281bd5ecd5212e}{num\+\_\+buttons}}\mbox{]}
+\begin{DoxyCompactList}\small\item\em Periodic perception task. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -52,6 +74,34 @@ Rendering and display update functions for the 2D simulation using Allegro.
 This file contains functions responsible for drawing various elements of the simulation, including the car sprite, direction indicator, track, lidar/perception display, trajectory, and user controls (e.\+g., steering wheel and pedal gauge). It also handles the final composition of the display buffer and its transfer to the screen. 
 
 \doxysubsection{Function Documentation}
+\mbox{\Hypertarget{display_8c_abdb9fae5dfda6a7b08efb162b243c776}\label{display_8c_abdb9fae5dfda6a7b08efb162b243c776}} 
+\index{display.c@{display.c}!display\_pedal@{display\_pedal}}
+\index{display\_pedal@{display\_pedal}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{display\_pedal()}{display\_pedal()}}
+{\footnotesize\ttfamily void display\+\_\+pedal (\begin{DoxyParamCaption}\item[{BITMAP $\ast$}]{bitmap }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_abdb9fae5dfda6a7b08efb162b243c776_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{display_8c_a5bcee09191f66649a2968b6f2ba32935}\label{display_8c_a5bcee09191f66649a2968b6f2ba32935}} 
+\index{display.c@{display.c}!draw\_button@{draw\_button}}
+\index{draw\_button@{draw\_button}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{draw\_button()}{draw\_button()}}
+{\footnotesize\ttfamily void draw\+\_\+button (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structButton}{Button}} $\ast$}]{btn,  }\item[{BITMAP $\ast$}]{buffer }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_a5bcee09191f66649a2968b6f2ba32935_icgraph}
+\end{center}
+\end{figure}
 \mbox{\Hypertarget{display_8c_a01a4e859fcc5ddef923afe9a8a674826}\label{display_8c_a01a4e859fcc5ddef923afe9a8a674826}} 
 \index{display.c@{display.c}!draw\_car@{draw\_car}}
 \index{draw\_car@{draw\_car}!display.c@{display.c}}
@@ -75,14 +125,16 @@ Calculates the proper position for the car sprite based on its coordinates in th
 {\em car\+\_\+angle} & The car\textquotesingle{}s angle in degrees. \\
 \hline
 \end{DoxyParams}
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=297pt]{display_8c_a01a4e859fcc5ddef923afe9a8a674826_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -110,7 +162,8 @@ Iterates through the track map data and draws a white filled circle at each cone
 {\em track\+\_\+map\+\_\+idx} & The number of valid entries in the track map array. \\
 \hline
 \end{DoxyParams}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -127,14 +180,16 @@ Here is the caller graph for this function\+:\nopagebreak
 
 Draws user control indicators. 
 
-Renders the steering wheel sprite with the correct rotation and draws a gauge for pedal control. The gauge\textquotesingle{}s fill color indicates the pedal level (green for positive, red for non-\/positive). Here is the call graph for this function\+:\nopagebreak
+Renders the steering wheel sprite with the correct rotation and draws a gauge for pedal control. The gauge\textquotesingle{}s fill color indicates the pedal level (green for positive, red for non-\/positive). Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=321pt]{display_8c_a385702fb79f2c451da015c3147f80515_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -160,7 +215,8 @@ Iterates through the array of detected cones and draws a filled circle at each c
 {\em detected\+\_\+cones} & Pointer to an array of detected cone structures. \\
 \hline
 \end{DoxyParams}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -179,7 +235,15 @@ Draws a directional arrow representing the car\textquotesingle{}s orientation.
 
 Draws a directional arrow.
 
-Computes the arrow\textquotesingle{}s start (at the car\textquotesingle{}s position) and end points based on the car angle, using cosine and sine functions. The arrow shaft and head are drawn as thick green lines, with the head drawn at two angles to form a head shape. \mbox{\Hypertarget{display_8c_a5c07cb2dc1adb076383bced84f4a8154}\label{display_8c_a5c07cb2dc1adb076383bced84f4a8154}} 
+Computes the arrow\textquotesingle{}s start (at the car\textquotesingle{}s position) and end points based on the car angle, using cosine and sine functions. The arrow shaft and head are drawn as thick green lines, with the head drawn at two angles to form a head shape. Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_a264238ff7dcf301bbc2f190ea7dcea4c_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{display_8c_a5c07cb2dc1adb076383bced84f4a8154}\label{display_8c_a5c07cb2dc1adb076383bced84f4a8154}} 
 \index{display.c@{display.c}!draw\_lidar@{draw\_lidar}}
 \index{draw\_lidar@{draw\_lidar}!display.c@{display.c}}
 \doxysubsubsection{\texorpdfstring{draw\_lidar()}{draw\_lidar()}}
@@ -198,7 +262,8 @@ Clears the perception bitmap and centers it on the car\textquotesingle{}s positi
 {\em measures} & Pointer to an array of lidar measurements. \\
 \hline
 \end{DoxyParams}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -224,7 +289,8 @@ Combines the lidar lines, detected cones, and cone map visualizations to create 
 \includegraphics[width=336pt]{display_8c_acd5437d29ba24cfc00dbd2f9f6b0cd28_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -241,7 +307,8 @@ Here is the caller graph for this function\+:\nopagebreak
 
 Draws the track. 
 
-Checks that the track bitmap has valid dimensions, and if so, draws the track image onto the display buffer. If the bitmap dimensions are invalid, an error message is shown. Here is the caller graph for this function\+:\nopagebreak
+Checks that the track bitmap has valid dimensions, and if so, draws the track image onto the display buffer. If the bitmap dimensions are invalid, an error message is shown. Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -267,7 +334,8 @@ Clears and sets the background for the trajectory bitmap and iterates over each 
 {\em trajectory} & Pointer to an array of waypoint structures representing the car\textquotesingle{}s trajectory. \\
 \hline
 \end{DoxyParams}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -286,17 +354,131 @@ Updates the entire display.
 
 Updates the display.
 
-Locks the drawing mutex and sequentially renders the background, track, car, perception, trajectory, title text, and controls on the display buffer. Once all elements are rendered, the display buffer is blitted to the screen, and the mutex is subsequently unlocked. Here is the call graph for this function\+:\nopagebreak
+Locks the drawing mutex and sequentially renders the background, track, car, perception, trajectory, title text, and controls on the display buffer. Once all elements are rendered, the display buffer is blitted to the screen, and the mutex is subsequently unlocked. Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=350pt]{display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=350pt]{display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b_icgraph}
 \end{center}
 \end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{display_8c_a02a9f77d39f15a1769d8dba7aec487cb}\label{display_8c_a02a9f77d39f15a1769d8dba7aec487cb}} 
+\index{display.c@{display.c}!btn\_state\_autonomous@{btn\_state\_autonomous}}
+\index{btn\_state\_autonomous@{btn\_state\_autonomous}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{btn\_state\_autonomous}{btn\_state\_autonomous}}
+{\footnotesize\ttfamily int btn\+\_\+state\+\_\+autonomous = 0}
+
+\mbox{\Hypertarget{display_8c_a8d31ca92b9f08b9b8dc134fdbd743bdd}\label{display_8c_a8d31ca92b9f08b9b8dc134fdbd743bdd}} 
+\index{display.c@{display.c}!btn\_state\_cones@{btn\_state\_cones}}
+\index{btn\_state\_cones@{btn\_state\_cones}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{btn\_state\_cones}{btn\_state\_cones}}
+{\footnotesize\ttfamily int btn\+\_\+state\+\_\+cones = 0}
+
+\mbox{\Hypertarget{display_8c_ac5570a5cf15524c61e14cffd271dbf78}\label{display_8c_ac5570a5cf15524c61e14cffd271dbf78}} 
+\index{display.c@{display.c}!btn\_state\_map@{btn\_state\_map}}
+\index{btn\_state\_map@{btn\_state\_map}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{btn\_state\_map}{btn\_state\_map}}
+{\footnotesize\ttfamily int btn\+\_\+state\+\_\+map = 1}
+
+\mbox{\Hypertarget{display_8c_affd8bbaa3d95ef6b438022021db1c543}\label{display_8c_affd8bbaa3d95ef6b438022021db1c543}} 
+\index{display.c@{display.c}!btn\_state\_perception@{btn\_state\_perception}}
+\index{btn\_state\_perception@{btn\_state\_perception}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{btn\_state\_perception}{btn\_state\_perception}}
+{\footnotesize\ttfamily int btn\+\_\+state\+\_\+perception = 1}
+
+\mbox{\Hypertarget{display_8c_a9910257ef3a26317a779fc9e77d41d58}\label{display_8c_a9910257ef3a26317a779fc9e77d41d58}} 
+\index{display.c@{display.c}!btn\_state\_traj@{btn\_state\_traj}}
+\index{btn\_state\_traj@{btn\_state\_traj}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{btn\_state\_traj}{btn\_state\_traj}}
+{\footnotesize\ttfamily int btn\+\_\+state\+\_\+traj = 1}
+
+\mbox{\Hypertarget{display_8c_a68347b0753ca586ab50f8651e3bb4a53}\label{display_8c_a68347b0753ca586ab50f8651e3bb4a53}} 
+\index{display.c@{display.c}!buttons@{buttons}}
+\index{buttons@{buttons}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{buttons}{buttons}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structButton}{Button}} buttons\mbox{[}\mbox{\hyperlink{display_8h_afd296c470a4af69caa281bd5ecd5212e}{num\+\_\+buttons}}\mbox{]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= \{}
+\DoxyCodeLine{    \{20, 20, 150, 30, \textcolor{stringliteral}{"{}Clean track"{}}, \&\mbox{\hyperlink{display_8c_a8d31ca92b9f08b9b8dc134fdbd743bdd}{btn\_state\_cones}}\},}
+\DoxyCodeLine{    \{20, 60, 150, 30, \textcolor{stringliteral}{"{}Lidar"{}}, \&\mbox{\hyperlink{display_8c_affd8bbaa3d95ef6b438022021db1c543}{btn\_state\_perception}}\},}
+\DoxyCodeLine{    \{20, 100, 150, 30, \textcolor{stringliteral}{"{}Mapping"{}}, \&\mbox{\hyperlink{display_8c_ac5570a5cf15524c61e14cffd271dbf78}{btn\_state\_map}}\},}
+\DoxyCodeLine{    \{20, 140, 150, 30, \textcolor{stringliteral}{"{}Trajectory"{}}, \&\mbox{\hyperlink{display_8c_a9910257ef3a26317a779fc9e77d41d58}{btn\_state\_traj}}\},}
+\DoxyCodeLine{    \{20, 180, 150, 30, \textcolor{stringliteral}{"{}Full Autonomous"{}}, \&\mbox{\hyperlink{display_8c_a02a9f77d39f15a1769d8dba7aec487cb}{btn\_state\_autonomous}}\}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+Periodic perception task. 
+
+This task acquires Li\+DAR measurements, resets the array of detected cones, and performs mapping based on the current position and orientation of the vehicle. After processing the sensor data, it signals the trajectory planning task using a semaphore. The task executes continuously until the ESC key is pressed.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em arg} & Pointer used to determine the task\textquotesingle{}s index.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns NULL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The function uses a runtime measurement call to monitor its execution time.
+\end{DoxyNote}
+Periodic trajectory planning task.
+
+This task waits for a signal from the perception task to ensure updated sensor data is available. It then calculates a new trajectory for the vehicle based on its current position, orientation, and the detected cones from the environment. The task runs periodically and terminates when the ESC key is pressed.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em arg} & Pointer used to determine the task\textquotesingle{}s index.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns NULL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The task\textquotesingle{}s operation is encapsulated between runtime measurement calls.
+\end{DoxyNote}
+Periodic control task.
+
+This task is responsible for controlling the vehicle\textquotesingle{}s movement. It chooses between keyboard-\/based control and autonomous control based on the state of the \textquotesingle{}A\textquotesingle{} key. If autonomous mode is active (i.\+e., \textquotesingle{}A\textquotesingle{} is pressed), it uses the computed trajectory, otherwise it relies on user input to drive the vehicle. Execution continues until the ESC key is pressed.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em arg} & Pointer used to determine the task\textquotesingle{}s index.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns NULL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The function uses runtime measurement calls to monitor execution time per cycle.
+\end{DoxyNote}
+Periodic display task.
+
+This task updates the graphical display of the simulation environment. It refreshes the on-\/screen information such as the vehicle\textquotesingle{}s position, sensor data, and other simulation elements. The task continues running until the ESC key is pressed.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em arg} & Pointer used to determine the task\textquotesingle{}s index.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns NULL.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Like the other tasks, execution time is tracked using runtime measurement calls. 
+\end{DoxyNote}

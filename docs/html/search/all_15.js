@@ -1,6 +1,9 @@
 var searchData=
 [
-  ['y_182',['y',['../structcone.html#a18095f2974a70790133279834650bb35',1,'cone::y()'],['../structcandidate__cone.html#aa2128f27fdd075f4b427d795c8d5ca33',1,'candidate_cone::y()'],['../structHough__circle__point__t.html#a7bd074232d15ad3e075980d9fd73862b',1,'Hough_circle_point_t::y()'],['../structwaypoint.html#a343dba0587c17fd8e9165e63ee2ae05e',1,'waypoint::y()']]],
-  ['y_5fmax_183',['Y_MAX',['../globals_8h.html#a99a74a6925d1808bdce0de76aca0550d',1,'Y_MAX():&#160;globals.c'],['../globals_8c.html#af2068572bded057c07f9af467ef531bd',1,'Y_MAX():&#160;globals.c']]],
-  ['yellow_184',['yellow',['../globals_8h.html#a34167711871149458e41ef5d3e3541fe',1,'yellow():&#160;globals.c'],['../globals_8c.html#a34167711871149458e41ef5d3e3541fe',1,'yellow():&#160;globals.c']]]
+  ['wait_5ffor_5factivation_200',['wait_for_activation',['../ptask_8h.html#ac5a989242ff00476f314f92395f23252',1,'ptask.h']]],
+  ['wait_5ffor_5fperiod_201',['wait_for_period',['../ptask_8h.html#afd8a4ae978d1068cb18f8e5fc03a1f0c',1,'ptask.h']]],
+  ['wait_5ffor_5ftask_5fend_202',['wait_for_task_end',['../ptask_8h.html#a9142a39d7c9be6b98ce01f0c7541d8f7',1,'ptask.h']]],
+  ['waypoint_203',['waypoint',['../structwaypoint.html',1,'']]],
+  ['white_204',['white',['../globals_8h.html#a52b8a1dc217164197e6e5ba60ec911bf',1,'white():&#160;globals.h'],['../globals_8c.html#a52b8a1dc217164197e6e5ba60ec911bf',1,'white():&#160;globals.c']]],
+  ['width_205',['width',['../structButton.html#a94051f6f79d4436d8a268a81b828863a',1,'Button']]]
 ];

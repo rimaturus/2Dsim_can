@@ -1,14 +1,16 @@
 <map id="src/display.c" name="src/display.c">
-<area shape="rect" id="node1" title="Rendering and display update functions for the 2D simulation using Allegro." alt="" coords="243,5,344,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="130,379,209,405"/>
-<area shape="rect" id="node3" title=" " alt="" coords="210,304,278,331"/>
+<area shape="rect" id="node1" title="Rendering and display update functions for the 2D simulation using Allegro." alt="" coords="293,5,395,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="125,379,203,405"/>
+<area shape="rect" id="node3" title=" " alt="" coords="206,304,274,331"/>
 <area shape="rect" id="node4" title=" " alt="" coords="93,80,160,107"/>
 <area shape="rect" id="node5" title=" " alt="" coords="185,80,255,107"/>
-<area shape="rect" id="node6" href="$globals_8h.html" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="422,304,503,331"/>
-<area shape="rect" id="node9" href="$perception_8h.html" title="Header file for perception&#45;related types, constants, and function declarations." alt="" coords="367,229,470,256"/>
-<area shape="rect" id="node10" href="$trajectory_8h.html" title="Provides declarations for trajectory planning based on cone detection." alt="" coords="459,155,554,181"/>
-<area shape="rect" id="node11" href="$utilities_8h.html" title="Utility function prototypes for cone management and runtime tasks." alt="" coords="301,155,384,181"/>
-<area shape="rect" id="node12" href="$control_8h.html" title="Declarations for vehicle control functions and variables in the 2D simulator." alt="" coords="386,80,465,107"/>
-<area shape="rect" id="node7" title=" " alt="" coords="481,379,565,405"/>
-<area shape="rect" id="node8" title=" " alt="" coords="349,379,456,405"/>
+<area shape="rect" id="node6" href="$globals_8h.html" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="375,304,457,331"/>
+<area shape="rect" id="node9" href="$perception_8h.html" title="Header file for perception&#45;related types, constants, and function declarations." alt="" coords="321,229,423,256"/>
+<area shape="rect" id="node10" href="$trajectory_8h.html" title="Provides declarations for trajectory planning based on cone detection." alt="" coords="413,155,507,181"/>
+<area shape="rect" id="node11" href="$utilities_8h.html" title="Utility function prototypes for cone management and runtime tasks." alt="" coords="255,155,337,181"/>
+<area shape="rect" id="node12" href="$control_8h.html" title="Declarations for vehicle control functions and variables in the 2D simulator." alt="" coords="382,80,461,107"/>
+<area shape="rect" id="node13" href="$vehicle_8h.html" title=" " alt="" coords="634,80,715,107"/>
+<area shape="rect" id="node14" href="$display_8h.html" title="Header file declaring display rendering functions." alt="" coords="739,80,818,107"/>
+<area shape="rect" id="node7" title=" " alt="" coords="434,379,518,405"/>
+<area shape="rect" id="node8" title=" " alt="" coords="303,379,409,405"/>
 </map>

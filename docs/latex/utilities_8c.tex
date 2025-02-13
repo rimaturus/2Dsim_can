@@ -10,21 +10,29 @@ Utility functions for cone initialization, YAML cone loading, angle rotation con
 {\ttfamily \#include $<$string.\+h$>$}\newline
 {\ttfamily \#include $<$time.\+h$>$}\newline
 {\ttfamily \#include $<$yaml.\+h$>$}\newline
+{\ttfamily \#include $<$errno.\+h$>$}\newline
+{\ttfamily \#include $<$locale.\+h$>$}\newline
 {\ttfamily \#include \char`\"{}globals.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}perception.\+h\char`\"{}}\newline
-Include dependency graph for utilities.\+c\+:\nopagebreak
+Include dependency graph for utilities.\+c\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=350pt]{utilities_8c__incl}
 \end{center}
 \end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{utilities_8c_a3024ccd4a9af5109d24e6c57565d74a1}{\+\_\+\+POSIX\+\_\+\+C\+\_\+\+SOURCE}}~199309L
+\begin{DoxyCompactList}\small\item\em Initializes an array of cone structures. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \mbox{\hyperlink{utilities_8c_a5297509bfed850c9f8cb92b994b7fd75}{init\+\_\+cones}} (\mbox{\hyperlink{structcone}{cone}} $\ast$cones)
+void \mbox{\hyperlink{utilities_8c_a5297509bfed850c9f8cb92b994b7fd75}{init\+\_\+cones}} (\mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{globals_8c_a6bff9042bc7c83b01b7c3c5285f48e82}{cones}})
 \begin{DoxyCompactList}\small\item\em Initializes an array of cone structures. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{utilities_8c_a77d50bbb4a4844ce7ddab4a7b3d52d24}{load\+\_\+cones\+\_\+positions}} (const char $\ast$\mbox{\hyperlink{main_8c_aee5ee0d6a8a10e195acbec5ee97f65d9}{filename}}, \mbox{\hyperlink{structcone}{cone}} $\ast$cones, int max\+\_\+cones)
+void \mbox{\hyperlink{utilities_8c_a77d50bbb4a4844ce7ddab4a7b3d52d24}{load\+\_\+cones\+\_\+positions}} (const char $\ast$\mbox{\hyperlink{main_8c_aee5ee0d6a8a10e195acbec5ee97f65d9}{filename}}, \mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{globals_8c_a6bff9042bc7c83b01b7c3c5285f48e82}{cones}}, int max\+\_\+cones)
 \item 
 float \mbox{\hyperlink{utilities_8c_a33090597864cdfd30d87ff99c14eeecb}{angle\+\_\+rotation\+\_\+sprite}} (float angle)
 \item 
@@ -33,7 +41,9 @@ void \mbox{\hyperlink{utilities_8c_a28b6717d007598c8d776ee5b8652be51}{runtime}} 
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-float \mbox{\hyperlink{utilities_8c_a8052eacfb33fd0f8bc1dbef9d2bd55d4}{tmp\+\_\+scale}} = 1.\+5 / 100
+volatile float \mbox{\hyperlink{utilities_8c_a97c90462af6645ccf34582fab57aa2a2}{offset\+\_\+x}} = 0.\+5f
+\item 
+volatile float \mbox{\hyperlink{utilities_8c_ab6b5415476c02977d2398b6c84d234bb}{offset\+\_\+y}} = 0.\+5f
 \end{DoxyCompactItemize}
 
 
@@ -48,25 +58,12 @@ This file provides utility functions that include\+:
 \item Timing code performance using the POSIX clock. 
 \end{DoxyItemize}
 
-\doxysubsection{Function Documentation}
-\mbox{\Hypertarget{utilities_8c_a33090597864cdfd30d87ff99c14eeecb}\label{utilities_8c_a33090597864cdfd30d87ff99c14eeecb}} 
-\index{utilities.c@{utilities.c}!angle\_rotation\_sprite@{angle\_rotation\_sprite}}
-\index{angle\_rotation\_sprite@{angle\_rotation\_sprite}!utilities.c@{utilities.c}}
-\doxysubsubsection{\texorpdfstring{angle\_rotation\_sprite()}{angle\_rotation\_sprite()}}
-{\footnotesize\ttfamily float angle\+\_\+rotation\+\_\+sprite (\begin{DoxyParamCaption}\item[{float}]{angle }\end{DoxyParamCaption})}
-
-Here is the caller graph for this function\+:\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{utilities_8c_a33090597864cdfd30d87ff99c14eeecb_icgraph}
-\end{center}
-\end{figure}
-\mbox{\Hypertarget{utilities_8c_a5297509bfed850c9f8cb92b994b7fd75}\label{utilities_8c_a5297509bfed850c9f8cb92b994b7fd75}} 
-\index{utilities.c@{utilities.c}!init\_cones@{init\_cones}}
-\index{init\_cones@{init\_cones}!utilities.c@{utilities.c}}
-\doxysubsubsection{\texorpdfstring{init\_cones()}{init\_cones()}}
-{\footnotesize\ttfamily void init\+\_\+cones (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{cones }\end{DoxyParamCaption})}
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{utilities_8c_a3024ccd4a9af5109d24e6c57565d74a1}\label{utilities_8c_a3024ccd4a9af5109d24e6c57565d74a1}} 
+\index{utilities.c@{utilities.c}!\_POSIX\_C\_SOURCE@{\_POSIX\_C\_SOURCE}}
+\index{\_POSIX\_C\_SOURCE@{\_POSIX\_C\_SOURCE}!utilities.c@{utilities.c}}
+\doxysubsubsection{\texorpdfstring{\_POSIX\_C\_SOURCE}{\_POSIX\_C\_SOURCE}}
+{\footnotesize\ttfamily \#define \+\_\+\+POSIX\+\_\+\+C\+\_\+\+SOURCE~199309L}
 
 
 
@@ -125,6 +122,76 @@ This function depends on the POSIX clock\+\_\+gettime() function and is active o
 {\em task\+\_\+name} & A string representing the name of the task for which the runtime is being measured. \\
 \hline
 \end{DoxyParams}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{utilities_8c_a33090597864cdfd30d87ff99c14eeecb}\label{utilities_8c_a33090597864cdfd30d87ff99c14eeecb}} 
+\index{utilities.c@{utilities.c}!angle\_rotation\_sprite@{angle\_rotation\_sprite}}
+\index{angle\_rotation\_sprite@{angle\_rotation\_sprite}!utilities.c@{utilities.c}}
+\doxysubsubsection{\texorpdfstring{angle\_rotation\_sprite()}{angle\_rotation\_sprite()}}
+{\footnotesize\ttfamily float angle\+\_\+rotation\+\_\+sprite (\begin{DoxyParamCaption}\item[{float}]{angle }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{utilities_8c_a33090597864cdfd30d87ff99c14eeecb_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{utilities_8c_a5297509bfed850c9f8cb92b994b7fd75}\label{utilities_8c_a5297509bfed850c9f8cb92b994b7fd75}} 
+\index{utilities.c@{utilities.c}!init\_cones@{init\_cones}}
+\index{init\_cones@{init\_cones}!utilities.c@{utilities.c}}
+\doxysubsubsection{\texorpdfstring{init\_cones()}{init\_cones()}}
+{\footnotesize\ttfamily void init\+\_\+cones (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{cones }\end{DoxyParamCaption})}
+
+
+
+Initializes an array of cone structures. 
+
+This function sets up the specified array of cones so that each cone is properly initialized.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cones} & Pointer to the first element of an array of cone structures.\\
+\hline
+\end{DoxyParams}
+Loads cone positions from a file.
+
+Reads cone position data from the provided file and populates the cone array accordingly. Only up to {\ttfamily max\+\_\+cones} entries are loaded, ensuring the array bounds are respected.
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & Path to the file containing cone position data. \\
+\hline
+{\em cones} & Pointer to an array of cone structures where the positions will be stored. \\
+\hline
+{\em max\+\_\+cones} & The maximum number of cones to load from the file.\\
+\hline
+\end{DoxyParams}
+Computes the sprite rotation angle.
+
+Calculates and returns a new rotation angle for a sprite based on the input {\ttfamily angle}. The calculation may involve normalization or other transformations suitable for sprite handling.
+
+
+\begin{DoxyParams}{Parameters}
+{\em angle} & The initial angle value (in degrees or radians, as defined by the application\textquotesingle{}s convention). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The adjusted angle after applying the rotation transformation.
+\end{DoxyReturn}
+Handles runtime processes based on a stop signal.
+
+Executes runtime tasks, potentially including logging or task management, until a stop condition defined by {\ttfamily stop\+\_\+signal} is met. The associated task description is provided via {\ttfamily task\+\_\+name}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em stop\+\_\+signal} & Signal value indicating when to terminate the runtime process. \\
+\hline
+{\em task\+\_\+name} & A string identifier for the task being executed. \\
+\hline
+\end{DoxyParams}
 Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
@@ -151,7 +218,8 @@ Here is the caller graph for this function\+:\nopagebreak
 \doxysubsubsection{\texorpdfstring{runtime()}{runtime()}}
 {\footnotesize\ttfamily void runtime (\begin{DoxyParamCaption}\item[{int}]{stop\+\_\+signal,  }\item[{char $\ast$}]{task\+\_\+name }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -161,9 +229,15 @@ Here is the caller graph for this function\+:\nopagebreak
 
 
 \doxysubsection{Variable Documentation}
-\mbox{\Hypertarget{utilities_8c_a8052eacfb33fd0f8bc1dbef9d2bd55d4}\label{utilities_8c_a8052eacfb33fd0f8bc1dbef9d2bd55d4}} 
-\index{utilities.c@{utilities.c}!tmp\_scale@{tmp\_scale}}
-\index{tmp\_scale@{tmp\_scale}!utilities.c@{utilities.c}}
-\doxysubsubsection{\texorpdfstring{tmp\_scale}{tmp\_scale}}
-{\footnotesize\ttfamily float tmp\+\_\+scale = 1.\+5 / 100}
+\mbox{\Hypertarget{utilities_8c_a97c90462af6645ccf34582fab57aa2a2}\label{utilities_8c_a97c90462af6645ccf34582fab57aa2a2}} 
+\index{utilities.c@{utilities.c}!offset\_x@{offset\_x}}
+\index{offset\_x@{offset\_x}!utilities.c@{utilities.c}}
+\doxysubsubsection{\texorpdfstring{offset\_x}{offset\_x}}
+{\footnotesize\ttfamily volatile float offset\+\_\+x = 0.\+5f}
+
+\mbox{\Hypertarget{utilities_8c_ab6b5415476c02977d2398b6c84d234bb}\label{utilities_8c_ab6b5415476c02977d2398b6c84d234bb}} 
+\index{utilities.c@{utilities.c}!offset\_y@{offset\_y}}
+\index{offset\_y@{offset\_y}!utilities.c@{utilities.c}}
+\doxysubsubsection{\texorpdfstring{offset\_y}{offset\_y}}
+{\footnotesize\ttfamily volatile float offset\+\_\+y = 0.\+5f}
 

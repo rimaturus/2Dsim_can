@@ -1,13 +1,15 @@
 <map id="src/utilities.c" name="src/utilities.c">
-<area shape="rect" id="node1" title="Utility functions for cone initialization, YAML cone loading, angle rotation conversion,..." alt="" coords="222,5,327,32"/>
+<area shape="rect" id="node1" title="Utility functions for cone initialization, YAML cone loading, angle rotation conversion,..." alt="" coords="311,5,417,32"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,80,72,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="253,155,321,181"/>
+<area shape="rect" id="node3" title=" " alt="" coords="347,155,415,181"/>
 <area shape="rect" id="node4" title=" " alt="" coords="147,80,218,107"/>
 <area shape="rect" id="node5" title=" " alt="" coords="243,80,307,107"/>
 <area shape="rect" id="node6" title=" " alt="" coords="331,80,397,107"/>
-<area shape="rect" id="node7" href="$globals_8h.html" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="477,155,558,181"/>
-<area shape="rect" id="node11" href="$perception_8h.html" title="Header file for perception&#45;related types, constants, and function declarations." alt="" coords="422,80,525,107"/>
-<area shape="rect" id="node8" title=" " alt="" coords="373,229,451,256"/>
-<area shape="rect" id="node9" title=" " alt="" coords="475,229,559,256"/>
-<area shape="rect" id="node10" title=" " alt="" coords="584,229,691,256"/>
+<area shape="rect" id="node7" title=" " alt="" coords="422,80,490,107"/>
+<area shape="rect" id="node8" title=" " alt="" coords="514,80,587,107"/>
+<area shape="rect" id="node9" href="$globals_8h.html" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="666,155,747,181"/>
+<area shape="rect" id="node13" href="$perception_8h.html" title="Header file for perception&#45;related types, constants, and function declarations." alt="" coords="611,80,714,107"/>
+<area shape="rect" id="node10" title=" " alt="" coords="562,229,641,256"/>
+<area shape="rect" id="node11" title=" " alt="" coords="665,229,749,256"/>
+<area shape="rect" id="node12" title=" " alt="" coords="773,229,880,256"/>
 </map>

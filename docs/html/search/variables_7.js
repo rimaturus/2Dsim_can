@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lidar_5fsem_304',['lidar_sem',['../globals_8h.html#aa21f1e92d43a7701840f426f13061380',1,'lidar_sem():&#160;globals.c'],['../globals_8c.html#a88234d9ca4c491b833932c377e5d71f5',1,'lidar_sem():&#160;globals.c']]]
+  ['ignore_5fdistance_343',['ignore_distance',['../group__PerceptionModule.html#gac7a26ea1e9d968ec27c79a692c3eae5d',1,'ignore_distance():&#160;perception.c'],['../group__PerceptionModule.html#gac7a26ea1e9d968ec27c79a692c3eae5d',1,'ignore_distance():&#160;perception.c']]]
 ];

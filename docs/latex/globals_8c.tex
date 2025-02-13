@@ -20,7 +20,7 @@ const char $\ast$ \mbox{\hyperlink{globals_8c_a8214780964530800368b406c681fd1d9}
 \item 
 const int \mbox{\hyperlink{globals_8c_a367debe5309d3d03036794f63420bad4}{X\+\_\+\+MAX}} = (19 $\ast$ \mbox{\hyperlink{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})
 \item 
-const int \mbox{\hyperlink{globals_8c_af2068572bded057c07f9af467ef531bd}{Y\+\_\+\+MAX}} = (12 $\ast$ \mbox{\hyperlink{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})
+const int \mbox{\hyperlink{globals_8c_af2068572bded057c07f9af467ef531bd}{Y\+\_\+\+MAX}} = (10 $\ast$ \mbox{\hyperlink{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})
 \item 
 const float \mbox{\hyperlink{globals_8c_aee7b5f297a1877e9b4a1995379ea5dff}{cone\+\_\+radius}} = 0.\+05f
 \item 
@@ -29,6 +29,10 @@ float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}
 float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}} = 3.\+0f
 \item 
 int \mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}} = 0
+\item 
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{globals_8c_a6bff9042bc7c83b01b7c3c5285f48e82}{cones}} \mbox{[}\mbox{\hyperlink{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}
+\item 
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{globals_8c_a3f2b8e0bfcf1cca13e8ab15e31a156a5}{starting\+\_\+cone\+\_\+positions}} \mbox{[}\mbox{\hyperlink{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}
 \item 
 BITMAP $\ast$ \mbox{\hyperlink{globals_8c_a182abe709ed708c527ce8b52120b6e92}{control\+\_\+panel}} = NULL
 \item 
@@ -59,6 +63,10 @@ int \mbox{\hyperlink{globals_8c_af0d8b62806f3b2c95d55dc52164fbf32}{pink}}
 int \mbox{\hyperlink{globals_8c_a34167711871149458e41ef5d3e3541fe}{yellow}}
 \item 
 int \mbox{\hyperlink{globals_8c_a16043f28bf0a6b55db852853f0683fc2}{blue}}
+\item 
+int \mbox{\hyperlink{globals_8c_a6761340706096510fd89edca40a63b9b}{red}}
+\item 
+int \mbox{\hyperlink{globals_8c_a6e208843f894f38fa7644608917a2a41}{green}}
 \item 
 \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} \mbox{\hyperlink{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}{measures}} \mbox{[}360\mbox{]}
 \item 
@@ -155,7 +163,13 @@ The radius (in meters) for cone-\/related calculations, set to 0.\+05.
 \begin{DoxyItemize}
 \item 
 \end{DoxyItemize}
-\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a182abe709ed708c527ce8b52120b6e92}\label{globals_8c_a182abe709ed708c527ce8b52120b6e92}} 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a6bff9042bc7c83b01b7c3c5285f48e82}\label{globals_8c_a6bff9042bc7c83b01b7c3c5285f48e82}} 
+\index{globals.c@{globals.c}!cones@{cones}}
+\index{cones@{cones}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{cones}{cones}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structcone}{cone}} cones\mbox{[}\mbox{\hyperlink{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}}
+
+\mbox{\Hypertarget{globals_8c_a182abe709ed708c527ce8b52120b6e92}\label{globals_8c_a182abe709ed708c527ce8b52120b6e92}} 
 \index{globals.c@{globals.c}!control\_panel@{control\_panel}}
 \index{control\_panel@{control\_panel}!globals.c@{globals.c}}
 \doxysubsubsection{\texorpdfstring{control\_panel}{control\_panel}}
@@ -195,6 +209,12 @@ The multiplier \textquotesingle{}px\+\_\+per\+\_\+meter\textquotesingle{} used f
 \doxysubsubsection{\texorpdfstring{grass\_green}{grass\_green}}
 {\footnotesize\ttfamily int grass\+\_\+green}
 
+\mbox{\Hypertarget{globals_8c_a6e208843f894f38fa7644608917a2a41}\label{globals_8c_a6e208843f894f38fa7644608917a2a41}} 
+\index{globals.c@{globals.c}!green@{green}}
+\index{green@{green}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{green}{green}}
+{\footnotesize\ttfamily int green}
+
 \mbox{\Hypertarget{globals_8c_a88234d9ca4c491b833932c377e5d71f5}\label{globals_8c_a88234d9ca4c491b833932c377e5d71f5}} 
 \index{globals.c@{globals.c}!lidar\_sem@{lidar\_sem}}
 \index{lidar\_sem@{lidar\_sem}!globals.c@{globals.c}}
@@ -233,7 +253,19 @@ An array of 360 Li\+DAR measurements (one per degree) representing the simulated
 \doxysubsubsection{\texorpdfstring{pink}{pink}}
 {\footnotesize\ttfamily int pink}
 
-\mbox{\Hypertarget{globals_8c_ab23c15b6b1f9187c1d5c1fcfb1b9117e}\label{globals_8c_ab23c15b6b1f9187c1d5c1fcfb1b9117e}} 
+\mbox{\Hypertarget{globals_8c_a6761340706096510fd89edca40a63b9b}\label{globals_8c_a6761340706096510fd89edca40a63b9b}} 
+\index{globals.c@{globals.c}!red@{red}}
+\index{red@{red}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{red}{red}}
+{\footnotesize\ttfamily int red}
+
+\mbox{\Hypertarget{globals_8c_a3f2b8e0bfcf1cca13e8ab15e31a156a5}\label{globals_8c_a3f2b8e0bfcf1cca13e8ab15e31a156a5}} 
+\index{globals.c@{globals.c}!starting\_cone\_positions@{starting\_cone\_positions}}
+\index{starting\_cone\_positions@{starting\_cone\_positions}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{starting\_cone\_positions}{starting\_cone\_positions}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structcone}{cone}} starting\+\_\+cone\+\_\+positions\mbox{[}\mbox{\hyperlink{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}}
+
+Store the default cone positions before collisions \mbox{\Hypertarget{globals_8c_ab23c15b6b1f9187c1d5c1fcfb1b9117e}\label{globals_8c_ab23c15b6b1f9187c1d5c1fcfb1b9117e}} 
 \index{globals.c@{globals.c}!steering\_wheel@{steering\_wheel}}
 \index{steering\_wheel@{steering\_wheel}!globals.c@{globals.c}}
 \doxysubsubsection{\texorpdfstring{steering\_wheel}{steering\_wheel}}
@@ -304,7 +336,7 @@ The maximum horizontal dimension of the simulation in pixels, computed as 19 $\a
 \index{globals.c@{globals.c}!Y\_MAX@{Y\_MAX}}
 \index{Y\_MAX@{Y\_MAX}!globals.c@{globals.c}}
 \doxysubsubsection{\texorpdfstring{Y\_MAX}{Y\_MAX}}
-{\footnotesize\ttfamily const int Y\+\_\+\+MAX = (12 $\ast$ \mbox{\hyperlink{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})}
+{\footnotesize\ttfamily const int Y\+\_\+\+MAX = (10 $\ast$ \mbox{\hyperlink{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}})}
 
 The maximum vertical dimension of the simulation in pixels, computed as 12 $\ast$ px\+\_\+per\+\_\+meter.
 

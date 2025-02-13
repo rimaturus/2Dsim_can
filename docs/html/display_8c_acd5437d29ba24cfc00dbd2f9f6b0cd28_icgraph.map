@@ -1,6 +1,6 @@
 <map id="draw_perception" name="draw_perception">
-<area shape="rect" id="node1" title="Renders the complete perception layer." alt="" coords="429,5,560,32"/>
-<area shape="rect" id="node2" href="$display_8h.html#aa2eb9ba074b23fc3b4a91c98e0c83c8b" title="Updates the display." alt="" coords="260,5,381,32"/>
+<area shape="rect" id="node1" title="Renders the complete perception layer." alt="" coords="429,31,560,57"/>
+<area shape="rect" id="node2" href="$display_8h.html#aa2eb9ba074b23fc3b4a91c98e0c83c8b" title="Updates the display." alt="" coords="260,31,381,57"/>
 <area shape="rect" id="node3" href="$tasks_8h.html#a16cbac3bef85b555e76fe999965c1b7e" title=" " alt="" coords="108,5,212,32"/>
-<area shape="rect" id="node4" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title=" " alt="" coords="5,5,60,32"/>
+<area shape="rect" id="node4" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title=" " alt="" coords="5,31,60,57"/>
 </map>

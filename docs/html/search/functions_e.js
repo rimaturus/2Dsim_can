@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['wait_5ffor_5factivation_269',['wait_for_activation',['../ptask_8h.html#ac5a989242ff00476f314f92395f23252',1,'ptask.h']]],
-  ['wait_5ffor_5fperiod_270',['wait_for_period',['../ptask_8h.html#afd8a4ae978d1068cb18f8e5fc03a1f0c',1,'ptask.h']]],
-  ['wait_5ffor_5ftask_5fend_271',['wait_for_task_end',['../ptask_8h.html#a9142a39d7c9be6b98ce01f0c7541d8f7',1,'ptask.h']]]
+  ['vehicle_5fmodel_299',['vehicle_model',['../group__VehicleModule.html#ga4a1f78c4260229ebd2850350d181cc86',1,'vehicle_model(float *car_x, float *car_y, int *car_angle, float pedal, float steering):&#160;vehicle.c'],['../group__VehicleModule.html#ga4a1f78c4260229ebd2850350d181cc86',1,'vehicle_model(float *car_x, float *car_y, int *car_angle, float pedal, float steering):&#160;vehicle.c']]]
 ];

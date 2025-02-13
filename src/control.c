@@ -99,8 +99,9 @@ float steering = 0.0f;      // current steering angle in radians
 void keyboard_control(float *car_x, float *car_y, int *car_angle)
 {
 const float     accel_step = 0.01;    // speed increment per key press
+const float     brake_step = 0.1;     // brake increment per key press
 
-const float     steering_step = 1.5 * deg2rad; // steering increment in radians per key press
+const float     steering_step = 30 * deg2rad; // steering increment in radians per key press
 const float     max_steering = 30 * deg2rad;     // maximum steering angle in radians
 
 	// Adjust speed
@@ -110,7 +111,7 @@ const float     max_steering = 30 * deg2rad;     // maximum steering angle in ra
 	}
 	if (key[KEY_DOWN])
 	{
-		pedal = (pedal - accel_step) < -1.0 ? -1.0 : (pedal - accel_step);
+		pedal = (pedal - accel_step) < -1.0 ? -1.0 : (pedal - brake_step);
 	}
 
 	// Adjust steering angle
@@ -120,131 +121,20 @@ const float     max_steering = 30 * deg2rad;     // maximum steering angle in ra
 		if (steering > max_steering)
 			steering = max_steering;
 	}
-	if (key[KEY_RIGHT])
+	else if (key[KEY_RIGHT])
 	{
 		steering -= steering_step;
 		if (steering < -max_steering)
 			steering = -max_steering;
 	}
+    else
+    {
+        steering = 0.0f;
+    }
 
 	// Motion model of the vehicle
 	vehicle_model(car_x, car_y, car_angle, pedal, steering);
 }
-
-/* 
-
-// Helper function to normalize angle to [-180, 180] range (in degrees).
-static float normalize_angle_deg(float angle_deg) {
-    while (angle_deg > 180.0f)  angle_deg -= 360.0f;
-    while (angle_deg < -180.0f) angle_deg += 360.0f;
-    return angle_deg;
-}
-
-// Helper to check if a waypoint is within +/- 90° of car’s heading (i.e., “in front”).
-static int is_in_front(float car_angle_deg, float wx, float wy, float cx, float cy) {
-    // dx, dy to the waypoint
-    float dx = wx - cx;
-    float dy = wy - cy;
-
-    // Angle from car to waypoint, in degrees
-    float angle_to_point = (atan2f(dy, dx) / deg2rad);
-    float angle_diff = normalize_angle_deg(angle_to_point - car_angle_deg);
-
-    // "In front" if within +/- 90 deg
-    return (fabs(angle_diff) <= 100.0f);
-}
-
-#define LOOKAHEAD_DISTANCE 3.0f
-
-// Main autonomous control function
-void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *trajectory)
-{
-    // 1) Collect all front waypoints
-    waypoint front_waypoints[MAX_DETECTED_CONES];
-    float    front_dists[MAX_DETECTED_CONES];
-    int front_count = 0;
-
-    for (int i = 0; i < MAX_DETECTED_CONES; i++) {
-        if (trajectory[i].x == -1.0f) break; // no more valid points
-        if (is_in_front((float)*car_angle, trajectory[i].x, trajectory[i].y,
-                        *car_x, *car_y))
-        {
-            // record the waypoint
-            front_waypoints[front_count] = trajectory[i];
-            // record distance to car
-            float dx = trajectory[i].x - *car_x;
-            float dy = trajectory[i].y - *car_y;
-            front_dists[front_count] = sqrtf(dx*dx + dy*dy);
-            front_count++;
-        }
-    }
-
-    // If no front waypoints, do fallback
-    if (front_count == 0) {
-        steering = 0.0f;
-        vehicle_model(car_x, car_y, car_angle, 0.0f, steering);
-        return;
-    }
-
-    // 2) Sort the front waypoints by ascending distance (simple insertion or bubble sort for clarity)
-    //    You can swap in a standard library sort or a faster approach
-    for (int i = 0; i < front_count - 1; i++) {
-        for (int j = i + 1; j < front_count; j++) {
-            if (front_dists[j] < front_dists[i]) {
-                // swap distances
-                float tmpDist = front_dists[i];
-                front_dists[i] = front_dists[j];
-                front_dists[j] = tmpDist;
-                // swap waypoints
-                waypoint tmpWp = front_waypoints[i];
-                front_waypoints[i] = front_waypoints[j];
-                front_waypoints[j] = tmpWp;
-            }
-        }
-    }
-
-    // 3) Find the waypoint whose distance >= LOOKAHEAD_DISTANCE
-    int chosen_idx = front_count - 1; // default to the farthest if none are >=
-    for (int i = 0; i < front_count; i++) {
-        if (front_dists[i] >= LOOKAHEAD_DISTANCE) {
-            chosen_idx = i;
-            break;
-        }
-    }
-
-    waypoint chosen_wp = front_waypoints[chosen_idx];
-
-#ifdef DEBUG
-    // Draw all front waypoints in green
-    for (int i = 0; i < front_count; i++) {
-        int px = (int)(front_waypoints[i].x * px_per_meter);
-        int py = (int)(front_waypoints[i].y * px_per_meter);
-        circlefill(screen, px, py, 3, makecol(0, 255, 0)); 
-    }
-    // Draw chosen waypoint in black
-    {
-        int px = (int)(chosen_wp.x * px_per_meter);
-        int py = (int)(chosen_wp.y * px_per_meter);
-        circlefill(screen, px, py, 3, makecol(0, 0, 0));
-    }
-#endif
-
-    // 4) Compute angle diff to chosen waypoint
-    float dx = chosen_wp.x - *car_x;
-    float dy = chosen_wp.y - *car_y;
-    float target_angle_deg = (atan2f(dy, dx) / deg2rad);
-    float angle_diff_deg = normalize_angle_deg(target_angle_deg - (float)*car_angle);
-
-    // 5) Steering: scale angle diff in radians; adjust factor as needed
-    steering = +(angle_diff_deg * deg2rad);// * 0.5f;
-
-    // 6) Pedal: a simple constant, or do something more complex (like slow down for sharp turns)
-    float pedal = 0.1f;
-
-    // 7) Update vehicle
-    vehicle_model(car_x, car_y, car_angle, pedal, steering);
-} */
-
 
 // Helper: Normalize an (x,y) vector; returns 0 if vector length is 0.
 static int nomalize(float *x, float *y) {
@@ -315,16 +205,15 @@ void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *ce
         ref_vec_y = 0.0f;
     }
 
-    // 4) Compute the car's heading vector from its angle (in degrees).
+    // 4) Heading vector from car angle.
     float car_angle_rad = (*car_angle) * deg2rad;
     float dir_x = cosf(car_angle_rad);
     float dir_y = sinf(car_angle_rad);
 
-    // 5) Compute the steering correction using the 2D cross product.
+    // Compute the steering correction using the 2D cross product.
     float cross = ref_vec_x * dir_y - ref_vec_y * dir_x;
-    float delta = asinf(cross);
+    float delta = asinf(cross) / deg2rad;
 
-    // 6) Set a constant pedal value.
     float pedal = 0.1f;
 
 #ifdef DEBUG
@@ -333,6 +222,5 @@ void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *ce
     printf("Ref vector: (%.2f, %.2f), Delta=%.2f rad\n", ref_vec_x, ref_vec_y, delta);
 #endif
 
-    // 7) Update the vehicle with the computed control signals.
     vehicle_model(car_x, car_y, car_angle, pedal, delta);
 }

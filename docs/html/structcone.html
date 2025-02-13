@@ -69,10 +69,10 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Processes the LiDAR measurements.  
+<p>Represents a cone detected in the environment.  
  <a href="structcone.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="perception_8h_source.html">perception.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="globals_8h_source.html">globals.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -84,48 +84,7 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ab07155dae609fd3b044b1e0cdfa9395d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Processes the LiDAR measurements. </p>
-<p>Represents a cone detected in the environment.</p>
-<p>This function simulates or processes a LiDAR scan, updating the point cloud information based on the car's current position.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">car_x</td><td>The X coordinate of the car's position. </td></tr>
-    <tr><td class="paramname">car_y</td><td>The Y coordinate of the car's position. </td></tr>
-    <tr><td class="paramname">measures</td><td>Pointer to the point cloud structure to be updated with the LiDAR measurements.</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Performs real-time mapping using detected cones.</p>
-<p>This function updates the array of detected cones by correlating the car’s current position and orientation with cone positions.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">car_x</td><td>The X coordinate of the car's position. </td></tr>
-    <tr><td class="paramname">car_y</td><td>The Y coordinate of the car's position. </td></tr>
-    <tr><td class="paramname">car_angle</td><td>The orientation angle of the car (in degrees or radians as defined elsewhere). </td></tr>
-    <tr><td class="paramname">detected_cones</td><td>Pointer to the array where detected cones are stored.</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Checks and updates the nearest point for a given LiDAR scan angle.</p>
-<p>This function compares a new detected point against existing data to determine if it belongs to a known cone border, updating the cone border data accordingly.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">angle</td><td>The scan angle index from the LiDAR measurement. </td></tr>
-    <tr><td class="paramname">new_point_x</td><td>The X coordinate of the new detected point. </td></tr>
-    <tr><td class="paramname">new_point_y</td><td>The Y coordinate of the new detected point. </td></tr>
-    <tr><td class="paramname">color</td><td>The color associated with the new detected point. </td></tr>
-    <tr><td class="paramname">cone_borders</td><td>Pointer to the <a class="el" href="structcone__border.html" title="Represents a border of a cone as seen in a LiDAR scan.">cone_border</a> structure to be updated.</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Updates the global track map with the latest detected cones.</p>
-<p>This function takes the newly detected cones and integrates them into the overall track map, which represents the accumulated perception of the environment.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">detected_cones</td><td>Pointer to the array of cones that have been newly detected.</td></tr>
-  </table>
-  </dd>
-</dl>
+<div class="textblock"><p>Represents a cone detected in the environment. </p>
 <p>This structure stores the position and color information for a cone. The positions are stored in floating point values in meters and can be converted to pixels when rendering. The color is represented using the Allegro color format.</p>
 <p>Members:</p><ul>
 <li>x: X position of the cone.</li>
@@ -179,7 +138,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/<a class="el" href="perception_8h_source.html">perception.h</a></li>
+<li>include/<a class="el" href="globals_8h_source.html">globals.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

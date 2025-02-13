@@ -38,11 +38,14 @@
 
 void 	vehicle_model(float *car_x, float *car_y, int *car_angle, float pedal, float steering)
 {
+#define NON_CINEMATIC_MODEL
+
+#ifndef CINEMATIC_MODEL
 // Simulation parameters
-const float     dt = 0.1;			// time step
+const float     dt = (float)(CONTROL_PERIOD)/100;			// time step
 
 const float		mass = 100;      	// mass of the vehicle [kg]
-const float     wheelbase = 2.0;	// distance between front and rear axles [m]
+const float     wheelbase = 3.0;	// distance between front and rear axles [m]
 const float		maxSpeed = 1.0;		// maximum speed in m/s
 const float     maxBraking = 50.0;	// maximum braking in m/s^2
 
@@ -79,7 +82,110 @@ float speed, acceleration;
 
 	// Store updated heading in degrees
 	*car_angle = (int)(theta / deg2rad);
+#endif /* NON CINEMATIC_MODEL */
 
+#ifdef CINEMATIC_MODEL
+    //=========================================================================
+    // Simulation parameters and realistic vehicle constants
+    //=========================================================================
+    const float dt = 0.1;  // simulation time step [s]
+
+    // Vehicle parameters (typical for a small car)
+    const float mass = 1200.0;      // vehicle mass [kg]
+    const float wheelbase = 2.5;    // wheelbase [m]
+    // For a bicycle model we partition the wheelbase:
+    const float l_r = 1.0;          // distance from the center-of-mass to the rear axle [m]
+    // const float l_f = wheelbase - l_r;  // front axle distance [m]
+
+    // Engine / brake characteristics:
+    // Assume pedal is in the range [-1, 1] (negative for braking)
+    const float max_engine_force = 2000.0;  // maximum engine force [N]
+    const float max_brake_force = 8000.0;     // maximum braking force [N]
+	const float max_speed = 1.50;  // maximum speed [m/s]
+
+    // Aerodynamic and rolling resistances
+    const float air_density = 1.225;     // [kg/m^3]
+    const float drag_coefficient = 0.32; // typical drag coefficient
+    const float frontal_area = 2.2;      // [m^2]
+    const float rolling_resistance = 0.015;  // rolling resistance coefficient
+    const float g = 9.81;  // gravitational acceleration [m/s^2]
+
+    //=========================================================================
+    // Persistent state (across calls)
+    //=========================================================================
+    static float speed = 0.0;  // vehicle speed [m/s]
+
+    //=========================================================================
+    // Compute the drive/brake force from the pedal input.
+    // (A positive pedal applies engine force; a negative pedal applies braking.)
+    //=========================================================================
+    float drive_force = 0.0;
+    if (pedal >= 0.0) {
+        drive_force = pedal * max_engine_force;
+    } else {
+        drive_force = pedal * max_brake_force;  // note: pedal is negative
+    }
+
+    //=========================================================================
+    // Compute forces opposing motion:
+    //   - Aerodynamic drag (proportional to speed²)
+    //   - Rolling resistance (approximately constant)
+    //=========================================================================
+    float drag_force = 0.5f * air_density * drag_coefficient *
+                       frontal_area * speed * speed;
+    float rolling_force = rolling_resistance * mass * g;
+
+    // The drag and rolling forces always oppose the direction of motion.
+    float net_force = drive_force;
+    if (speed > 0)
+        net_force -= (drag_force + rolling_force);
+    else if (speed < 0)
+        net_force += (drag_force + rolling_force);
+
+    //=========================================================================
+    // Update the longitudinal dynamics (Newton’s 2nd law: F = m*a)
+    //=========================================================================
+    float acceleration = net_force / mass;
+    speed += acceleration * dt;
+    if (speed < 0) {
+        speed = 0;
+    }
+	else if (speed > max_speed) {
+		speed = max_speed;
+	}
+
+    //=========================================================================
+    // Update the vehicle’s position and orientation using a kinematic
+    // bicycle model.
+    //=========================================================================
+    // Convert current heading (stored in degrees) to radians.
+    float theta = (*car_angle) * deg2rad;
+
+    // The kinematic bicycle model can include a slip angle β, which is the angle
+    // between the vehicle’s velocity vector and its heading. A simple way to
+    // compute β is:
+    //
+    //      β = arctan((l_r / wheelbase) * tan(steering))
+    //
+    // Here, steering is assumed to be given in radians.
+    float beta = atan((l_r / wheelbase) * tan(steering));
+
+    // Update the (x,y) position.
+    // The vehicle moves in the direction (theta + beta).
+    *car_x += speed * cos(theta + beta) * dt;
+    *car_y -= speed * sin(theta + beta) * dt;
+
+    // Update the heading angle.
+    // A common approximation is:
+    //      dθ/dt = (speed / wheelbase) * tan(steering)
+    // (For a more refined model one could use yaw dynamics, but this is often
+    // sufficient for simulation at low-to-moderate speeds.)
+    theta += (speed / wheelbase) * tan(steering) * dt;
+
+    // Store the updated heading back in degrees.
+    *car_angle = (theta / deg2rad);
+
+#endif /* CINEMATIC_MODEL */
 }
 
 void check_collisions()

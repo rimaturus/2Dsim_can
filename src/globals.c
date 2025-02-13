@@ -66,16 +66,17 @@
 const char* title = "2D FSAE sim by rimaturus";
 
 const int X_MAX = (19 * px_per_meter);
-const int Y_MAX = (12 * px_per_meter);
+const int Y_MAX = (10 * px_per_meter);
 
 const float cone_radius = 0.05f;
 
 /* CAR initial position */
-float  car_x        = 4.5f;
+float  car_x        = 4.0f;
 float  car_y        = 3.0f;
-int    car_angle    = 0;
+int    car_angle    = 270;
 
 cone	cones[MAX_CONES_MAP];
+cone	starting_cone_positions[MAX_CONES_MAP];
 
 /* Global bitmaps */
 BITMAP *control_panel   = NULL;
@@ -92,6 +93,7 @@ BITMAP *display_buffer  = NULL;
 
 int grass_green, asphalt_gray, white, pink;
 int yellow, blue;
+int red, green;
 
 /* LiDAR */
 pointcloud_t measures[360];

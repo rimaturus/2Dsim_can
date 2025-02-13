@@ -12,6 +12,25 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
+typedef struct {
+	int x;
+	int y;
+	int width;
+	int height;
+	const char* text;
+	int* value;
+} Button;
+
+// Create buttons
+#define num_buttons 5
+
+extern int btn_state_cones;
+extern int btn_state_perception;
+extern int btn_state_map;
+extern int btn_state_traj;
+extern int btn_state_autonomous;
+
+
 /**
  * @brief Draws a directional arrow.
  *

@@ -91,10 +91,10 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5297509bfed850c9f8cb92b994b7fd75"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8h.html#a5297509bfed850c9f8cb92b994b7fd75">init_cones</a> (<a class="el" href="structcone.html">cone</a> *cones)</td></tr>
+<tr class="memitem:a5297509bfed850c9f8cb92b994b7fd75"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8h.html#a5297509bfed850c9f8cb92b994b7fd75">init_cones</a> (<a class="el" href="structcone.html">cone</a> *<a class="el" href="globals_8c.html#a6bff9042bc7c83b01b7c3c5285f48e82">cones</a>)</td></tr>
 <tr class="memdesc:a5297509bfed850c9f8cb92b994b7fd75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an array of cone structures.  <a href="utilities_8h.html#a5297509bfed850c9f8cb92b994b7fd75">More...</a><br /></td></tr>
 <tr class="separator:a5297509bfed850c9f8cb92b994b7fd75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77d50bbb4a4844ce7ddab4a7b3d52d24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8h.html#a77d50bbb4a4844ce7ddab4a7b3d52d24">load_cones_positions</a> (const char *<a class="el" href="main_8c.html#aee5ee0d6a8a10e195acbec5ee97f65d9">filename</a>, <a class="el" href="structcone.html">cone</a> *cones, int max_cones)</td></tr>
+<tr class="memitem:a77d50bbb4a4844ce7ddab4a7b3d52d24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8h.html#a77d50bbb4a4844ce7ddab4a7b3d52d24">load_cones_positions</a> (const char *<a class="el" href="main_8c.html#aee5ee0d6a8a10e195acbec5ee97f65d9">filename</a>, <a class="el" href="structcone.html">cone</a> *<a class="el" href="globals_8c.html#a6bff9042bc7c83b01b7c3c5285f48e82">cones</a>, int max_cones)</td></tr>
 <tr class="separator:a77d50bbb4a4844ce7ddab4a7b3d52d24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33090597864cdfd30d87ff99c14eeecb"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utilities_8h.html#a33090597864cdfd30d87ff99c14eeecb">angle_rotation_sprite</a> (float angle)</td></tr>
 <tr class="separator:a33090597864cdfd30d87ff99c14eeecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -123,7 +123,8 @@ Functions</h2></td></tr>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="utilities_8h_a33090597864cdfd30d87ff99c14eeecb_icgraph.svg" width="756" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="utilities_8h_a33090597864cdfd30d87ff99c14eeecb_icgraph.svg" width="756" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 
 </div>
@@ -176,48 +177,7 @@ Here is the caller graph for this function:</div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">stop_signal</td><td>Signal value indicating when to terminate the runtime process. </td></tr>
-    <tr><td class="paramname">task_name</td><td>A string identifier for the task being executed.</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>This function initializes each cone in the provided array by setting its x and y coordinates to 0.0f and its color to -1.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">cones</td><td>Pointer to the array of cone structures to be initialized.</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Loads cone positions and colors from a YAML file.</p>
-<p>This function parses the specified YAML file to extract cone position (x and y) and color data. The YAML file is expected to have a top-level key "cones" containing a sequence of cone mappings. Each cone mapping should provide:</p><ul>
-<li>"x": A string representing the x coordinate (converted to float and scaled).</li>
-<li>"y": A string representing the y coordinate (converted to float and scaled).</li>
-<li>"color": A string representing the cone color (e.g., "yellow" or "blue").</li>
-</ul>
-<p>The function prints out diagnostic messages to the standard output regarding the file being loaded, and reports any errors encountered during file opening or YAML parsing.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">filename</td><td>Path to the YAML file containing cone data. </td></tr>
-    <tr><td class="paramname">cones</td><td>Pointer to the array of cone structures to be populated. </td></tr>
-    <tr><td class="paramname">max_cones</td><td>Maximum number of cones to load into the array.</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Converts an angle (in degrees) to a sprite rotation value.</p>
-<p>This helper function transforms an input angle (in degrees) into a corresponding sprite rotation value. The conversion is based on the formula: sprite_rotation = 64.0f - (128.0f * angle / 180.0f).</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">angle</td><td>Angle in degrees.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Sprite rotation value as a floating-point number.</dd></dl>
-<p>Measures code performance based on a runtime signal.</p>
-<p>This function is a helper to measure code execution performance if the PROFILING macro is defined. When called with a start signal (stop_signal = 0), it records the current time and prints a "START" message. When called with a stop signal (stop_signal != 0), it calculates the difference from the start time, prints an "END" message, and optionally prints the elapsed runtime in microseconds.</p>
-<dl class="section note"><dt>Note</dt><dd>This function depends on the POSIX clock_gettime() function and is active only if PROFILING is defined.</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">stop_signal</td><td>A flag indicating whether to start (0) or stop (non-zero) the runtime measurement. </td></tr>
-    <tr><td class="paramname">task_name</td><td>A string representing the name of the task for which the runtime is being measured. </td></tr>
+    <tr><td class="paramname">task_name</td><td>A string identifier for the task being executed. </td></tr>
   </table>
   </dd>
 </dl>
@@ -296,7 +256,8 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="utilities_8h_a28b6717d007598c8d776ee5b8652be51_icgraph.svg" width="362" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="utilities_8h_a28b6717d007598c8d776ee5b8652be51_icgraph.svg" width="362" height="240"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 
 </div>

@@ -1,5 +1,12 @@
 var searchData=
 [
-  ['background_10',['background',['../globals_8h.html#a9239939b64679abad9d0ab88ba448083',1,'background():&#160;globals.c'],['../globals_8c.html#a435f6810c39ce9f18cdf4a8e36da3b0d',1,'background():&#160;globals.c']]],
-  ['blue_11',['blue',['../globals_8h.html#ab52c30a42ad18fe1e8d14464ba72df52',1,'blue():&#160;globals.h'],['../globals_8c.html#a16043f28bf0a6b55db852853f0683fc2',1,'blue():&#160;globals.c']]]
+  ['act_2',['ACT',['../ptask_8h.html#a8b1f9873f78b1d80ab85bdd8168ce794',1,'ptask.h']]],
+  ['angle_5frotation_5fsprite_3',['angle_rotation_sprite',['../utilities_8h.html#a33090597864cdfd30d87ff99c14eeecb',1,'angle_rotation_sprite(float angle):&#160;utilities.c'],['../utilities_8c.html#a33090597864cdfd30d87ff99c14eeecb',1,'angle_rotation_sprite(float angle):&#160;utilities.c']]],
+  ['angle_5fstep_4',['angle_step',['../group__PerceptionModule.html#gaed5140a00a2ccfa91dd757fd8232f5df',1,'angle_step():&#160;perception.c'],['../group__PerceptionModule.html#gaed5140a00a2ccfa91dd757fd8232f5df',1,'angle_step():&#160;perception.c']]],
+  ['angles_5',['angles',['../structcone__border.html#ac20407b89fb6c34a1c472828919f49ba',1,'cone_border']]],
+  ['arg_6',['arg',['../structtask__par.html#ac0ed02e6dc5032fe2d2b57ea5928257c',1,'task_par']]],
+  ['asem_7',['asem',['../structtask__par.html#ac326a2f011fbf466af23bf057a2806c8',1,'task_par']]],
+  ['asphalt_5fgray_8',['asphalt_gray',['../globals_8h.html#a2c68c05ef3599e92e4e531256103a9b2',1,'asphalt_gray():&#160;globals.h'],['../globals_8c.html#a2c68c05ef3599e92e4e531256103a9b2',1,'asphalt_gray():&#160;globals.c']]],
+  ['at_9',['at',['../structtask__par.html#a0cde69f56942213d42d12f33bc7bc6ae',1,'task_par']]],
+  ['autonomous_5fcontrol_10',['autonomous_control',['../control_8h.html#ae3c1be6c75e99edd3ab89b0d2f6c4b0d',1,'autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *trajectory):&#160;control.c'],['../control_8c.html#aa7f0354fe7078dc6c93c9443ab06623c',1,'autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *center_waypoints):&#160;control.c']]]
 ];

@@ -24,12 +24,31 @@ Include dependency graph for tasks.\+c\+:\nopagebreak
 \begin{DoxyCompactItemize}
 \item 
 void $\ast$ \mbox{\hyperlink{tasks_8c_a746b11c2b14e499dab89746ee003716d}{perception\+\_\+task}} (void $\ast$arg)
-\begin{DoxyCompactList}\small\item\em Periodic perception task. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Perception task. \end{DoxyCompactList}\item 
 void $\ast$ \mbox{\hyperlink{tasks_8c_ad095128da13e00a037e732dd25ffcbf6}{trajectory\+\_\+task}} (void $\ast$arg)
 \item 
 void $\ast$ \mbox{\hyperlink{tasks_8c_a91e3918bad881fbf7304d534268de11d}{control\+\_\+task}} (void $\ast$arg)
 \item 
 void $\ast$ \mbox{\hyperlink{tasks_8c_a16cbac3bef85b555e76fe999965c1b7e}{display\+\_\+task}} (void $\ast$arg)
+\item 
+int \mbox{\hyperlink{tasks_8c_af9fa55a7948b658713df46fd22608bfd}{is\+\_\+mouse\+\_\+over\+\_\+button}} (\mbox{\hyperlink{structButton}{Button}} $\ast$btn, int mouse\+\_\+x, int mouse\+\_\+y)
+\item 
+void $\ast$ \mbox{\hyperlink{tasks_8c_a0fc6c027e96e920540028bd808a43c5f}{settings\+\_\+task}} (void $\ast$arg)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structButton}{Button}} \mbox{\hyperlink{tasks_8c_a9188a9b5c148c5e558d36807bbce7333}{buttons}} \mbox{[}$\,$\mbox{]}
+\begin{DoxyCompactList}\small\item\em Periodic perception task. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{tasks_8c_a8d31ca92b9f08b9b8dc134fdbd743bdd}{btn\+\_\+state\+\_\+cones}}
+\item 
+int \mbox{\hyperlink{tasks_8c_affd8bbaa3d95ef6b438022021db1c543}{btn\+\_\+state\+\_\+perception}}
+\item 
+int \mbox{\hyperlink{tasks_8c_ac5570a5cf15524c61e14cffd271dbf78}{btn\+\_\+state\+\_\+map}}
+\item 
+int \mbox{\hyperlink{tasks_8c_a9910257ef3a26317a779fc9e77d41d58}{btn\+\_\+state\+\_\+traj}}
+\item 
+int \mbox{\hyperlink{tasks_8c_a02a9f77d39f15a1769d8dba7aec487cb}{btn\+\_\+state\+\_\+autonomous}}
 \end{DoxyCompactItemize}
 
 
@@ -65,7 +84,8 @@ Here is the caller graph for this function\+:\nopagebreak
 \doxysubsubsection{\texorpdfstring{display\_task()}{display\_task()}}
 {\footnotesize\ttfamily void$\ast$ display\+\_\+task (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -79,6 +99,20 @@ Here is the caller graph for this function\+:\nopagebreak
 \includegraphics[width=235pt]{tasks_8c_a16cbac3bef85b555e76fe999965c1b7e_icgraph}
 \end{center}
 \end{figure}
+\mbox{\Hypertarget{tasks_8c_af9fa55a7948b658713df46fd22608bfd}\label{tasks_8c_af9fa55a7948b658713df46fd22608bfd}} 
+\index{tasks.c@{tasks.c}!is\_mouse\_over\_button@{is\_mouse\_over\_button}}
+\index{is\_mouse\_over\_button@{is\_mouse\_over\_button}!tasks.c@{tasks.c}}
+\doxysubsubsection{\texorpdfstring{is\_mouse\_over\_button()}{is\_mouse\_over\_button()}}
+{\footnotesize\ttfamily int is\+\_\+mouse\+\_\+over\+\_\+button (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structButton}{Button}} $\ast$}]{btn,  }\item[{int}]{mouse\+\_\+x,  }\item[{int}]{mouse\+\_\+y }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{tasks_8c_af9fa55a7948b658713df46fd22608bfd_icgraph}
+\end{center}
+\end{figure}
 \mbox{\Hypertarget{tasks_8c_a746b11c2b14e499dab89746ee003716d}\label{tasks_8c_a746b11c2b14e499dab89746ee003716d}} 
 \index{tasks.c@{tasks.c}!perception\_task@{perception\_task}}
 \index{perception\_task@{perception\_task}!tasks.c@{tasks.c}}
@@ -87,9 +121,164 @@ Here is the caller graph for this function\+:\nopagebreak
 
 
 
-Periodic perception task. 
+Perception task. 
 
-Perception task.
+This function executes perception related operations, such as processing sensor data or simulation input to understand the surrounding environment.
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & Pointer to the arguments required by the task. The actual type and usage of this parameter are defined by the implementation context. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer representing the function\textquotesingle{}s outcome, typically not used.
+\end{DoxyReturn}
+Trajectory planning task.
+
+This function is responsible for calculating and updating the movement trajectory for the entity in simulation. It handles the logic for path planning based on environmental data and simulation dynamics.
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & Pointer to the arguments specific to the trajectory task. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer representing the result of the function, usually unused.
+\end{DoxyReturn}
+Control task.
+
+This function manages the control logic, determining inputs for either keyboard control or autonomous behavior. It integrates various control signals and decisions, ensuring the entity reacts appropriately within the simulation.
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & Pointer to a structure or value containing control parameters. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the result of the control processing, typically not utilized.
+\end{DoxyReturn}
+Display update task.
+
+This function handles the rendering process for the simulation\textquotesingle{}s trajectory display. It updates the visual output based on the current state of the simulation data.
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & Pointer to display specific parameters or context information. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer indicating the outcome of the display operation, generally unused.
+\end{DoxyReturn}
+Task managing simulation settings and configuration
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & Pointer to task arguments (void pointer for thread compatibility) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void$\ast$ Return value of the thread (unused)
+\end{DoxyReturn}
+Thread task that handles simulation settings and configuration updates. Should be used with pthread\+\_\+create(). Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{tasks_8c_a746b11c2b14e499dab89746ee003716d_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=252pt]{tasks_8c_a746b11c2b14e499dab89746ee003716d_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{tasks_8c_a0fc6c027e96e920540028bd808a43c5f}\label{tasks_8c_a0fc6c027e96e920540028bd808a43c5f}} 
+\index{tasks.c@{tasks.c}!settings\_task@{settings\_task}}
+\index{settings\_task@{settings\_task}!tasks.c@{tasks.c}}
+\doxysubsubsection{\texorpdfstring{settings\_task()}{settings\_task()}}
+{\footnotesize\ttfamily void$\ast$ settings\+\_\+task (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=325pt]{tasks_8c_a0fc6c027e96e920540028bd808a43c5f_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=239pt]{tasks_8c_a0fc6c027e96e920540028bd808a43c5f_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{tasks_8c_ad095128da13e00a037e732dd25ffcbf6}\label{tasks_8c_ad095128da13e00a037e732dd25ffcbf6}} 
+\index{tasks.c@{tasks.c}!trajectory\_task@{trajectory\_task}}
+\index{trajectory\_task@{trajectory\_task}!tasks.c@{tasks.c}}
+\doxysubsubsection{\texorpdfstring{trajectory\_task()}{trajectory\_task()}}
+{\footnotesize\ttfamily void$\ast$ trajectory\+\_\+task (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=317pt]{tasks_8c_ad095128da13e00a037e732dd25ffcbf6_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=247pt]{tasks_8c_ad095128da13e00a037e732dd25ffcbf6_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{tasks_8c_a02a9f77d39f15a1769d8dba7aec487cb}\label{tasks_8c_a02a9f77d39f15a1769d8dba7aec487cb}} 
+\index{tasks.c@{tasks.c}!btn\_state\_autonomous@{btn\_state\_autonomous}}
+\index{btn\_state\_autonomous@{btn\_state\_autonomous}!tasks.c@{tasks.c}}
+\doxysubsubsection{\texorpdfstring{btn\_state\_autonomous}{btn\_state\_autonomous}}
+{\footnotesize\ttfamily int btn\+\_\+state\+\_\+autonomous\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{tasks_8c_a8d31ca92b9f08b9b8dc134fdbd743bdd}\label{tasks_8c_a8d31ca92b9f08b9b8dc134fdbd743bdd}} 
+\index{tasks.c@{tasks.c}!btn\_state\_cones@{btn\_state\_cones}}
+\index{btn\_state\_cones@{btn\_state\_cones}!tasks.c@{tasks.c}}
+\doxysubsubsection{\texorpdfstring{btn\_state\_cones}{btn\_state\_cones}}
+{\footnotesize\ttfamily int btn\+\_\+state\+\_\+cones\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{tasks_8c_ac5570a5cf15524c61e14cffd271dbf78}\label{tasks_8c_ac5570a5cf15524c61e14cffd271dbf78}} 
+\index{tasks.c@{tasks.c}!btn\_state\_map@{btn\_state\_map}}
+\index{btn\_state\_map@{btn\_state\_map}!tasks.c@{tasks.c}}
+\doxysubsubsection{\texorpdfstring{btn\_state\_map}{btn\_state\_map}}
+{\footnotesize\ttfamily int btn\+\_\+state\+\_\+map\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{tasks_8c_affd8bbaa3d95ef6b438022021db1c543}\label{tasks_8c_affd8bbaa3d95ef6b438022021db1c543}} 
+\index{tasks.c@{tasks.c}!btn\_state\_perception@{btn\_state\_perception}}
+\index{btn\_state\_perception@{btn\_state\_perception}!tasks.c@{tasks.c}}
+\doxysubsubsection{\texorpdfstring{btn\_state\_perception}{btn\_state\_perception}}
+{\footnotesize\ttfamily int btn\+\_\+state\+\_\+perception\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{tasks_8c_a9910257ef3a26317a779fc9e77d41d58}\label{tasks_8c_a9910257ef3a26317a779fc9e77d41d58}} 
+\index{tasks.c@{tasks.c}!btn\_state\_traj@{btn\_state\_traj}}
+\index{btn\_state\_traj@{btn\_state\_traj}!tasks.c@{tasks.c}}
+\doxysubsubsection{\texorpdfstring{btn\_state\_traj}{btn\_state\_traj}}
+{\footnotesize\ttfamily int btn\+\_\+state\+\_\+traj\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{tasks_8c_a9188a9b5c148c5e558d36807bbce7333}\label{tasks_8c_a9188a9b5c148c5e558d36807bbce7333}} 
+\index{tasks.c@{tasks.c}!buttons@{buttons}}
+\index{buttons@{buttons}!tasks.c@{tasks.c}}
+\doxysubsubsection{\texorpdfstring{buttons}{buttons}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structButton}{Button}} buttons\mbox{[}$\,$\mbox{]}\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Periodic perception task. 
 
 This task acquires Li\+DAR measurements, resets the array of detected cones, and performs mapping based on the current position and orientation of the vehicle. After processing the sensor data, it signals the trajectory planning task using a semaphore. The task executes continuously until the ESC key is pressed.
 
@@ -149,38 +338,3 @@ Always returns NULL.
 \begin{DoxyNote}{Note}
 Like the other tasks, execution time is tracked using runtime measurement calls. 
 \end{DoxyNote}
-Here is the call graph for this function\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{tasks_8c_a746b11c2b14e499dab89746ee003716d_cgraph}
-\end{center}
-\end{figure}
-Here is the caller graph for this function\+:\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=252pt]{tasks_8c_a746b11c2b14e499dab89746ee003716d_icgraph}
-\end{center}
-\end{figure}
-\mbox{\Hypertarget{tasks_8c_ad095128da13e00a037e732dd25ffcbf6}\label{tasks_8c_ad095128da13e00a037e732dd25ffcbf6}} 
-\index{tasks.c@{tasks.c}!trajectory\_task@{trajectory\_task}}
-\index{trajectory\_task@{trajectory\_task}!tasks.c@{tasks.c}}
-\doxysubsubsection{\texorpdfstring{trajectory\_task()}{trajectory\_task()}}
-{\footnotesize\ttfamily void$\ast$ trajectory\+\_\+task (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
-
-Here is the call graph for this function\+:\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=317pt]{tasks_8c_ad095128da13e00a037e732dd25ffcbf6_cgraph}
-\end{center}
-\end{figure}
-Here is the caller graph for this function\+:\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=247pt]{tasks_8c_ad095128da13e00a037e732dd25ffcbf6_icgraph}
-\end{center}
-\end{figure}

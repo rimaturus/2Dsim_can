@@ -1,11 +1,9 @@
 var searchData=
 [
-  ['max_5fcandidates_351',['MAX_CANDIDATES',['../perception_8h.html#a4f558446da5bfc11540c3b9892043564',1,'perception.h']]],
-  ['max_5fcones_5fmap_352',['MAX_CONES_MAP',['../perception_8h.html#af35d3efb02d45acebff24eebfb0a1f33',1,'perception.h']]],
-  ['max_5fdetected_5fcones_353',['MAX_DETECTED_CONES',['../globals_8h.html#ac5ffab41ad229777dae06978b9a7bc15',1,'globals.h']]],
-  ['max_5fpoints_5fper_5fcone_354',['MAX_POINTS_PER_CONE',['../perception_8h.html#afad93aca604f7ebdbe7874bd2b117991',1,'perception.h']]],
-  ['max_5ftasks_355',['MAX_TASKS',['../ptask_8h.html#aac747bed84189f8cfa509b94d488e622',1,'ptask.h']]],
-  ['maxrange_356',['maxRange',['../perception_8h.html#a8527a7553e15e86810eaeb88f7894009',1,'perception.h']]],
-  ['maxthrottleheight_357',['maxThrottleHeight',['../globals_8h.html#a6521403d61e5c32a93cb7c88fc759ffb',1,'globals.h']]],
-  ['micro_358',['MICRO',['../ptask_8h.html#a39f795126ae5c79f068a2c5c49d6ee59',1,'ptask.h']]]
+  ['deact_392',['DEACT',['../ptask_8h.html#ad16bd61c7b83a51c07f46b84cac76676',1,'ptask.h']]],
+  ['deg2rad_393',['deg2rad',['../globals_8h.html#a3a59eceae22ca8dfae7e5255e8836083',1,'globals.h']]],
+  ['detections_5fthreshold_394',['DETECTIONS_THRESHOLD',['../perception_8h.html#a8afaa1431c0a52288c7a25797070be5e',1,'perception.h']]],
+  ['display_5fdeadline_395',['DISPLAY_DEADLINE',['../globals_8h.html#a55ba14442ba004f7b62c928275243491',1,'globals.h']]],
+  ['display_5fperiod_396',['DISPLAY_PERIOD',['../globals_8h.html#aa7a9aa177dfa0114e2c9ce16ae874e35',1,'globals.h']]],
+  ['display_5fpriority_397',['DISPLAY_PRIORITY',['../globals_8h.html#ae27f7e9a9f2fa45c338e25d8a2a6e74d',1,'globals.h']]]
 ];

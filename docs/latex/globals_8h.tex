@@ -15,7 +15,8 @@ Include dependency graph for globals.\+h\+:\nopagebreak
 \includegraphics[width=319pt]{globals_8h__incl}
 \end{center}
 \end{figure}
-This graph shows which files directly or indirectly include this file\+:\nopagebreak
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -25,6 +26,8 @@ This graph shows which files directly or indirectly include this file\+:\nopageb
 \doxysubsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
+struct \mbox{\hyperlink{structcone}{cone}}
+\begin{DoxyCompactList}\small\item\em Represents a cone detected in the environment. \end{DoxyCompactList}\item 
 struct \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}}
 \begin{DoxyCompactList}\small\item\em Contains the measures of distance made by the Li\+DAR at each angle. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Macros}
@@ -32,13 +35,15 @@ struct \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}}
 \item 
 \#define \mbox{\hyperlink{globals_8h_a8c097a59d344c89887c5f4cbdbcf493e}{PROFILING}}
 \item 
-\#define \mbox{\hyperlink{globals_8h_af16fdb17c97af7858f199089c651840d}{PERCEPTION\+\_\+\+PERIOD}}~50
+\#define \mbox{\hyperlink{globals_8h_af16fdb17c97af7858f199089c651840d}{PERCEPTION\+\_\+\+PERIOD}}~100
 \item 
-\#define \mbox{\hyperlink{globals_8h_af354276741358e5c6922f593505b7abd}{TRAJECTORY\+\_\+\+PERIOD}}~10
+\#define \mbox{\hyperlink{globals_8h_af354276741358e5c6922f593505b7abd}{TRAJECTORY\+\_\+\+PERIOD}}~100
 \item 
-\#define \mbox{\hyperlink{globals_8h_af36dcc5b8d483f93687711244b6a11ef}{CONTROL\+\_\+\+PERIOD}}~10
+\#define \mbox{\hyperlink{globals_8h_af36dcc5b8d483f93687711244b6a11ef}{CONTROL\+\_\+\+PERIOD}}~5
 \item 
 \#define \mbox{\hyperlink{globals_8h_aa7a9aa177dfa0114e2c9ce16ae874e35}{DISPLAY\+\_\+\+PERIOD}}~17
+\item 
+\#define \mbox{\hyperlink{globals_8h_a926a83ace453812e1232dbf9e8a5dc20}{SETTINGS\+\_\+\+PERIOD}}~100
 \item 
 \#define \mbox{\hyperlink{globals_8h_ae6da475af3e420b75d8734fd499c0cde}{PERCEPTION\+\_\+\+DEADLINE}}~\mbox{\hyperlink{globals_8h_af16fdb17c97af7858f199089c651840d}{PERCEPTION\+\_\+\+PERIOD}}
 \item 
@@ -48,19 +53,25 @@ struct \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}}
 \item 
 \#define \mbox{\hyperlink{globals_8h_a55ba14442ba004f7b62c928275243491}{DISPLAY\+\_\+\+DEADLINE}}~\mbox{\hyperlink{globals_8h_aa7a9aa177dfa0114e2c9ce16ae874e35}{DISPLAY\+\_\+\+PERIOD}}
 \item 
+\#define \mbox{\hyperlink{globals_8h_a58f26704fb20144bc59fc8031c4ed324}{SETTINGS\+\_\+\+DEADLINE}}~\mbox{\hyperlink{globals_8h_a926a83ace453812e1232dbf9e8a5dc20}{SETTINGS\+\_\+\+PERIOD}}
+\item 
 \#define \mbox{\hyperlink{globals_8h_a6fa79a0953f9c779e36d454b588cf8a7}{PERCEPTION\+\_\+\+PRIORITY}}~15
 \item 
 \#define \mbox{\hyperlink{globals_8h_a808ab243e27f67f8a07770586842b81c}{TRAJECTORY\+\_\+\+PRIORITY}}~20
 \item 
-\#define \mbox{\hyperlink{globals_8h_af1e970e49915c36967fbd8acd7fa07c0}{CONTROL\+\_\+\+PRIORITY}}~25
+\#define \mbox{\hyperlink{globals_8h_af1e970e49915c36967fbd8acd7fa07c0}{CONTROL\+\_\+\+PRIORITY}}~5
 \item 
 \#define \mbox{\hyperlink{globals_8h_ae27f7e9a9f2fa45c338e25d8a2a6e74d}{DISPLAY\+\_\+\+PRIORITY}}~30
+\item 
+\#define \mbox{\hyperlink{globals_8h_a85a971d65f43bab3e2a5df611c7bd3a9}{SETTINGS\+\_\+\+PRIORITY}}~35
 \item 
 \#define \mbox{\hyperlink{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}{px\+\_\+per\+\_\+meter}}~100
 \item 
 \#define \mbox{\hyperlink{globals_8h_a3a59eceae22ca8dfae7e5255e8836083}{deg2rad}}~0.\+017453292519943295769236907684886f
 \item 
 \#define \mbox{\hyperlink{globals_8h_a6521403d61e5c32a93cb7c88fc759ffb}{max\+Throttle\+Height}}~100
+\item 
+\#define \mbox{\hyperlink{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}~3000
 \item 
 \#define \mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}~360
 \end{DoxyCompactItemize}
@@ -74,8 +85,6 @@ const char $\ast$ \mbox{\hyperlink{globals_8h_a051e403214cb6872ad3fe4e50302a6ee}
 const int \mbox{\hyperlink{globals_8h_a06a12873f8a85695ebe48194046f9903}{X\+\_\+\+MAX}}
 \item 
 const int \mbox{\hyperlink{globals_8h_a99a74a6925d1808bdce0de76aca0550d}{Y\+\_\+\+MAX}}
-\item 
-const float \mbox{\hyperlink{globals_8h_a952795524c1ac0c7d7aedb28328b80a8}{cone\+\_\+radius}}
 \item 
 BITMAP $\ast$ \mbox{\hyperlink{globals_8h_a41f9ba9006b8869d38a51359afa11270}{control\+\_\+panel}}
 \item 
@@ -107,11 +116,21 @@ int \mbox{\hyperlink{globals_8h_a34167711871149458e41ef5d3e3541fe}{yellow}}
 \item 
 int \mbox{\hyperlink{globals_8h_ab52c30a42ad18fe1e8d14464ba72df52}{blue}}
 \item 
+int \mbox{\hyperlink{globals_8h_a6761340706096510fd89edca40a63b9b}{red}}
+\item 
+int \mbox{\hyperlink{globals_8h_a6e208843f894f38fa7644608917a2a41}{green}}
+\item 
 float \mbox{\hyperlink{globals_8h_aa62dd86c39b5bdbe50e06812f94da902}{car\+\_\+x}}
 \item 
 float \mbox{\hyperlink{globals_8h_ad86d30593c748c02c787e21130cf6495}{car\+\_\+y}}
 \item 
 int \mbox{\hyperlink{globals_8h_af758fe89bfde05c28a913d4277ca3c58}{car\+\_\+angle}}
+\item 
+const float \mbox{\hyperlink{globals_8h_a952795524c1ac0c7d7aedb28328b80a8}{cone\+\_\+radius}}
+\item 
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{globals_8h_a6bff9042bc7c83b01b7c3c5285f48e82}{cones}} \mbox{[}\mbox{\hyperlink{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}
+\item 
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{globals_8h_a3f2b8e0bfcf1cca13e8ab15e31a156a5}{starting\+\_\+cone\+\_\+positions}} \mbox{[}\mbox{\hyperlink{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}
 \item 
 \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} \mbox{\hyperlink{globals_8h_a1e7de054f2faeeadadbab6364a1b5fe4}{measures}} \mbox{[}\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}\mbox{]}
 \item 
@@ -209,13 +228,13 @@ This header file declares all global macros, extern variables, and data types re
 \index{globals.h@{globals.h}!CONTROL\_PERIOD@{CONTROL\_PERIOD}}
 \index{CONTROL\_PERIOD@{CONTROL\_PERIOD}!globals.h@{globals.h}}
 \doxysubsubsection{\texorpdfstring{CONTROL\_PERIOD}{CONTROL\_PERIOD}}
-{\footnotesize\ttfamily \#define CONTROL\+\_\+\+PERIOD~10}
+{\footnotesize\ttfamily \#define CONTROL\+\_\+\+PERIOD~5}
 
 \mbox{\Hypertarget{globals_8h_af1e970e49915c36967fbd8acd7fa07c0}\label{globals_8h_af1e970e49915c36967fbd8acd7fa07c0}} 
 \index{globals.h@{globals.h}!CONTROL\_PRIORITY@{CONTROL\_PRIORITY}}
 \index{CONTROL\_PRIORITY@{CONTROL\_PRIORITY}!globals.h@{globals.h}}
 \doxysubsubsection{\texorpdfstring{CONTROL\_PRIORITY}{CONTROL\_PRIORITY}}
-{\footnotesize\ttfamily \#define CONTROL\+\_\+\+PRIORITY~25}
+{\footnotesize\ttfamily \#define CONTROL\+\_\+\+PRIORITY~5}
 
 \mbox{\Hypertarget{globals_8h_a3a59eceae22ca8dfae7e5255e8836083}\label{globals_8h_a3a59eceae22ca8dfae7e5255e8836083}} 
 \index{globals.h@{globals.h}!deg2rad@{deg2rad}}
@@ -241,6 +260,12 @@ This header file declares all global macros, extern variables, and data types re
 \doxysubsubsection{\texorpdfstring{DISPLAY\_PRIORITY}{DISPLAY\_PRIORITY}}
 {\footnotesize\ttfamily \#define DISPLAY\+\_\+\+PRIORITY~30}
 
+\mbox{\Hypertarget{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}\label{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}} 
+\index{globals.h@{globals.h}!MAX\_CONES\_MAP@{MAX\_CONES\_MAP}}
+\index{MAX\_CONES\_MAP@{MAX\_CONES\_MAP}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_CONES\_MAP}{MAX\_CONES\_MAP}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+CONES\+\_\+\+MAP~3000}
+
 \mbox{\Hypertarget{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}\label{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}} 
 \index{globals.h@{globals.h}!MAX\_DETECTED\_CONES@{MAX\_DETECTED\_CONES}}
 \index{MAX\_DETECTED\_CONES@{MAX\_DETECTED\_CONES}!globals.h@{globals.h}}
@@ -263,7 +288,7 @@ This header file declares all global macros, extern variables, and data types re
 \index{globals.h@{globals.h}!PERCEPTION\_PERIOD@{PERCEPTION\_PERIOD}}
 \index{PERCEPTION\_PERIOD@{PERCEPTION\_PERIOD}!globals.h@{globals.h}}
 \doxysubsubsection{\texorpdfstring{PERCEPTION\_PERIOD}{PERCEPTION\_PERIOD}}
-{\footnotesize\ttfamily \#define PERCEPTION\+\_\+\+PERIOD~50}
+{\footnotesize\ttfamily \#define PERCEPTION\+\_\+\+PERIOD~100}
 
 \mbox{\Hypertarget{globals_8h_a6fa79a0953f9c779e36d454b588cf8a7}\label{globals_8h_a6fa79a0953f9c779e36d454b588cf8a7}} 
 \index{globals.h@{globals.h}!PERCEPTION\_PRIORITY@{PERCEPTION\_PRIORITY}}
@@ -283,6 +308,24 @@ This header file declares all global macros, extern variables, and data types re
 \doxysubsubsection{\texorpdfstring{px\_per\_meter}{px\_per\_meter}}
 {\footnotesize\ttfamily \#define px\+\_\+per\+\_\+meter~100}
 
+\mbox{\Hypertarget{globals_8h_a58f26704fb20144bc59fc8031c4ed324}\label{globals_8h_a58f26704fb20144bc59fc8031c4ed324}} 
+\index{globals.h@{globals.h}!SETTINGS\_DEADLINE@{SETTINGS\_DEADLINE}}
+\index{SETTINGS\_DEADLINE@{SETTINGS\_DEADLINE}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{SETTINGS\_DEADLINE}{SETTINGS\_DEADLINE}}
+{\footnotesize\ttfamily \#define SETTINGS\+\_\+\+DEADLINE~\mbox{\hyperlink{globals_8h_a926a83ace453812e1232dbf9e8a5dc20}{SETTINGS\+\_\+\+PERIOD}}}
+
+\mbox{\Hypertarget{globals_8h_a926a83ace453812e1232dbf9e8a5dc20}\label{globals_8h_a926a83ace453812e1232dbf9e8a5dc20}} 
+\index{globals.h@{globals.h}!SETTINGS\_PERIOD@{SETTINGS\_PERIOD}}
+\index{SETTINGS\_PERIOD@{SETTINGS\_PERIOD}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{SETTINGS\_PERIOD}{SETTINGS\_PERIOD}}
+{\footnotesize\ttfamily \#define SETTINGS\+\_\+\+PERIOD~100}
+
+\mbox{\Hypertarget{globals_8h_a85a971d65f43bab3e2a5df611c7bd3a9}\label{globals_8h_a85a971d65f43bab3e2a5df611c7bd3a9}} 
+\index{globals.h@{globals.h}!SETTINGS\_PRIORITY@{SETTINGS\_PRIORITY}}
+\index{SETTINGS\_PRIORITY@{SETTINGS\_PRIORITY}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{SETTINGS\_PRIORITY}{SETTINGS\_PRIORITY}}
+{\footnotesize\ttfamily \#define SETTINGS\+\_\+\+PRIORITY~35}
+
 \mbox{\Hypertarget{globals_8h_a8f976b724e8b56aeab6b6d9c792f4cf0}\label{globals_8h_a8f976b724e8b56aeab6b6d9c792f4cf0}} 
 \index{globals.h@{globals.h}!TRAJECTORY\_DEADLINE@{TRAJECTORY\_DEADLINE}}
 \index{TRAJECTORY\_DEADLINE@{TRAJECTORY\_DEADLINE}!globals.h@{globals.h}}
@@ -293,7 +336,7 @@ This header file declares all global macros, extern variables, and data types re
 \index{globals.h@{globals.h}!TRAJECTORY\_PERIOD@{TRAJECTORY\_PERIOD}}
 \index{TRAJECTORY\_PERIOD@{TRAJECTORY\_PERIOD}!globals.h@{globals.h}}
 \doxysubsubsection{\texorpdfstring{TRAJECTORY\_PERIOD}{TRAJECTORY\_PERIOD}}
-{\footnotesize\ttfamily \#define TRAJECTORY\+\_\+\+PERIOD~10}
+{\footnotesize\ttfamily \#define TRAJECTORY\+\_\+\+PERIOD~100}
 
 \mbox{\Hypertarget{globals_8h_a808ab243e27f67f8a07770586842b81c}\label{globals_8h_a808ab243e27f67f8a07770586842b81c}} 
 \index{globals.h@{globals.h}!TRAJECTORY\_PRIORITY@{TRAJECTORY\_PRIORITY}}
@@ -388,7 +431,13 @@ The radius (in meters) for cone-\/related calculations, set to 0.\+05.
 \begin{DoxyItemize}
 \item 
 \end{DoxyItemize}
-\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a41f9ba9006b8869d38a51359afa11270}\label{globals_8h_a41f9ba9006b8869d38a51359afa11270}} 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a6bff9042bc7c83b01b7c3c5285f48e82}\label{globals_8h_a6bff9042bc7c83b01b7c3c5285f48e82}} 
+\index{globals.h@{globals.h}!cones@{cones}}
+\index{cones@{cones}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{cones}{cones}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structcone}{cone}} cones\mbox{[}\mbox{\hyperlink{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{globals_8h_a41f9ba9006b8869d38a51359afa11270}\label{globals_8h_a41f9ba9006b8869d38a51359afa11270}} 
 \index{globals.h@{globals.h}!control\_panel@{control\_panel}}
 \index{control\_panel@{control\_panel}!globals.h@{globals.h}}
 \doxysubsubsection{\texorpdfstring{control\_panel}{control\_panel}}
@@ -428,6 +477,12 @@ The multiplier \textquotesingle{}px\+\_\+per\+\_\+meter\textquotesingle{} used f
 \doxysubsubsection{\texorpdfstring{grass\_green}{grass\_green}}
 {\footnotesize\ttfamily int grass\+\_\+green\hspace{0.3cm}{\ttfamily [extern]}}
 
+\mbox{\Hypertarget{globals_8h_a6e208843f894f38fa7644608917a2a41}\label{globals_8h_a6e208843f894f38fa7644608917a2a41}} 
+\index{globals.h@{globals.h}!green@{green}}
+\index{green@{green}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{green}{green}}
+{\footnotesize\ttfamily int green}
+
 \mbox{\Hypertarget{globals_8h_aa21f1e92d43a7701840f426f13061380}\label{globals_8h_aa21f1e92d43a7701840f426f13061380}} 
 \index{globals.h@{globals.h}!lidar\_sem@{lidar\_sem}}
 \index{lidar\_sem@{lidar\_sem}!globals.h@{globals.h}}
@@ -466,7 +521,19 @@ An array of 360 Li\+DAR measurements (one per degree) representing the simulated
 \doxysubsubsection{\texorpdfstring{pink}{pink}}
 {\footnotesize\ttfamily int pink}
 
-\mbox{\Hypertarget{globals_8h_a29633e1eefceb92936cfcf2f8553d9d6}\label{globals_8h_a29633e1eefceb92936cfcf2f8553d9d6}} 
+\mbox{\Hypertarget{globals_8h_a6761340706096510fd89edca40a63b9b}\label{globals_8h_a6761340706096510fd89edca40a63b9b}} 
+\index{globals.h@{globals.h}!red@{red}}
+\index{red@{red}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{red}{red}}
+{\footnotesize\ttfamily int red\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{globals_8h_a3f2b8e0bfcf1cca13e8ab15e31a156a5}\label{globals_8h_a3f2b8e0bfcf1cca13e8ab15e31a156a5}} 
+\index{globals.h@{globals.h}!starting\_cone\_positions@{starting\_cone\_positions}}
+\index{starting\_cone\_positions@{starting\_cone\_positions}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{starting\_cone\_positions}{starting\_cone\_positions}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structcone}{cone}} starting\+\_\+cone\+\_\+positions\mbox{[}\mbox{\hyperlink{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}\hspace{0.3cm}{\ttfamily [extern]}}
+
+Store the default cone positions before collisions \mbox{\Hypertarget{globals_8h_a29633e1eefceb92936cfcf2f8553d9d6}\label{globals_8h_a29633e1eefceb92936cfcf2f8553d9d6}} 
 \index{globals.h@{globals.h}!steering\_wheel@{steering\_wheel}}
 \index{steering\_wheel@{steering\_wheel}!globals.h@{globals.h}}
 \doxysubsubsection{\texorpdfstring{steering\_wheel}{steering\_wheel}}

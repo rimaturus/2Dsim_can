@@ -1,25 +1,7 @@
 var searchData=
 [
-  ['pedal_102',['pedal',['../control_8c.html#aa469e51bab916bcd3fc763e8563db01b',1,'pedal():&#160;control.c'],['../control_8h.html#aa469e51bab916bcd3fc763e8563db01b',1,'pedal():&#160;control.c']]],
-  ['perception_103',['perception',['../globals_8c.html#a99560cbcada94239c16ac20b88dfd9cf',1,'perception():&#160;globals.c'],['../globals_8h.html#a93d8b579fb6a6e44aceb0e66cd315b79',1,'perception():&#160;globals.c']]],
-  ['perception_2ec_104',['perception.c',['../perception_8c.html',1,'']]],
-  ['perception_2eh_105',['perception.h',['../perception_8h.html',1,'']]],
-  ['perception_5fdeadline_106',['PERCEPTION_DEADLINE',['../globals_8h.html#ae6da475af3e420b75d8734fd499c0cde',1,'globals.h']]],
-  ['perception_5fperiod_107',['PERCEPTION_PERIOD',['../globals_8h.html#af16fdb17c97af7858f199089c651840d',1,'globals.h']]],
-  ['perception_5fpriority_108',['PERCEPTION_PRIORITY',['../globals_8h.html#a6fa79a0953f9c779e36d454b588cf8a7',1,'globals.h']]],
-  ['perception_5ftask_109',['perception_task',['../tasks_8h.html#a746b11c2b14e499dab89746ee003716d',1,'perception_task(void *arg):&#160;tasks.c'],['../tasks_8c.html#a746b11c2b14e499dab89746ee003716d',1,'perception_task(void *arg):&#160;tasks.c']]],
-  ['period_110',['period',['../structtask__par.html#a216a0d3c101028a6e9afe5320015c636',1,'task_par']]],
-  ['pink_111',['pink',['../globals_8c.html#af0d8b62806f3b2c95d55dc52164fbf32',1,'pink():&#160;globals.c'],['../globals_8h.html#af0d8b62806f3b2c95d55dc52164fbf32',1,'pink():&#160;globals.h']]],
-  ['point_5fx_112',['point_x',['../structpointcloud__t.html#a69f7d9a6d7dadaee2a79ce11f9f19abe',1,'pointcloud_t']]],
-  ['point_5fy_113',['point_y',['../structpointcloud__t.html#a7c882904eccd0b004955fccf7528a634',1,'pointcloud_t']]],
-  ['pointcloud_5ft_114',['pointcloud_t',['../structpointcloud__t.html',1,'']]],
-  ['prio_115',['prio',['../structtask__par.html#a34b0fd0951def39eada0640005934b96',1,'task_par']]],
-  ['profiling_116',['PROFILING',['../globals_8h.html#a8c097a59d344c89887c5f4cbdbcf493e',1,'globals.h']]],
-  ['ptask_2ec_117',['ptask.c',['../ptask_8c.html',1,'']]],
-  ['ptask_2eh_118',['ptask.h',['../ptask_8h.html',1,'']]],
-  ['ptask_5fimplementation_119',['PTASK_IMPLEMENTATION',['../ptask_8c.html#a8434385bbaf79e99c53547dd039d63b9',1,'ptask.c']]],
-  ['ptask_5finit_120',['ptask_init',['../ptask_8h.html#a16dc5b4ee9790f380821701ff6865e90',1,'ptask.h']]],
-  ['ptask_5fpolicy_121',['ptask_policy',['../ptask_8h.html#a2e2c8dc424b14ad86927ee05ec4b3797',1,'ptask.h']]],
-  ['ptask_5ft0_122',['ptask_t0',['../ptask_8h.html#a32252d8f91e89ff41f33c4d5fb3049b3',1,'ptask.h']]],
-  ['px_5fper_5fmeter_123',['px_per_meter',['../globals_8h.html#a55bd5f5c909901931b7a03caa2ed75a8',1,'globals.h']]]
+  ['n_5fcandidates_115',['n_candidates',['../group__PerceptionModule.html#ga3b891815a84a7ddd4de870b5ed678ec8',1,'perception.c']]],
+  ['nano_116',['NANO',['../ptask_8h.html#aa45f3f33a4532dd600449668c704c045',1,'ptask.h']]],
+  ['non_5fcinematic_5fmodel_117',['NON_CINEMATIC_MODEL',['../vehicle_8c.html#ab902a2d294d9a9fea3c41f818c7b30e2',1,'vehicle.c']]],
+  ['num_5fbuttons_118',['num_buttons',['../display_8h.html#afd296c470a4af69caa281bd5ecd5212e',1,'display.h']]]
 ];

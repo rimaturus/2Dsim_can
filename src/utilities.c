@@ -64,6 +64,7 @@
  * @param task_name   A string representing the name of the task for which the runtime is being measured.
  */
 #define _POSIX_C_SOURCE 199309L
+
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
@@ -163,6 +164,7 @@ void load_cones_positions(const char *filename, cone *cones, int max_cones)
                                 fprintf(stderr, "Error converting 'x' value: %s\n", (char *)event.data.scalar.value);
                             }
                             cones[i].x = (val + offset_x) * px_per_meter;
+                            starting_cone_positions[i].x = cones[i].x;
                         } 
                         else if (strcmp(current_key, "y") == 0) {
                             char *endptr = NULL;
@@ -174,13 +176,16 @@ void load_cones_positions(const char *filename, cone *cones, int max_cones)
                                 fprintf(stderr, "Error converting 'y' value: %s\n", (char *)event.data.scalar.value);
                             }
                             cones[i].y = (val + offset_y) * px_per_meter;
+                            starting_cone_positions[i].y = cones[i].y;
                         } 
                         else if (strcmp(current_key, "color") == 0) {
                             if (strcmp((char *)event.data.scalar.value, "yellow") == 0) {
                                 cones[i].color = yellow; // e.g., yellow color
+                                starting_cone_positions[i].color = yellow;
                             } 
                             else if (strcmp((char *)event.data.scalar.value, "blue") == 0) {
                                 cones[i].color = blue; // e.g., blue color
+                                starting_cone_positions[i].color = blue;
                             }
                             // Add more colors as needed
                         }

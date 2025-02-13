@@ -1,11 +1,12 @@
 <map id="src/perception.c" name="src/perception.c">
-<area shape="rect" id="node1" title="Implements LiDAR&#45;based cone detection and mapping using circle Hough transform." alt="" coords="120,5,245,32"/>
+<area shape="rect" id="node1" title="Implements LiDAR&#45;based cone detection and mapping using circle Hough transform." alt="" coords="156,5,281,32"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,80,72,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="162,155,230,181"/>
+<area shape="rect" id="node3" title=" " alt="" coords="145,229,213,256"/>
 <area shape="rect" id="node4" title=" " alt="" coords="147,80,218,107"/>
-<area shape="rect" id="node5" href="$globals_8h.html" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="297,155,378,181"/>
-<area shape="rect" id="node9" href="$perception_8h.html" title="Header file for perception&#45;related types, constants, and function declarations." alt="" coords="242,80,345,107"/>
-<area shape="rect" id="node6" title=" " alt="" coords="193,229,271,256"/>
-<area shape="rect" id="node7" title=" " alt="" coords="295,229,379,256"/>
-<area shape="rect" id="node8" title=" " alt="" coords="404,229,511,256"/>
+<area shape="rect" id="node5" href="$globals_8h.html" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="305,229,386,256"/>
+<area shape="rect" id="node9" href="$perception_8h.html" title="Header file for perception&#45;related types, constants, and function declarations." alt="" coords="205,155,307,181"/>
+<area shape="rect" id="node10" href="$trajectory_8h.html" title="Provides declarations for trajectory planning based on cone detection." alt="" coords="294,80,389,107"/>
+<area shape="rect" id="node6" title=" " alt="" coords="201,304,279,331"/>
+<area shape="rect" id="node7" title=" " alt="" coords="303,304,387,331"/>
+<area shape="rect" id="node8" title=" " alt="" coords="412,304,519,331"/>
 </map>

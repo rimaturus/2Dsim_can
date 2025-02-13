@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['wait_5ffor_5factivation_175',['wait_for_activation',['../ptask_8h.html#ac5a989242ff00476f314f92395f23252',1,'ptask.h']]],
-  ['wait_5ffor_5fperiod_176',['wait_for_period',['../ptask_8h.html#afd8a4ae978d1068cb18f8e5fc03a1f0c',1,'ptask.h']]],
-  ['wait_5ffor_5ftask_5fend_177',['wait_for_task_end',['../ptask_8h.html#a9142a39d7c9be6b98ce01f0c7541d8f7',1,'ptask.h']]],
-  ['waypoint_178',['waypoint',['../structwaypoint.html',1,'']]],
-  ['white_179',['white',['../globals_8h.html#a52b8a1dc217164197e6e5ba60ec911bf',1,'white():&#160;globals.h'],['../globals_8c.html#a52b8a1dc217164197e6e5ba60ec911bf',1,'white():&#160;globals.c']]]
+  ['update_5fdisplay_191',['update_display',['../display_8h.html#aa2eb9ba074b23fc3b4a91c98e0c83c8b',1,'update_display():&#160;display.c'],['../display_8c.html#aa2eb9ba074b23fc3b4a91c98e0c83c8b',1,'update_display():&#160;display.c']]],
+  ['update_5fmap_192',['update_map',['../group__PerceptionModule.html#ga697c64eba1fb6796e0e5ccc17dc578dd',1,'update_map(cone *detected_cones):&#160;perception.c'],['../group__PerceptionModule.html#ga697c64eba1fb6796e0e5ccc17dc578dd',1,'update_map(cone *detected_cones):&#160;perception.c']]],
+  ['utilities_2ec_193',['utilities.c',['../utilities_8c.html',1,'']]],
+  ['utilities_2eh_194',['utilities.h',['../utilities_8h.html',1,'']]]
 ];

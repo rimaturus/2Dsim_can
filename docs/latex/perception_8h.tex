@@ -14,7 +14,8 @@ Include dependency graph for perception.\+h\+:\nopagebreak
 \includegraphics[width=319pt]{perception_8h__incl}
 \end{center}
 \end{figure}
-This graph shows which files directly or indirectly include this file\+:\nopagebreak
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -24,8 +25,6 @@ This graph shows which files directly or indirectly include this file\+:\nopageb
 \doxysubsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
-struct \mbox{\hyperlink{structcone}{cone}}
-\begin{DoxyCompactList}\small\item\em Processes the Li\+DAR measurements. \end{DoxyCompactList}\item 
 struct \mbox{\hyperlink{structcone__border}{cone\+\_\+border}}
 \begin{DoxyCompactList}\small\item\em Represents a border of a cone as seen in a Li\+DAR scan. \end{DoxyCompactList}\item 
 struct \mbox{\hyperlink{structcandidate__cone}{candidate\+\_\+cone}}
@@ -36,9 +35,7 @@ struct \mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+po
 \begin{DoxyCompactItemize}
 \item 
 \#define \mbox{\hyperlink{perception_8h_afad93aca604f7ebdbe7874bd2b117991}{MAX\+\_\+\+POINTS\+\_\+\+PER\+\_\+\+CONE}}~180
-\item 
-\#define \mbox{\hyperlink{perception_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}~3000
-\item 
+\begin{DoxyCompactList}\small\item\em Processes the Li\+DAR measurements. \end{DoxyCompactList}\item 
 \#define \mbox{\hyperlink{perception_8h_a8527a7553e15e86810eaeb88f7894009}{max\+Range}}~10.\+0f
 \item 
 \#define \mbox{\hyperlink{perception_8h_a4f558446da5bfc11540c3b9892043564}{MAX\+\_\+\+CANDIDATES}}~100000
@@ -69,7 +66,7 @@ int \mbox{\hyperlink{group__PerceptionModule_gac53039214d075800d8b4f87ebd760ef5}
 \item 
 \mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}} \mbox{[}\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}}\mbox{]}
 \item 
-\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{group__PerceptionModule_gaefe2c104bad3e859c0f123af113abc22}{track\+\_\+map}} \mbox{[}\mbox{\hyperlink{perception_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}
+\mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{group__PerceptionModule_gaefe2c104bad3e859c0f123af113abc22}{track\+\_\+map}} \mbox{[}\mbox{\hyperlink{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}
 \item 
 int \mbox{\hyperlink{group__PerceptionModule_ga7b64bf8a899686d6bf0c7d6c65e9d522}{track\+\_\+map\+\_\+idx}}
 \end{DoxyCompactItemize}
@@ -115,18 +112,68 @@ Other constants\+:
 \doxysubsubsection{\texorpdfstring{MAX\_CANDIDATES}{MAX\_CANDIDATES}}
 {\footnotesize\ttfamily \#define MAX\+\_\+\+CANDIDATES~100000}
 
-\mbox{\Hypertarget{perception_8h_af35d3efb02d45acebff24eebfb0a1f33}\label{perception_8h_af35d3efb02d45acebff24eebfb0a1f33}} 
-\index{perception.h@{perception.h}!MAX\_CONES\_MAP@{MAX\_CONES\_MAP}}
-\index{MAX\_CONES\_MAP@{MAX\_CONES\_MAP}!perception.h@{perception.h}}
-\doxysubsubsection{\texorpdfstring{MAX\_CONES\_MAP}{MAX\_CONES\_MAP}}
-{\footnotesize\ttfamily \#define MAX\+\_\+\+CONES\+\_\+\+MAP~3000}
-
 \mbox{\Hypertarget{perception_8h_afad93aca604f7ebdbe7874bd2b117991}\label{perception_8h_afad93aca604f7ebdbe7874bd2b117991}} 
 \index{perception.h@{perception.h}!MAX\_POINTS\_PER\_CONE@{MAX\_POINTS\_PER\_CONE}}
 \index{MAX\_POINTS\_PER\_CONE@{MAX\_POINTS\_PER\_CONE}!perception.h@{perception.h}}
 \doxysubsubsection{\texorpdfstring{MAX\_POINTS\_PER\_CONE}{MAX\_POINTS\_PER\_CONE}}
 {\footnotesize\ttfamily \#define MAX\+\_\+\+POINTS\+\_\+\+PER\+\_\+\+CONE~180}
 
+
+
+Processes the Li\+DAR measurements. 
+
+This function simulates or processes a Li\+DAR scan, updating the point cloud information based on the car\textquotesingle{}s current position.
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & The X coordinate of the car\textquotesingle{}s position. \\
+\hline
+{\em car\+\_\+y} & The Y coordinate of the car\textquotesingle{}s position. \\
+\hline
+{\em measures} & Pointer to the point cloud structure to be updated with the Li\+DAR measurements.\\
+\hline
+\end{DoxyParams}
+Performs real-\/time mapping using detected cones.
+
+This function updates the array of detected cones by correlating the car’s current position and orientation with cone positions.
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & The X coordinate of the car\textquotesingle{}s position. \\
+\hline
+{\em car\+\_\+y} & The Y coordinate of the car\textquotesingle{}s position. \\
+\hline
+{\em car\+\_\+angle} & The orientation angle of the car (in degrees or radians as defined elsewhere). \\
+\hline
+{\em detected\+\_\+cones} & Pointer to the array where detected cones are stored.\\
+\hline
+\end{DoxyParams}
+Checks and updates the nearest point for a given Li\+DAR scan angle.
+
+This function compares a new detected point against existing data to determine if it belongs to a known cone border, updating the cone border data accordingly.
+
+
+\begin{DoxyParams}{Parameters}
+{\em angle} & The scan angle index from the Li\+DAR measurement. \\
+\hline
+{\em new\+\_\+point\+\_\+x} & The X coordinate of the new detected point. \\
+\hline
+{\em new\+\_\+point\+\_\+y} & The Y coordinate of the new detected point. \\
+\hline
+{\em color} & The color associated with the new detected point. \\
+\hline
+{\em cone\+\_\+borders} & Pointer to the \mbox{\hyperlink{structcone__border}{cone\+\_\+border}} structure to be updated.\\
+\hline
+\end{DoxyParams}
+Updates the global track map with the latest detected cones.
+
+This function takes the newly detected cones and integrates them into the overall track map, which represents the accumulated perception of the environment.
+
+
+\begin{DoxyParams}{Parameters}
+{\em detected\+\_\+cones} & Pointer to the array of cones that have been newly detected. \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{perception_8h_a8527a7553e15e86810eaeb88f7894009}\label{perception_8h_a8527a7553e15e86810eaeb88f7894009}} 
 \index{perception.h@{perception.h}!maxRange@{maxRange}}
 \index{maxRange@{maxRange}!perception.h@{perception.h}}

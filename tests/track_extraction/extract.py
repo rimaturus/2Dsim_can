@@ -279,7 +279,7 @@ def main():
 
     # D) Compute equispaced points along each boundary.
     # Set cone_spacing = 100 px (which corresponds to 1 m when 1px = 0.01 m)
-    cone_spacing = 100
+    cone_spacing = 50
     eq_out_x, eq_out_y = equispaced_points(out_x, out_y, cone_spacing)
     if in_x is not None:
         eq_in_x, eq_in_y = equispaced_points(in_x, in_y, cone_spacing)

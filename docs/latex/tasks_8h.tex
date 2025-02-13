@@ -32,6 +32,8 @@ void $\ast$ \mbox{\hyperlink{tasks_8h_ad095128da13e00a037e732dd25ffcbf6}{traject
 void $\ast$ \mbox{\hyperlink{tasks_8h_a91e3918bad881fbf7304d534268de11d}{control\+\_\+task}} (void $\ast$arg)
 \item 
 void $\ast$ \mbox{\hyperlink{tasks_8h_a16cbac3bef85b555e76fe999965c1b7e}{display\+\_\+task}} (void $\ast$arg)
+\item 
+void $\ast$ \mbox{\hyperlink{tasks_8h_a0fc6c027e96e920540028bd808a43c5f}{settings\+\_\+task}} (void $\ast$arg)
 \end{DoxyCompactItemize}
 
 
@@ -75,7 +77,8 @@ Here is the caller graph for this function\+:\nopagebreak
 \doxysubsubsection{\texorpdfstring{display\_task()}{display\_task()}}
 {\footnotesize\ttfamily void$\ast$ display\+\_\+task (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -145,68 +148,17 @@ This function handles the rendering process for the simulation\textquotesingle{}
 \begin{DoxyReturn}{Returns}
 Pointer indicating the outcome of the display operation, generally unused.
 \end{DoxyReturn}
-Perception task.
-
-This task acquires Li\+DAR measurements, resets the array of detected cones, and performs mapping based on the current position and orientation of the vehicle. After processing the sensor data, it signals the trajectory planning task using a semaphore. The task executes continuously until the ESC key is pressed.
+Task managing simulation settings and configuration
 
 
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in}}  & {\em arg} & Pointer used to determine the task\textquotesingle{}s index.\\
+\begin{DoxyParams}{Parameters}
+{\em arg} & Pointer to task arguments (void pointer for thread compatibility) \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Always returns NULL.
+void$\ast$ Return value of the thread (unused)
 \end{DoxyReturn}
-\begin{DoxyNote}{Note}
-The function uses a runtime measurement call to monitor its execution time.
-\end{DoxyNote}
-Periodic trajectory planning task.
-
-This task waits for a signal from the perception task to ensure updated sensor data is available. It then calculates a new trajectory for the vehicle based on its current position, orientation, and the detected cones from the environment. The task runs periodically and terminates when the ESC key is pressed.
-
-
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in}}  & {\em arg} & Pointer used to determine the task\textquotesingle{}s index.\\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Always returns NULL.
-\end{DoxyReturn}
-\begin{DoxyNote}{Note}
-The task\textquotesingle{}s operation is encapsulated between runtime measurement calls.
-\end{DoxyNote}
-Periodic control task.
-
-This task is responsible for controlling the vehicle\textquotesingle{}s movement. It chooses between keyboard-\/based control and autonomous control based on the state of the \textquotesingle{}A\textquotesingle{} key. If autonomous mode is active (i.\+e., \textquotesingle{}A\textquotesingle{} is pressed), it uses the computed trajectory, otherwise it relies on user input to drive the vehicle. Execution continues until the ESC key is pressed.
-
-
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in}}  & {\em arg} & Pointer used to determine the task\textquotesingle{}s index.\\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Always returns NULL.
-\end{DoxyReturn}
-\begin{DoxyNote}{Note}
-The function uses runtime measurement calls to monitor execution time per cycle.
-\end{DoxyNote}
-Periodic display task.
-
-This task updates the graphical display of the simulation environment. It refreshes the on-\/screen information such as the vehicle\textquotesingle{}s position, sensor data, and other simulation elements. The task continues running until the ESC key is pressed.
-
-
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in}}  & {\em arg} & Pointer used to determine the task\textquotesingle{}s index.\\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Always returns NULL.
-\end{DoxyReturn}
-\begin{DoxyNote}{Note}
-Like the other tasks, execution time is tracked using runtime measurement calls. 
-\end{DoxyNote}
-Here is the call graph for this function\+:
-\nopagebreak
+Thread task that handles simulation settings and configuration updates. Should be used with pthread\+\_\+create(). Here is the call graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -218,6 +170,28 @@ Here is the caller graph for this function\+:\nopagebreak
 \begin{center}
 \leavevmode
 \includegraphics[width=252pt]{tasks_8h_a746b11c2b14e499dab89746ee003716d_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{tasks_8h_a0fc6c027e96e920540028bd808a43c5f}\label{tasks_8h_a0fc6c027e96e920540028bd808a43c5f}} 
+\index{tasks.h@{tasks.h}!settings\_task@{settings\_task}}
+\index{settings\_task@{settings\_task}!tasks.h@{tasks.h}}
+\doxysubsubsection{\texorpdfstring{settings\_task()}{settings\_task()}}
+{\footnotesize\ttfamily void$\ast$ settings\+\_\+task (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=325pt]{tasks_8h_a0fc6c027e96e920540028bd808a43c5f_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=239pt]{tasks_8h_a0fc6c027e96e920540028bd808a43c5f_icgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{tasks_8h_ad095128da13e00a037e732dd25ffcbf6}\label{tasks_8h_ad095128da13e00a037e732dd25ffcbf6}} 
