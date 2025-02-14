@@ -164,27 +164,27 @@ int main(void)
 
 	// Create periodic tasks: perception, trajectory, control, display
 
-	if (task_create(1, perception_task, PERCEPTION_PERIOD, PERCEPTION_DEADLINE, PERCEPTION_PRIORITY, ACT) != 0) {
+	if (task_create(PERCEPTION_ID, perception_task, PERCEPTION_PERIOD, PERCEPTION_DEADLINE, PERCEPTION_PRIORITY, ACT) != 0) {
 		fprintf(stderr, "Failed to create Perception Task\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if (task_create(2, trajectory_task, TRAJECTORY_PERIOD, TRAJECTORY_DEADLINE, TRAJECTORY_PRIORITY, ACT) != 0) {
+	if (task_create(TRAJECTORY_ID, trajectory_task, TRAJECTORY_PERIOD, TRAJECTORY_DEADLINE, TRAJECTORY_PRIORITY, ACT) != 0) {
 		fprintf(stderr, "Failed to create Trajectory Task\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if (task_create(3, control_task, CONTROL_PERIOD, CONTROL_DEADLINE, CONTROL_PRIORITY, ACT) != 0) {
+	if (task_create(CONTROL_ID, control_task, CONTROL_PERIOD, CONTROL_DEADLINE, CONTROL_PRIORITY, ACT) != 0) {
 		fprintf(stderr, "Failed to create Control Task\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if (task_create(4, display_task, DISPLAY_PERIOD, DISPLAY_DEADLINE, DISPLAY_PRIORITY, ACT) != 0) {
+	if (task_create(DISPLAY_ID, display_task, DISPLAY_PERIOD, DISPLAY_DEADLINE, DISPLAY_PRIORITY, ACT) != 0) {
 		fprintf(stderr, "Failed to create Display Task\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if (task_create(5, settings_task, SETTINGS_PERIOD, SETTINGS_DEADLINE, SETTINGS_PRIORITY, ACT) != 0) {
+	if (task_create(SETTINGS_ID, settings_task, SETTINGS_PERIOD, SETTINGS_DEADLINE, SETTINGS_PRIORITY, ACT) != 0) {
 		fprintf(stderr, "Failed to create SETTINGS Task\n");
 		exit(EXIT_FAILURE);
 	}
@@ -197,6 +197,7 @@ int main(void)
 	wait_for_task_end(5);
 
 	printf("Exiting simulation...\n");
+	printf("Deadline misses: \n\t- perception %d, \n\t- trajectory %d, \n\t- control %d, \n\t- display %d, \n\t- settings %d\n", dl_miss_perception, dl_miss_trajectory, dl_miss_control, dl_miss_display, dl_miss_settings);
 	clear_keybuf();
 	readkey();
 	allegro_exit();

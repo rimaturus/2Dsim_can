@@ -161,8 +161,7 @@ static int is_in_front(float car_angle_deg, float wx, float wy, float cx, float 
     return (fabs(angle_diff) <= 100.0f);
 }
 
-//---------------------------------------------------------------------
-// The new autonomous control routine that uses the centerline logic.
+// Autonomous control routine using centerline waypoints.
 void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *center_waypoints)
 {
     int num_waypoints = 0;

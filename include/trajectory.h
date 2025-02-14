@@ -53,7 +53,9 @@ typedef struct {
 	float y;
 } waypoint;
 
-extern waypoint trajectory[2*MAX_DETECTED_CONES];
+#define MAX_WAYPOINTS (4*MAX_DETECTED_CONES)
+
+extern waypoint trajectory[MAX_WAYPOINTS];
 extern int trajectory_idx;
 
 void trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory);

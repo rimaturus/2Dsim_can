@@ -507,6 +507,12 @@ void draw_controls()
     );    
 }
 
+void disp_deadline_miss(){
+	char text[100];
+	sprintf(text, "PERCEPTION: %d, \nTRAJECTORY: %d, \nCONTROL: %d, \nDISPLAY: %d, \nSETTINGS: %d", dl_miss_perception, dl_miss_trajectory, dl_miss_control, dl_miss_display, dl_miss_settings);
+	textout_ex(display_buffer, font, text, 0, 20, makecol(255, 255, 255), makecol(0, 0, 0));
+}
+
 void update_display()
 {
 	check_collisions();
@@ -539,6 +545,7 @@ void update_display()
 		);
 
 		draw_controls();
+		disp_deadline_miss();
 
 		// Draw final buffer to screen
 		blit(display_buffer, screen, 0, 0, 0, 0, X_MAX, Y_MAX);

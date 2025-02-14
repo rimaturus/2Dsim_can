@@ -91,12 +91,21 @@ void *perception_task(void *arg)
 	int task_id = get_task_index(arg);
 	wait_for_activation(task_id);
 
+	volatile int first_measure_done = 0;
+
 	while (!key[KEY_ESC])
 	{		
 		if (btn_state_perception){
 			runtime(0, "PERCEPTION");
 
 			lidar(car_x, car_y, measures);
+
+			task_activate(TRAJECTORY_ID); // Signal trajectory task
+
+			if (!first_measure_done) {
+				first_measure_done = 1;
+				task_activate(CONTROL_ID); // Signal CONTROL task
+			}
 
 			for (int i = 0; i < MAX_DETECTED_CONES; i++){
 				detected_cones[i].x = -1;
@@ -106,43 +115,42 @@ void *perception_task(void *arg)
 			
 			if (btn_state_map) mapping(car_x, car_y, car_angle, detected_cones); // Pass the address of first element
 
-			sem_post(&lidar_sem);
+			
 
 			runtime(1, "PERCEPTION");
 		}
-		else
-		{
-			sem_post(&lidar_sem);
-		}
+
+		dl_miss_perception += deadline_miss(PERCEPTION_ID);
 
 		wait_for_period(task_id);
 	}
 
-	sem_post(&lidar_sem);
+	task_activate(TRAJECTORY_ID); // Signal trajectory task to terminate
+	
 	return NULL;
 }
 
 void *trajectory_task(void *arg)
 {
 	int task_id = get_task_index(arg);
-	wait_for_activation(task_id);
 
-	while (!key[KEY_ESC])
-	{
+	while (!key[KEY_ESC]) {
+
+		wait_for_activation(task_id);
+
 		if (btn_state_traj) 
 		{
 			runtime(0, "TRAJ_PLANNING");
 
-			sem_wait(&lidar_sem);
 			trajectory_planning(car_x, car_y, car_angle, detected_cones, trajectory);
 
 			runtime(1, "TRAJ_PLANNING");
 		}
 
-		wait_for_period(task_id);
+		dl_miss_trajectory += deadline_miss(TRAJECTORY_ID);
 	}
 
-	sem_post(&lidar_sem);
+	
 	return NULL;
 }
 
@@ -162,10 +170,12 @@ void *control_task(void *arg)
 
 		runtime(1, "CONTROL");
 
+		dl_miss_control += deadline_miss(CONTROL_ID);
+
         wait_for_period(task_id);
     }
 
-	sem_post(&lidar_sem);
+	
     return NULL;
 }
 
@@ -182,11 +192,13 @@ void *display_task(void *arg)
 		
 		runtime(1, "DISPLAY");
 
+		dl_miss_display += deadline_miss(DISPLAY_ID);
+
 		wait_for_period(task_id);
 
 	}
 
-	sem_post(&lidar_sem);
+	
 	return NULL;
 }
 
@@ -252,11 +264,13 @@ void *settings_task(void *arg)
 
 		runtime(1, "SETTINGS");
 
+		dl_miss_settings += deadline_miss(SETTINGS_ID);
+
 		wait_for_period(task_id);
 
 	}
 
-	sem_post(&lidar_sem);
+	
 	return NULL;
 }
 

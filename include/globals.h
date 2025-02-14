@@ -77,8 +77,8 @@
 // 	TASKs COSTANTS
 // ------------------------
 /* Task periods (ms) */
-#define PERCEPTION_PERIOD	100
-#define TRAJECTORY_PERIOD	100
+#define PERCEPTION_PERIOD	50
+#define TRAJECTORY_PERIOD	100 // aperiodic (called by perception) ==> placeholder value
 #define CONTROL_PERIOD		10
 #define DISPLAY_PERIOD		17
 #define SETTINGS_PERIOD		100
@@ -96,6 +96,19 @@
 #define CONTROL_PRIORITY	5
 #define DISPLAY_PRIORITY	30
 #define SETTINGS_PRIORITY	35
+
+#define PERCEPTION_ID 	1
+#define TRAJECTORY_ID 	2
+#define CONTROL_ID		3
+#define DISPLAY_ID		4
+#define SETTINGS_ID		5
+
+extern int dl_miss_perception;
+extern int dl_miss_trajectory;
+extern int dl_miss_control;
+extern int dl_miss_display;
+extern int dl_miss_settings;
+
 
 /* Drawing mutex */
 extern pthread_mutex_t draw_mutex;

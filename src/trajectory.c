@@ -43,7 +43,7 @@
 #include "perception.h"
 
 int trajectory_idx = 0;
-waypoint trajectory[2*MAX_DETECTED_CONES];
+waypoint trajectory[MAX_WAYPOINTS];
 
 void 	trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory)
 {

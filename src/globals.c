@@ -100,3 +100,9 @@ pointcloud_t measures[360];
 
 sem_t lidar_sem;
 pthread_mutex_t draw_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+int dl_miss_perception 	= 0;
+int dl_miss_trajectory 	= 0;
+int dl_miss_control	  	= 0;
+int dl_miss_display 	= 0;
+int dl_miss_settings 	= 0;
