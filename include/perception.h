@@ -119,7 +119,7 @@
 
 #define MAX_POINTS_PER_CONE 180
 
-#define maxRange 10.0f
+#define maxRange 2.0f
 extern const float ignore_distance;
 
 extern const int sliding_window;

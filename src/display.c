@@ -339,9 +339,9 @@ int map_idx = 0;
 	while (map_idx < track_map_idx)
 	{
 		circlefill(
-			perception, 
-			(int)(track_map[map_idx].x * px_per_meter) - (int)(car_x * px_per_meter - maxRange*px_per_meter), 
-			(int)(track_map[map_idx].y * px_per_meter) - (int)(car_y * px_per_meter - maxRange*px_per_meter), 
+			display_buffer, 
+			(int)(track_map[map_idx].x * px_per_meter), // - (int)(car_x * px_per_meter - maxRange*px_per_meter), 
+			(int)(track_map[map_idx].y * px_per_meter), // - (int)(car_y * px_per_meter - maxRange*px_per_meter), 
 			3, 
 			makecol(255, 255, 255) //detected_cones[detected_cone_idx].color
 		);
@@ -386,6 +386,34 @@ void draw_trajectory(waypoint *trajectory)
 			3,
 			makecol(0, 255, 0)
 		);
+
+	for (int i = 0; i < wp_ahead_idx; i++)
+	{
+		circlefill(
+			trajectory_bmp,
+			(int)(reordered_ahead[i].x * px_per_meter),// - (int)(car_x * px_per_meter - maxRange*px_per_meter),
+			(int)(reordered_ahead[i].y * px_per_meter),// - (int)(car_y * px_per_meter - maxRange*px_per_meter),
+			4,
+			makecol(0, 0, 255)
+		);
+
+		char* text = (char*)malloc(10);  // Allocate space for the string
+		snprintf(text, 10, "%d", i);  // Convert int to string
+
+		textout_ex(
+			trajectory_bmp, 
+			font, 
+			text, 
+			(int)(reordered_ahead[i].x * px_per_meter), // - (int)(car_x * px_per_meter - maxRange*px_per_meter), 
+			(int)(reordered_ahead[i].y * px_per_meter), // - (int)(car_y * px_per_meter - maxRange*px_per_meter), 
+			makecol(255, 0, 0), 
+			makecol(255, 255, 255)
+		);
+
+		free(text);  // Free the memory
+
+
+	}
 
 #ifdef DEBUG
 		char* text = (char*)malloc(10);  // Allocate space for the string

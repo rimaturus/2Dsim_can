@@ -32,37 +32,6 @@
 void keyboard_control(float *car_x, float *car_y, int *car_angle);
 
 /**
- * @brief Normalizes a 2D vector.
- *
- * Computes the Euclidean norm of the vector specified by the pointers x and y. If the norm is above a
- * small threshold (to avoid division by zero), the vector components are divided by the norm to yield a unit
- * vector.
- *
- * @param[in,out] x Pointer to the x component of the vector. The normalized value is written back.
- * @param[in,out] y Pointer to the y component of the vector. The normalized value is written back.
- *
- * @return 1 if the vector is non-zero and has been normalized; 0 if the vector length is negligible.
- */
-static int nomalize(float *x, float *y);
-
-/**
- * @brief Determines if a given waypoint is ahead of the vehicle.
- *
- * Evaluates whether the waypoint (defined by wx and wy) is in front of the vehicle by computing the
- * angle between the vehicle's heading (in degrees) and the vector from the vehicle (cx, cy) to the waypoint.
- * The waypoint is considered "ahead" if the absolute angular difference is within ±100°.
- *
- * @param[in] car_angle_deg The current heading of the vehicle in degrees.
- * @param[in] wx            The x-coordinate of the waypoint.
- * @param[in] wy            The y-coordinate of the waypoint.
- * @param[in] cx            The x-coordinate of the vehicle.
- * @param[in] cy            The y-coordinate of the vehicle.
- *
- * @return Non-zero value if the waypoint is in front of the vehicle; 0 otherwise.
- */
-static int is_in_front(float car_angle_deg, float wx, float wy, float cx, float cy);
-
-/**
  * @brief Autonomous control routine using centerline waypoints.
  *
  * Implements an autonomous control strategy based on a provided centerline represented by an array of waypoints.
@@ -92,6 +61,9 @@ static int is_in_front(float car_angle_deg, float wx, float wy, float cx, float 
  *                                 The array should be terminated by a waypoint with x < 0.0f.
  */
 void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *center_waypoints);
+
+waypoint reordered_ahead[MAX_WAYPOINTS];
+int wp_ahead_idx = 0;
 
 float pedal = 0.0f;         // current speed in m per step
 float steering = 0.0f;      // current steering angle in radians
@@ -136,90 +108,110 @@ const float     max_steering = 30 * deg2rad;     // maximum steering angle in ra
 	vehicle_model(car_x, car_y, car_angle, pedal, steering);
 }
 
-// Helper: Normalize an (x,y) vector; returns 0 if vector length is 0.
-static int nomalize(float *x, float *y) {
-    float norm = sqrtf((*x) * (*x) + (*y) * (*y));
-    if (norm < 1e-6f) return 0;
-    *x /= norm;
-    *y /= norm;
-    return 1;
-}
-
-//---------------------------------------------------------------------
-// Helper: Check if a waypoint is "ahead" of the car. 
-// Here we use the provided idea: compute the angle between the vector from
-// the car to the waypoint and the car's heading. (Assumes car_angle is in degrees.)
-static int is_in_front(float car_angle_deg, float wx, float wy, float cx, float cy) {
-    float dx = wx - cx;
-    float dy = wy - cy;
-    float angle_to_point = (atan2f(dy, dx) / deg2rad);  // convert to degrees
-    // Normalize the angle difference to [-180, 180]
-    float angle_diff = angle_to_point - car_angle_deg;
-    while (angle_diff > 180.0f)  angle_diff -= 360.0f;
-    while (angle_diff < -180.0f) angle_diff += 360.0f;
-    // Consider "ahead" if within +/- 100° (adjust threshold as needed)
-    return (fabs(angle_diff) <= 100.0f);
-}
-
-// Autonomous control routine using centerline waypoints.
 void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *center_waypoints)
-{
-    int num_waypoints = 0;
-    while (center_waypoints[num_waypoints].x >= 0.0f)
-        num_waypoints++;
-
-    if (num_waypoints <= 0) {
-        vehicle_model(car_x, car_y, car_angle, 0.0f, 0.0f);
-        return;
+{   
+    if (center_waypoints == NULL){
+        return; // the trajectory is not computed yet
     }
 
-    // 1) Filter the center_waypoints to obtain only those ahead of the car.
-    int count_ahead = 0;
-    waypoint ahead_waypoints[100];
-    for (int i = 0; i < num_waypoints; i++) {
-        if (is_in_front((float)*car_angle, center_waypoints[i].x, center_waypoints[i].y, *car_x, *car_y)) {
-            ahead_waypoints[count_ahead++] = center_waypoints[i];
+    float car_versor_x = cos(*car_angle * deg2rad);
+    float car_versor_y = sin(*car_angle * deg2rad);
+
+    waypoint waypoints_ahead[MAX_WAYPOINTS];
+    wp_ahead_idx = 0;
+
+    int wp_idx = 0;    
+    while ((wp_idx < MAX_WAYPOINTS) && (center_waypoints[wp_idx].x >= 0.0f))
+    {
+        float car2wp_x = center_waypoints[wp_idx].x - *car_x;
+        float car2wp_y = center_waypoints[wp_idx].y - *car_y;
+
+        float norm_car2wp = sqrt(car2wp_x * car2wp_x + car2wp_y * car2wp_y);
+
+        float car2wp_versor_x = car2wp_x/norm_car2wp;
+        float car2wp_versor_y = car2wp_y/norm_car2wp;
+
+        float dot_product = car2wp_versor_x * car_versor_x + car2wp_versor_y * car_versor_y;
+        // dot product = norm of the vectors * cos of the angle between them
+        // since the norm is 1 == cos
+
+        // if cos > 0 ==> angle car - waypoint < 90° (abs)
+        int ctrl_ahead = (dot_product > 0) ? 1 : 0;
+
+        if (ctrl_ahead){
+            wp_idx++;
+            continue;
         }
+        else
+        {
+            // append to waypoints_ahead 
+            waypoints_ahead[wp_ahead_idx].x = center_waypoints[wp_idx].x;
+            waypoints_ahead[wp_ahead_idx].y = center_waypoints[wp_idx].y;
+            wp_ahead_idx++;
+        } 
+
+        wp_idx++;
     }
 
-    // If no waypoints ahead, fall back: do nothing.
-    if (count_ahead == 0) {
-        vehicle_model(car_x, car_y, car_angle, 0.0f, 0.0f);
-        return;
+    if (wp_ahead_idx == 0) return;
+
+    // here I have more than 1 waypoint ahead
+    int visited_idx[wp_ahead_idx]; // map of visited idx [i-th visited if =1, else =0]
+
+    for (int i = 0; i < wp_ahead_idx; i++) // initialize
+    {
+        visited_idx[i] = 0;
+        reordered_ahead[i].x = -1;
+        reordered_ahead[i].y = -1;
     }
 
-    // 2) Select the waypoint to pursue:
-    // Choose the 3rd waypoint in the ahead_waypoints list if available;
-    // otherwise, use the farthest available.
-    int target_idx = (count_ahead >= 3) ? 2 : (count_ahead - 1);
-    waypoint target_wp = ahead_waypoints[target_idx];
+    float current_x = *car_x;
+    float current_y = *car_y;
 
-    // 3) Compute the reference vector from the car's current position to the target waypoint.
-    float ref_vec_x = target_wp.x - *car_x;
-    float ref_vec_y = target_wp.y - *car_y;
+    for (int j = 0; j < wp_ahead_idx; j++)
+    {
+        float minDist = maxRange;
+        int minDist_idx = -1;
 
-    // Normalize the reference vector; use default if normalization fails.
-    if (!nomalize(&ref_vec_x, &ref_vec_y)) {
-        ref_vec_x = 1.0f;
-        ref_vec_y = 0.0f;
+        // start reordering
+        for (int i = 0; i < wp_ahead_idx; i++)
+        {
+            if (visited_idx[i] == 1) continue;
+
+            float distance = sqrt(pow(waypoints_ahead[i].x - current_x, 2) + pow(waypoints_ahead[i].y - current_y, 2));
+
+            if (distance < minDist)
+            {
+                minDist = distance;
+                minDist_idx = i;
+            }
+        }
+
+        current_x = waypoints_ahead[minDist_idx].x;
+        current_y = waypoints_ahead[minDist_idx].y;
+
+        reordered_ahead[j].x = waypoints_ahead[minDist_idx].x;
+        reordered_ahead[j].y = waypoints_ahead[minDist_idx].y;
+
+        visited_idx[minDist_idx] = 1;
     }
 
-    // 4) Heading vector from car angle.
-    float car_angle_rad = (*car_angle) * deg2rad;
-    float dir_x = cosf(car_angle_rad);
-    float dir_y = sinf(car_angle_rad);
+    // reordered_ahead is ordered
+    float car2wp2_x = reordered_ahead[1].x - *car_x;
+    float car2wp2_y = reordered_ahead[1].y - *car_y;
 
-    // Compute the steering correction using the 2D cross product.
-    float cross = ref_vec_x * dir_y - ref_vec_y * dir_x;
-    float delta = asinf(cross) / deg2rad;
+    float norm_car2wp2 = sqrt(car2wp2_x * car2wp2_x + car2wp2_y * car2wp2_y);
 
-    float pedal = 0.1f;
+    float car2wp2_versor_x = car2wp2_x/norm_car2wp2;
+    float car2wp2_versor_y = car2wp2_y/norm_car2wp2;
 
-#ifdef DEBUG
-    printf("Car pos=(%.2f, %.2f), car_angle=%d\n", *car_x, *car_y, *car_angle);
-    printf("Target waypoint: (%.2f, %.2f)\n", target_wp.x, target_wp.y);
-    printf("Ref vector: (%.2f, %.2f), Delta=%.2f rad\n", ref_vec_x, ref_vec_y, delta);
-#endif
+    float dot_product2 = car2wp2_versor_x * car_versor_x + car2wp2_versor_y * car_versor_y;
 
-    vehicle_model(car_x, car_y, car_angle, pedal, delta);
+    float steer_target = acos(dot_product2) / deg2rad;
+    printf("steer_target: %f\n", steer_target);
+
+    // steering = (steer_target > 0) ? 1 : -1;
+    pedal = 0.05;
+
+    vehicle_model(car_x, car_y, car_angle, pedal, steer_target);
 }

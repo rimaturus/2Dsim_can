@@ -51,6 +51,8 @@
 
 extern float 	steering; // in radians
 extern float	pedal; // [0 -> 1]
+extern waypoint reordered_ahead[MAX_WAYPOINTS];
+extern int wp_ahead_idx;
 
 
 void keyboard_control(float *car_x, float *car_y, int *car_angle);

@@ -76,6 +76,7 @@
 #include "vehicle.h"	// to control the vehicle + vehicle model
 #include "display.h"	// to draw on screen
 #include "ptask.h"		// for periodic tasks
+#include "control.h"
 
 extern Button buttons[];
 

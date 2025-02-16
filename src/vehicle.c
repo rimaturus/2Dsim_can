@@ -35,10 +35,14 @@
 #include <stdio.h>
 #include "vehicle.h"
 #include "globals.h"
+#include "control.h"
 
-void 	vehicle_model(float *car_x, float *car_y, int *car_angle, float pedal, float steering)
+#define M_PI 3.14159265358979323846
+static float rad_angle = 270 * deg2rad;
+
+void 	vehicle_model(float *car_x, float *car_y, int *car_angle, float pedal, float target_steering)
 {
-#define NON_CINEMATIC_MODEL
+#define CINEMATIC_MODEL
 
 #ifndef CINEMATIC_MODEL
 // Simulation parameters
@@ -48,6 +52,7 @@ const float		mass = 100;      	// mass of the vehicle [kg]
 const float     wheelbase = 3.0;	// distance between front and rear axles [m]
 const float		maxSpeed = 1.0;		// maximum speed in m/s
 const float     maxBraking = 50.0;	// maximum braking in m/s^2
+const float     maxSteering = 30;
 
 float theta;
 
@@ -78,115 +83,93 @@ float speed, acceleration;
 		// If the car is stopped, the steering angle is irrelevant
 		return;
 	}
+
+    // function to follow steering target
+    target_steering = (fabs(target_steering) > maxSteering) ? maxSteering : target_steering;
+
+    if (steering < target_steering)
+    {
+        steering += 0.1;
+    }
+    else if (steering > target_steering)
+    {
+        steering -= 0.1;
+    }
+    printf("steering: %.2f\n", steering);
+
 	theta += (1.0 / wheelbase) * tan(steering) * dt;   // update heading independent of speed
+    theta = (theta > 360.0) ? theta - 360.0 : theta;   // normalize angle to [0, 360)
+    theta = (theta < -360.0) ? theta + 360.0 : theta;  // normalize angle to [-360, 0) 
 
 	// Store updated heading in degrees
 	*car_angle = (int)(theta / deg2rad);
 #endif /* NON CINEMATIC_MODEL */
 
 #ifdef CINEMATIC_MODEL
-    //=========================================================================
-    // Simulation parameters and realistic vehicle constants
-    //=========================================================================
-    const float dt = 0.1;  // simulation time step [s]
+    // Example single-track model
+    const float dt = (float)(CONTROL_PERIOD)/100;
+    const float wheelbase = 0.5f;
+    const float maxSpeed = 1.0f;
+    const float maxBraking = 50.0f;
+    const float maxSteering = 30.0f * deg2rad; // in rad
 
-    // Vehicle parameters (typical for a small car)
-    const float mass = 1200.0;      // vehicle mass [kg]
-    const float wheelbase = 2.5;    // wheelbase [m]
-    // For a bicycle model we partition the wheelbase:
-    const float l_r = 1.0;          // distance from the center-of-mass to the rear axle [m]
-    // const float l_f = wheelbase - l_r;  // front axle distance [m]
+    static float current_speed_cinematic = 0.0f;
+    float speed_cinematic, accel_cinematic;
 
-    // Engine / brake characteristics:
-    // Assume pedal is in the range [-1, 1] (negative for braking)
-    const float max_engine_force = 2000.0;  // maximum engine force [N]
-    const float max_brake_force = 8000.0;     // maximum braking force [N]
-	const float max_speed = 1.50;  // maximum speed [m/s]
-
-    // Aerodynamic and rolling resistances
-    const float air_density = 1.225;     // [kg/m^3]
-    const float drag_coefficient = 0.32; // typical drag coefficient
-    const float frontal_area = 2.2;      // [m^2]
-    const float rolling_resistance = 0.015;  // rolling resistance coefficient
-    const float g = 9.81;  // gravitational acceleration [m/s^2]
-
-    //=========================================================================
-    // Persistent state (across calls)
-    //=========================================================================
-    static float speed = 0.0;  // vehicle speed [m/s]
-
-    //=========================================================================
-    // Compute the drive/brake force from the pedal input.
-    // (A positive pedal applies engine force; a negative pedal applies braking.)
-    //=========================================================================
-    float drive_force = 0.0;
-    if (pedal >= 0.0) {
-        drive_force = pedal * max_engine_force;
+    // Compute speed from pedal
+    if (pedal > 0.0f) {
+        speed_cinematic = pedal * maxSpeed;
+        accel_cinematic = speed_cinematic - current_speed_cinematic;
     } else {
-        drive_force = pedal * max_brake_force;  // note: pedal is negative
+        accel_cinematic = (pedal * maxBraking * current_speed_cinematic);
     }
+    current_speed_cinematic += accel_cinematic * dt;
+    current_speed_cinematic = (current_speed_cinematic < 0.0f) ? 0.0f : current_speed_cinematic;
 
-    //=========================================================================
-    // Compute forces opposing motion:
-    //   - Aerodynamic drag (proportional to speed²)
-    //   - Rolling resistance (approximately constant)
-    //=========================================================================
-    float drag_force = 0.5f * air_density * drag_coefficient *
-                       frontal_area * speed * speed;
-    float rolling_force = rolling_resistance * mass * g;
-
-    // The drag and rolling forces always oppose the direction of motion.
-    float net_force = drive_force;
-    if (speed > 0)
-        net_force -= (drag_force + rolling_force);
-    else if (speed < 0)
-        net_force += (drag_force + rolling_force);
-
-    //=========================================================================
-    // Update the longitudinal dynamics (Newton’s 2nd law: F = m*a)
-    //=========================================================================
-    float acceleration = net_force / mass;
-    speed += acceleration * dt;
-    if (speed < 0) {
-        speed = 0;
+    // Clamp the steering target
+    target_steering = (target_steering > maxSteering) ? maxSteering : ((target_steering < -maxSteering) ? -maxSteering : target_steering);
+    
+    // Smoothly follow target steering with proper boundary conditions
+    float steering_rate = 0.1f;  // Rate of steering change
+    if (fabs(steering - target_steering) < steering_rate) {
+        steering = target_steering;  // Snap to target if very close
+    } else if (steering < target_steering) {
+        steering += steering_rate;
+    } else if (steering > target_steering) {
+        steering -= steering_rate;
     }
-	else if (speed > max_speed) {
-		speed = max_speed;
-	}
+    // Update heading using angular rate
+    float angular_rate = (current_speed_cinematic / wheelbase) * tan(steering);
+    rad_angle += angular_rate * dt;
 
-    //=========================================================================
-    // Update the vehicle’s position and orientation using a kinematic
-    // bicycle model.
-    //=========================================================================
-    // Convert current heading (stored in degrees) to radians.
-    float theta = (*car_angle) * deg2rad;
+    // Convert to degrees and normalize
+    float deg_angle = rad_angle / deg2rad;
+    deg_angle = fmod(deg_angle, 360.0);
+    if (deg_angle < 0) deg_angle += 360.0;
 
-    // The kinematic bicycle model can include a slip angle β, which is the angle
-    // between the vehicle’s velocity vector and its heading. A simple way to
-    // compute β is:
-    //
-    //      β = arctan((l_r / wheelbase) * tan(steering))
-    //
-    // Here, steering is assumed to be given in radians.
-    float beta = atan((l_r / wheelbase) * tan(steering));
+    // Store the final angle
+    *car_angle = (int)deg_angle;
 
-    // Update the (x,y) position.
-    // The vehicle moves in the direction (theta + beta).
-    *car_x += speed * cos(theta + beta) * dt;
-    *car_y -= speed * sin(theta + beta) * dt;
-
-    // Update the heading angle.
-    // A common approximation is:
-    //      dθ/dt = (speed / wheelbase) * tan(steering)
-    // (For a more refined model one could use yaw dynamics, but this is often
-    // sufficient for simulation at low-to-moderate speeds.)
-    theta += (speed / wheelbase) * tan(steering) * dt;
-
-    // Store the updated heading back in degrees.
-    *car_angle = (theta / deg2rad);
+    // Update position
+    *car_x += current_speed_cinematic * cos(-deg_angle*deg2rad) * dt;
+    *car_y += current_speed_cinematic * sin(-deg_angle*deg2rad) * dt;
 
 #endif /* CINEMATIC_MODEL */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void check_collisions()
 {

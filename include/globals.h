@@ -71,7 +71,7 @@
 #include <semaphore.h>
 
 // #define DEBUG
-#define PROFILING
+// #define PROFILING
 
 // ------------------------
 // 	TASKs COSTANTS
