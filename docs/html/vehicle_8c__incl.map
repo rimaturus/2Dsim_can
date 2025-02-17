@@ -1,10 +1,13 @@
 <map id="src/vehicle.c" name="src/vehicle.c">
-<area shape="rect" id="node1" title=" " alt="" coords="129,5,232,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,80,73,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="98,80,165,107"/>
-<area shape="rect" id="node4" href="$vehicle_8h.html" title=" " alt="" coords="189,80,271,107"/>
-<area shape="rect" id="node5" href="$globals_8h.html" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="295,80,376,107"/>
-<area shape="rect" id="node6" title=" " alt="" coords="191,155,269,181"/>
-<area shape="rect" id="node7" title=" " alt="" coords="293,155,377,181"/>
-<area shape="rect" id="node8" title=" " alt="" coords="402,155,509,181"/>
+<area shape="rect" id="node1" title=" " alt="" coords="114,5,217,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="63,304,131,331"/>
+<area shape="rect" id="node3" title=" " alt="" coords="33,80,100,107"/>
+<area shape="rect" id="node4" href="$vehicle_8h.html" title=" " alt="" coords="125,80,206,107"/>
+<area shape="rect" id="node5" href="$globals_8h.html" title="Global constants, variables, and structures for the simulation and visualization system." alt="" coords="223,304,305,331"/>
+<area shape="rect" id="node9" href="$control_8h.html" title="Declarations for vehicle control functions and variables in the 2D simulator." alt="" coords="230,80,309,107"/>
+<area shape="rect" id="node6" title=" " alt="" coords="119,379,198,405"/>
+<area shape="rect" id="node7" title=" " alt="" coords="222,379,306,405"/>
+<area shape="rect" id="node8" title=" " alt="" coords="331,379,437,405"/>
+<area shape="rect" id="node10" href="$trajectory_8h.html" title="Provides declarations for trajectory planning based on cone detection." alt="" coords="163,155,258,181"/>
+<area shape="rect" id="node11" href="$perception_8h.html" title="Header file for perception&#45;related types, constants, and function declarations." alt="" coords="87,229,190,256"/>
 </map>

@@ -110,7 +110,7 @@ float speed, acceleration;
     const float dt = (float)(CONTROL_PERIOD)/100;
     const float wheelbase = 0.5f;
     const float maxSpeed = 1.0f;
-    const float maxBraking = 50.0f;
+    const float maxBraking = 0.50f;
     const float maxSteering = 30.0f * deg2rad; // in rad
 
     static float current_speed_cinematic = 0.0f;

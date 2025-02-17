@@ -4,7 +4,9 @@
 {\ttfamily \#include $<$stdio.\+h$>$}\newline
 {\ttfamily \#include \char`\"{}vehicle.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}globals.\+h\char`\"{}}\newline
-Include dependency graph for vehicle.\+c\+:\nopagebreak
+{\ttfamily \#include \char`\"{}control.\+h\char`\"{}}\newline
+Include dependency graph for vehicle.\+c\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -14,21 +16,23 @@ Include dependency graph for vehicle.\+c\+:\nopagebreak
 \doxysubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{vehicle_8c_ab902a2d294d9a9fea3c41f818c7b30e2}{NON\+\_\+\+CINEMATIC\+\_\+\+MODEL}}
+\#define \mbox{\hyperlink{group__VehicleModule_gae71449b1cc6e6250b91f539153a7a0d3}{M\+\_\+\+PI}}~3.\+14159265358979323846
+\begin{DoxyCompactList}\small\item\em Updates the vehicle\textquotesingle{}s position and orientation based on pedal and steering inputs. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{vehicle_8c_af95b34e11a13f4ff6258f61f90fde381}{CINEMATIC\+\_\+\+MODEL}}
 \end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \mbox{\hyperlink{group__VehicleModule_ga4a1f78c4260229ebd2850350d181cc86}{vehicle\+\_\+model}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, float \mbox{\hyperlink{control_8c_aa469e51bab916bcd3fc763e8563db01b}{pedal}}, float \mbox{\hyperlink{control_8c_abf65b77f4a341762b97d645dd857e021}{steering}})
-\begin{DoxyCompactList}\small\item\em Updates the vehicle\textquotesingle{}s position and orientation based on pedal and steering inputs. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__VehicleModule_gaed7254f6980a8a90d1df5627f3e12ebd}{vehicle\+\_\+model}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, float \mbox{\hyperlink{control_8c_aa469e51bab916bcd3fc763e8563db01b}{pedal}}, float target\+\_\+steering)
+\begin{DoxyCompactList}\small\item\em Simulates the vehicle\textquotesingle{}s movement by updating its position and orientation. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{group__VehicleModule_gaafbbdba8ad9bfb6108f0238653806062}{check\+\_\+collisions}} ()
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Macro Definition Documentation}
-\mbox{\Hypertarget{vehicle_8c_ab902a2d294d9a9fea3c41f818c7b30e2}\label{vehicle_8c_ab902a2d294d9a9fea3c41f818c7b30e2}} 
-\index{vehicle.c@{vehicle.c}!NON\_CINEMATIC\_MODEL@{NON\_CINEMATIC\_MODEL}}
-\index{NON\_CINEMATIC\_MODEL@{NON\_CINEMATIC\_MODEL}!vehicle.c@{vehicle.c}}
-\doxysubsubsection{\texorpdfstring{NON\_CINEMATIC\_MODEL}{NON\_CINEMATIC\_MODEL}}
-{\footnotesize\ttfamily \#define NON\+\_\+\+CINEMATIC\+\_\+\+MODEL}
+\mbox{\Hypertarget{vehicle_8c_af95b34e11a13f4ff6258f61f90fde381}\label{vehicle_8c_af95b34e11a13f4ff6258f61f90fde381}} 
+\index{vehicle.c@{vehicle.c}!CINEMATIC\_MODEL@{CINEMATIC\_MODEL}}
+\index{CINEMATIC\_MODEL@{CINEMATIC\_MODEL}!vehicle.c@{vehicle.c}}
+\doxysubsubsection{\texorpdfstring{CINEMATIC\_MODEL}{CINEMATIC\_MODEL}}
+{\footnotesize\ttfamily \#define CINEMATIC\+\_\+\+MODEL}
 

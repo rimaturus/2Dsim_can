@@ -21,7 +21,7 @@
 <!-- Node2 -->
 <g id="node2" class="node">
 <title>Node2</title>
-<g id="a_node2"><a xlink:href="group__VehicleModule.html#ga4a1f78c4260229ebd2850350d181cc86" target="_top" xlink:title="Simulates the vehicle&#39;s movement by updating its position and orientation.">
+<g id="a_node2"><a xlink:href="group__VehicleModule.html#gaed7254f6980a8a90d1df5627f3e12ebd" target="_top" xlink:title="Simulates the vehicle&#39;s movement by updating its position and orientation.">
 <polygon fill="white" stroke="black" points="137,-0.5 137,-19.5 225,-19.5 225,-0.5 137,-0.5"/>
 <text text-anchor="middle" x="181" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">vehicle_model</text>
 </a>

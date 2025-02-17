@@ -657,6 +657,7 @@ for (int i = 0; i < MAX_DETECTED_CONES; i++){
 // Update the map
 void update_map(cone *detected_cones) 
 {
+	pthread_mutex_lock(&map_mutex); // Begin critical section
 	int N_new_detections = 0;
 	while (detected_cones[N_new_detections].color != -1) N_new_detections++; // count new detections
 
@@ -705,6 +706,7 @@ void update_map(cone *detected_cones)
 			n_candidates++;
 		}
 	}
+	pthread_mutex_unlock(&map_mutex); // End critical section
 }
 
 /** @} */

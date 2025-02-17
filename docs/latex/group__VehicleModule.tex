@@ -1,10 +1,15 @@
 \hypertarget{group__VehicleModule}{}\doxysection{Vehicle model and control}
 \label{group__VehicleModule}\index{Vehicle model and control@{Vehicle model and control}}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{group__VehicleModule_gae71449b1cc6e6250b91f539153a7a0d3}{M\+\_\+\+PI}}~3.\+14159265358979323846
+\begin{DoxyCompactList}\small\item\em Updates the vehicle\textquotesingle{}s position and orientation based on pedal and steering inputs. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \mbox{\hyperlink{group__VehicleModule_ga4a1f78c4260229ebd2850350d181cc86}{vehicle\+\_\+model}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, float \mbox{\hyperlink{control_8c_aa469e51bab916bcd3fc763e8563db01b}{pedal}}, float \mbox{\hyperlink{control_8c_abf65b77f4a341762b97d645dd857e021}{steering}})
-\begin{DoxyCompactList}\small\item\em Updates the vehicle\textquotesingle{}s position and orientation based on pedal and steering inputs. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__VehicleModule_gaed7254f6980a8a90d1df5627f3e12ebd}{vehicle\+\_\+model}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, float \mbox{\hyperlink{control_8c_aa469e51bab916bcd3fc763e8563db01b}{pedal}}, float target\+\_\+steering)
+\begin{DoxyCompactList}\small\item\em Simulates the vehicle\textquotesingle{}s movement by updating its position and orientation. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{group__VehicleModule_gaafbbdba8ad9bfb6108f0238653806062}{check\+\_\+collisions}} ()
 \end{DoxyCompactItemize}
 
@@ -12,32 +17,16 @@ void \mbox{\hyperlink{group__VehicleModule_gaafbbdba8ad9bfb6108f0238653806062}{c
 \doxysubsection{Detailed Description}
 
 
-\doxysubsection{Function Documentation}
-\mbox{\Hypertarget{group__VehicleModule_gaafbbdba8ad9bfb6108f0238653806062}\label{group__VehicleModule_gaafbbdba8ad9bfb6108f0238653806062}} 
-\index{Vehicle model and control@{Vehicle model and control}!check\_collisions@{check\_collisions}}
-\index{check\_collisions@{check\_collisions}!Vehicle model and control@{Vehicle model and control}}
-\doxysubsubsection{\texorpdfstring{check\_collisions()}{check\_collisions()}}
-{\footnotesize\ttfamily void check\+\_\+collisions (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
-
-Here is the caller graph for this function\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{group__VehicleModule_gaafbbdba8ad9bfb6108f0238653806062_icgraph}
-\end{center}
-\end{figure}
-\mbox{\Hypertarget{group__VehicleModule_ga4a1f78c4260229ebd2850350d181cc86}\label{group__VehicleModule_ga4a1f78c4260229ebd2850350d181cc86}} 
-\index{Vehicle model and control@{Vehicle model and control}!vehicle\_model@{vehicle\_model}}
-\index{vehicle\_model@{vehicle\_model}!Vehicle model and control@{Vehicle model and control}}
-\doxysubsubsection{\texorpdfstring{vehicle\_model()}{vehicle\_model()}}
-{\footnotesize\ttfamily void vehicle\+\_\+model (\begin{DoxyParamCaption}\item[{float $\ast$}]{car\+\_\+x,  }\item[{float $\ast$}]{car\+\_\+y,  }\item[{int $\ast$}]{car\+\_\+angle,  }\item[{float}]{pedal,  }\item[{float}]{steering }\end{DoxyParamCaption})}
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{group__VehicleModule_gae71449b1cc6e6250b91f539153a7a0d3}\label{group__VehicleModule_gae71449b1cc6e6250b91f539153a7a0d3}} 
+\index{Vehicle model and control@{Vehicle model and control}!M\_PI@{M\_PI}}
+\index{M\_PI@{M\_PI}!Vehicle model and control@{Vehicle model and control}}
+\doxysubsubsection{\texorpdfstring{M\_PI}{M\_PI}}
+{\footnotesize\ttfamily \#define M\+\_\+\+PI~3.\+14159265358979323846}
 
 
 
 Updates the vehicle\textquotesingle{}s position and orientation based on pedal and steering inputs. 
-
-Simulates the vehicle\textquotesingle{}s movement by updating its position and orientation.
 
 This function simulates the movement of a vehicle using a simple bicycle model (Ackermann steering). It updates the current position (car\+\_\+x, car\+\_\+y) and the heading (car\+\_\+angle) of the vehicle according to the pedal input (acceleration or braking) and the steering angle over a fixed time step.
 
@@ -66,10 +55,55 @@ The vehicle\textquotesingle{}s position is updated based on its current speed an
 \mbox{\texttt{ in}}  & {\em steering} & The steering input that determines the rate of change of the vehicle\textquotesingle{}s heading. \\
 \hline
 \end{DoxyParams}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{group__VehicleModule_gaafbbdba8ad9bfb6108f0238653806062}\label{group__VehicleModule_gaafbbdba8ad9bfb6108f0238653806062}} 
+\index{Vehicle model and control@{Vehicle model and control}!check\_collisions@{check\_collisions}}
+\index{check\_collisions@{check\_collisions}!Vehicle model and control@{Vehicle model and control}}
+\doxysubsubsection{\texorpdfstring{check\_collisions()}{check\_collisions()}}
+{\footnotesize\ttfamily void check\+\_\+collisions (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
 Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{group__VehicleModule_ga4a1f78c4260229ebd2850350d181cc86_icgraph}
+\includegraphics[width=350pt]{group__VehicleModule_gaafbbdba8ad9bfb6108f0238653806062_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{group__VehicleModule_gaed7254f6980a8a90d1df5627f3e12ebd}\label{group__VehicleModule_gaed7254f6980a8a90d1df5627f3e12ebd}} 
+\index{Vehicle model and control@{Vehicle model and control}!vehicle\_model@{vehicle\_model}}
+\index{vehicle\_model@{vehicle\_model}!Vehicle model and control@{Vehicle model and control}}
+\doxysubsubsection{\texorpdfstring{vehicle\_model()}{vehicle\_model()}}
+{\footnotesize\ttfamily void vehicle\+\_\+model (\begin{DoxyParamCaption}\item[{float $\ast$}]{car\+\_\+x,  }\item[{float $\ast$}]{car\+\_\+y,  }\item[{int $\ast$}]{car\+\_\+angle,  }\item[{float}]{pedal,  }\item[{float}]{steering }\end{DoxyParamCaption})}
+
+
+
+Simulates the vehicle\textquotesingle{}s movement by updating its position and orientation. 
+
+This function computes and updates the vehicle\textquotesingle{}s state based on the input controls. The vehicle\textquotesingle{}s x and y coordinates, as well as its orientation angle, are modified to reflect the effect of the applied pedal (acceleration/brake) and steering inputs.
+
+
+\begin{DoxyParams}{Parameters}
+{\em car\+\_\+x} & Pointer to the vehicle\textquotesingle{}s x-\/coordinate. The updated x position is stored here. \\
+\hline
+{\em car\+\_\+y} & Pointer to the vehicle\textquotesingle{}s y-\/coordinate. The updated y position is stored here. \\
+\hline
+{\em car\+\_\+angle} & Pointer to the vehicle\textquotesingle{}s current orientation angle (in degrees or radians). The updated angle is stored here. \\
+\hline
+{\em pedal} & Control input for acceleration (or braking). A non-\/zero value indicates a change in speed. \\
+\hline
+{\em steering} & Control input for the steering direction. A non-\/zero value modifies the vehicle\textquotesingle{}s heading.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Ensure that the pointers provided (car\+\_\+x, car\+\_\+y, car\+\_\+angle) are valid and point to allocated memory. The scaling and meaning of the \textquotesingle{}pedal\textquotesingle{} and \textquotesingle{}steering\textquotesingle{} inputs should correspond to the mechanics of the vehicle model being simulated. 
+\end{DoxyNote}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{group__VehicleModule_gaed7254f6980a8a90d1df5627f3e12ebd_icgraph}
 \end{center}
 \end{figure}

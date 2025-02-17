@@ -1,47 +1,50 @@
 <map id="main" name="main">
-<area shape="rect" id="node1" title=" " alt="" coords="5,436,60,463"/>
-<area shape="rect" id="node2" href="$tasks_8h.html#a91e3918bad881fbf7304d534268de11d" title=" " alt="" coords="127,183,230,209"/>
-<area shape="rect" id="node10" href="$tasks_8h.html#a16cbac3bef85b555e76fe999965c1b7e" title=" " alt="" coords="127,335,231,361"/>
-<area shape="rect" id="node11" href="$display_8h.html#aa2eb9ba074b23fc3b4a91c98e0c83c8b" title="Updates the display." alt="" coords="321,512,443,539"/>
-<area shape="rect" id="node25" href="$main_8c.html#a56e75a6913a3cb4da05b9f7d02116e7a" title=" " alt="" coords="131,487,226,513"/>
-<area shape="rect" id="node26" href="$main_8c.html#a6ba20fd6daf4d6ab1e47675b3c1f1ca6" title=" " alt="" coords="127,563,230,589"/>
-<area shape="rect" id="node34" href="$tasks_8h.html#a746b11c2b14e499dab89746ee003716d" title="Perception task." alt="" coords="115,385,242,412"/>
-<area shape="rect" id="node39" href="$ptask_8h.html#a16dc5b4ee9790f380821701ff6865e90" title=" " alt="" coords="135,613,222,640"/>
-<area shape="rect" id="node40" href="$tasks_8h.html#a0fc6c027e96e920540028bd808a43c5f" title=" " alt="" coords="124,284,233,311"/>
-<area shape="rect" id="node42" href="$ptask_8h.html#a88099c7c946b1d8c34a3717e5d3b8b83" title=" " alt="" coords="129,664,228,691"/>
-<area shape="rect" id="node43" href="$tasks_8h.html#ad095128da13e00a037e732dd25ffcbf6" title=" " alt="" coords="119,233,239,260"/>
-<area shape="rect" id="node45" href="$ptask_8h.html#a9142a39d7c9be6b98ce01f0c7541d8f7" title=" " alt="" coords="108,715,249,741"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,512,60,539"/>
+<area shape="rect" id="node2" href="$tasks_8h.html#a91e3918bad881fbf7304d534268de11d" title=" " alt="" coords="127,208,230,235"/>
+<area shape="rect" id="node11" href="$tasks_8h.html#a16cbac3bef85b555e76fe999965c1b7e" title=" " alt="" coords="127,360,231,387"/>
+<area shape="rect" id="node12" href="$display_8h.html#aa2eb9ba074b23fc3b4a91c98e0c83c8b" title="Updates the display." alt="" coords="321,563,443,589"/>
+<area shape="rect" id="node27" href="$main_8c.html#a56e75a6913a3cb4da05b9f7d02116e7a" title=" " alt="" coords="131,563,226,589"/>
+<area shape="rect" id="node28" href="$main_8c.html#a6ba20fd6daf4d6ab1e47675b3c1f1ca6" title=" " alt="" coords="127,664,230,691"/>
+<area shape="rect" id="node36" href="$tasks_8h.html#a746b11c2b14e499dab89746ee003716d" title="Perception task." alt="" coords="115,411,242,437"/>
+<area shape="rect" id="node42" href="$ptask_8h.html#a16dc5b4ee9790f380821701ff6865e90" title=" " alt="" coords="135,715,222,741"/>
+<area shape="rect" id="node43" href="$tasks_8h.html#a0fc6c027e96e920540028bd808a43c5f" title=" " alt="" coords="124,309,233,336"/>
+<area shape="rect" id="node45" href="$ptask_8h.html#a88099c7c946b1d8c34a3717e5d3b8b83" title=" " alt="" coords="129,765,228,792"/>
+<area shape="rect" id="node46" href="$tasks_8h.html#ad095128da13e00a037e732dd25ffcbf6" title=" " alt="" coords="119,259,239,285"/>
+<area shape="rect" id="node48" href="$ptask_8h.html#a9142a39d7c9be6b98ce01f0c7541d8f7" title=" " alt="" coords="108,816,249,843"/>
 <area shape="rect" id="node3" href="$control_8h.html#ae3c1be6c75e99edd3ab89b0d2f6c4b0d" title="Autonomous control routine using centerline waypoints." alt="" coords="305,5,459,32"/>
-<area shape="rect" id="node5" href="$ptask_8h.html#a55744cf37a298cca48b46a38ecd1cbd7" title=" " alt="" coords="321,360,443,387"/>
-<area shape="rect" id="node6" href="$control_8h.html#aa7d41004f6e6355c5dd871a9a8c8a59d" title="Adjusts vehicle controls based on keyboard input." alt="" coords="315,56,449,83"/>
-<area shape="rect" id="node7" href="$utilities_8h.html#a28b6717d007598c8d776ee5b8652be51" title=" " alt="" coords="345,157,419,184"/>
-<area shape="rect" id="node8" href="$ptask_8h.html#ac5a989242ff00476f314f92395f23252" title=" " alt="" coords="309,208,455,235"/>
-<area shape="rect" id="node9" href="$ptask_8h.html#afd8a4ae978d1068cb18f8e5fc03a1f0c" title=" " alt="" coords="321,259,443,285"/>
-<area shape="rect" id="node4" href="$group__VehicleModule.html#ga4a1f78c4260229ebd2850350d181cc86" title="Simulates the vehicle&#39;s movement by updating its position and orientation." alt="" coords="537,31,654,57"/>
-<area shape="rect" id="node12" href="$group__VehicleModule.html#gaafbbdba8ad9bfb6108f0238653806062" title=" " alt="" coords="531,436,659,463"/>
-<area shape="rect" id="node13" href="$display_8c.html#a01a4e859fcc5ddef923afe9a8a674826" title="Renders the car sprite rotated to its current angle." alt="" coords="555,537,636,564"/>
-<area shape="rect" id="node16" href="$display_8c.html#a385702fb79f2c451da015c3147f80515" title="Draws user control indicators." alt="" coords="539,487,652,513"/>
-<area shape="rect" id="node19" href="$display_8c.html#acd5437d29ba24cfc00dbd2f9f6b0cd28" title="Renders the complete perception layer." alt="" coords="530,588,661,615"/>
-<area shape="rect" id="node23" href="$display_8c.html#a92e08b949df5d8a8e5edec1dd86bc360" title="Draws the track." alt="" coords="548,639,643,665"/>
-<area shape="rect" id="node24" href="$display_8c.html#a2d077fa92b741d504d6ef5c5f2fdd74c" title="Draws the trajectory of the car." alt="" coords="533,385,657,412"/>
-<area shape="rect" id="node14" href="$utilities_8h.html#a33090597864cdfd30d87ff99c14eeecb" title=" " alt="" coords="725,487,885,513"/>
-<area shape="rect" id="node15" href="$display_8c.html#a264238ff7dcf301bbc2f190ea7dcea4c" title="Draws a directional arrow representing the car&#39;s orientation." alt="" coords="744,537,867,564"/>
-<area shape="rect" id="node17" href="$display_8c.html#abdb9fae5dfda6a7b08efb162b243c776" title=" " alt="" coords="749,436,861,463"/>
-<area shape="rect" id="node18" href="$display_8c.html#a5bcee09191f66649a2968b6f2ba32935" title=" " alt="" coords="754,385,857,412"/>
-<area shape="rect" id="node20" href="$display_8c.html#aa45d316f5e50fa968e686d790d57457b" title="Draws the cone map overlay." alt="" coords="741,588,869,615"/>
-<area shape="rect" id="node21" href="$display_8c.html#a298532c4740f2a6785e5c1b0ff7fea9a" title="Renders the detected cones on the perception bitmap." alt="" coords="724,639,887,665"/>
-<area shape="rect" id="node22" href="$display_8c.html#a5c07cb2dc1adb076383bced84f4a8154" title="Draws the lidar/perception view." alt="" coords="760,689,851,716"/>
-<area shape="rect" id="node27" href="$main_8c.html#a7cb642cbefeb5eca23c4a56384ce8b6b" title=" " alt="" coords="347,715,417,741"/>
-<area shape="rect" id="node28" href="$main_8c.html#a123ba10a236b41c94b5da809a6db6528" title=" " alt="" coords="313,765,451,792"/>
-<area shape="rect" id="node29" href="$main_8c.html#a8a4df149a98808357f97ece821bc653a" title=" " alt="" coords="323,563,441,589"/>
-<area shape="rect" id="node30" href="$main_8c.html#a7f21658ab78ff07401a1c66eba62c0dd" title=" " alt="" coords="341,613,423,640"/>
-<area shape="rect" id="node33" href="$main_8c.html#af157d4a7f2f1670050ead305cbe70248" title=" " alt="" coords="325,664,439,691"/>
-<area shape="rect" id="node31" href="$utilities_8h.html#a5297509bfed850c9f8cb92b994b7fd75" title="Initializes an array of cone structures." alt="" coords="551,740,639,767"/>
-<area shape="rect" id="node32" href="$utilities_8h.html#a77d50bbb4a4844ce7ddab4a7b3d52d24" title=" " alt="" coords="515,689,676,716"/>
-<area shape="rect" id="node35" href="$group__PerceptionModule.html#gad42bf825ec1093bf25b80bc192f3f952" title=" " alt="" coords="357,411,407,437"/>
-<area shape="rect" id="node36" href="$group__PerceptionModule.html#ga9c68a3d545ebb7bb3092f88b7e10084a" title=" " alt="" coords="343,461,421,488"/>
-<area shape="rect" id="node37" href="$group__PerceptionModule.html#gaf16a2babc7e4a480309f889a0e848c72" title=" " alt="" coords="517,335,673,361"/>
-<area shape="rect" id="node38" href="$group__PerceptionModule.html#ga697c64eba1fb6796e0e5ccc17dc578dd" title=" " alt="" coords="544,284,647,311"/>
-<area shape="rect" id="node41" href="$tasks_8c.html#af9fa55a7948b658713df46fd22608bfd" title=" " alt="" coords="297,309,467,336"/>
-<area shape="rect" id="node44" href="$trajectory_8h.html#a919f2f0e87ab763cdae69585d089d23d" title=" " alt="" coords="308,107,456,133"/>
+<area shape="rect" id="node5" href="$ptask_8h.html#a190af02eb96e0365aeba0839009a321d" title=" " alt="" coords="324,157,440,184"/>
+<area shape="rect" id="node6" href="$ptask_8h.html#a55744cf37a298cca48b46a38ecd1cbd7" title=" " alt="" coords="321,208,443,235"/>
+<area shape="rect" id="node7" href="$control_8h.html#aa7d41004f6e6355c5dd871a9a8c8a59d" title="Adjusts vehicle controls based on keyboard input." alt="" coords="315,56,449,83"/>
+<area shape="rect" id="node8" href="$utilities_8h.html#a28b6717d007598c8d776ee5b8652be51" title=" " alt="" coords="345,259,419,285"/>
+<area shape="rect" id="node9" href="$ptask_8h.html#ac5a989242ff00476f314f92395f23252" title=" " alt="" coords="309,309,455,336"/>
+<area shape="rect" id="node10" href="$ptask_8h.html#afd8a4ae978d1068cb18f8e5fc03a1f0c" title=" " alt="" coords="321,411,443,437"/>
+<area shape="rect" id="node4" href="$group__VehicleModule.html#gaed7254f6980a8a90d1df5627f3e12ebd" title="Simulates the vehicle&#39;s movement by updating its position and orientation." alt="" coords="537,31,654,57"/>
+<area shape="rect" id="node13" href="$group__VehicleModule.html#gaafbbdba8ad9bfb6108f0238653806062" title=" " alt="" coords="531,613,659,640"/>
+<area shape="rect" id="node14" href="$display_8c.html#ad36e5b47cc4f9664a60cd8b95e82fc6a" title=" " alt="" coords="520,309,671,336"/>
+<area shape="rect" id="node15" href="$display_8c.html#a01a4e859fcc5ddef923afe9a8a674826" title="Renders the car sprite rotated to its current angle." alt="" coords="555,411,636,437"/>
+<area shape="rect" id="node18" href="$display_8c.html#a385702fb79f2c451da015c3147f80515" title="Draws user control indicators." alt="" coords="539,360,652,387"/>
+<area shape="rect" id="node21" href="$display_8c.html#acd5437d29ba24cfc00dbd2f9f6b0cd28" title="Renders the complete perception layer." alt="" coords="530,461,661,488"/>
+<area shape="rect" id="node25" href="$display_8c.html#a92e08b949df5d8a8e5edec1dd86bc360" title="Draws the track." alt="" coords="548,512,643,539"/>
+<area shape="rect" id="node26" href="$display_8c.html#a2d077fa92b741d504d6ef5c5f2fdd74c" title="Draws the trajectory of the car." alt="" coords="533,563,657,589"/>
+<area shape="rect" id="node16" href="$utilities_8h.html#a33090597864cdfd30d87ff99c14eeecb" title=" " alt="" coords="725,360,885,387"/>
+<area shape="rect" id="node17" href="$display_8c.html#a264238ff7dcf301bbc2f190ea7dcea4c" title="Draws a directional arrow representing the car&#39;s orientation." alt="" coords="744,411,867,437"/>
+<area shape="rect" id="node19" href="$display_8c.html#abdb9fae5dfda6a7b08efb162b243c776" title=" " alt="" coords="749,309,861,336"/>
+<area shape="rect" id="node20" href="$display_8c.html#a5bcee09191f66649a2968b6f2ba32935" title=" " alt="" coords="754,259,857,285"/>
+<area shape="rect" id="node22" href="$display_8c.html#aa45d316f5e50fa968e686d790d57457b" title="Draws the cone map overlay." alt="" coords="741,461,869,488"/>
+<area shape="rect" id="node23" href="$display_8c.html#a298532c4740f2a6785e5c1b0ff7fea9a" title="Renders the detected cones on the perception bitmap." alt="" coords="724,512,887,539"/>
+<area shape="rect" id="node24" href="$display_8c.html#a5c07cb2dc1adb076383bced84f4a8154" title="Draws the lidar/perception view." alt="" coords="760,563,851,589"/>
+<area shape="rect" id="node29" href="$main_8c.html#a7cb642cbefeb5eca23c4a56384ce8b6b" title=" " alt="" coords="347,867,417,893"/>
+<area shape="rect" id="node30" href="$main_8c.html#a123ba10a236b41c94b5da809a6db6528" title=" " alt="" coords="313,664,451,691"/>
+<area shape="rect" id="node31" href="$main_8c.html#a8a4df149a98808357f97ece821bc653a" title=" " alt="" coords="323,715,441,741"/>
+<area shape="rect" id="node32" href="$main_8c.html#a7f21658ab78ff07401a1c66eba62c0dd" title=" " alt="" coords="341,765,423,792"/>
+<area shape="rect" id="node35" href="$main_8c.html#af157d4a7f2f1670050ead305cbe70248" title=" " alt="" coords="325,816,439,843"/>
+<area shape="rect" id="node33" href="$utilities_8h.html#a5297509bfed850c9f8cb92b994b7fd75" title="Initializes an array of cone structures." alt="" coords="551,765,639,792"/>
+<area shape="rect" id="node34" href="$utilities_8h.html#a77d50bbb4a4844ce7ddab4a7b3d52d24" title=" " alt="" coords="515,816,676,843"/>
+<area shape="rect" id="node37" href="$group__PerceptionModule.html#gad42bf825ec1093bf25b80bc192f3f952" title=" " alt="" coords="357,512,407,539"/>
+<area shape="rect" id="node38" href="$group__PerceptionModule.html#ga9c68a3d545ebb7bb3092f88b7e10084a" title=" " alt="" coords="343,613,421,640"/>
+<area shape="rect" id="node41" href="$ptask_8h.html#ac262dbdc5fc94fd0144de303d85a7afd" title=" " alt="" coords="327,461,437,488"/>
+<area shape="rect" id="node39" href="$group__PerceptionModule.html#gaf16a2babc7e4a480309f889a0e848c72" title=" " alt="" coords="517,664,673,691"/>
+<area shape="rect" id="node40" href="$group__PerceptionModule.html#ga697c64eba1fb6796e0e5ccc17dc578dd" title=" " alt="" coords="544,715,647,741"/>
+<area shape="rect" id="node44" href="$tasks_8c.html#af9fa55a7948b658713df46fd22608bfd" title=" " alt="" coords="297,360,467,387"/>
+<area shape="rect" id="node47" href="$trajectory_8h.html#a919f2f0e87ab763cdae69585d089d23d" title=" " alt="" coords="308,107,456,133"/>
 </map>

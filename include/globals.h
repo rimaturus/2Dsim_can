@@ -71,7 +71,7 @@
 #include <semaphore.h>
 
 // #define DEBUG
-// #define PROFILING
+#define PROFILING
 
 // ------------------------
 // 	TASKs COSTANTS
@@ -112,6 +112,9 @@ extern int dl_miss_settings;
 
 /* Drawing mutex */
 extern pthread_mutex_t draw_mutex;
+
+// Shared resource for map updates
+extern pthread_mutex_t map_mutex;
 
 // ------------------------
 //  CONVERSIONs COSTANTS

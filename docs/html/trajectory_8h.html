@@ -67,6 +67,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
@@ -86,7 +87,7 @@ Include dependency graph for trajectory.h:</div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="trajectory_8h__dep__incl.svg" width="791" height="262"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="trajectory_8h__dep__incl.svg" width="984" height="262"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div>
@@ -98,16 +99,21 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Plans the trajectory for the car based on its current state and detected obstacles.  <a href="structwaypoint.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a0351e86a69da7f513f59240246a49d09"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trajectory_8h.html#a0351e86a69da7f513f59240246a49d09">MAX_WAYPOINTS</a>&#160;&#160;&#160;(4*<a class="el" href="globals_8h.html#ac5ffab41ad229777dae06978b9a7bc15">MAX_DETECTED_CONES</a>)</td></tr>
+<tr class="separator:a0351e86a69da7f513f59240246a49d09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a919f2f0e87ab763cdae69585d089d23d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trajectory_8h.html#a919f2f0e87ab763cdae69585d089d23d">trajectory_planning</a> (float <a class="el" href="globals_8c.html#a4a4a6918df3caa78a889c76207349a02">car_x</a>, float <a class="el" href="globals_8c.html#a2ff6267ace75a40353ce62fdb02b9e67">car_y</a>, float <a class="el" href="globals_8c.html#ad9878a31df3b8d7db61cf55b7eb07cd4">car_angle</a>, <a class="el" href="structcone.html">cone</a> *<a class="el" href="group__PerceptionModule.html#gaab5237f191baaef95b94ad0686b40aa6">detected_cones</a>, <a class="el" href="structwaypoint.html">waypoint</a> *<a class="el" href="trajectory_8c.html#a525ffa7b5c81396c8024ff1f8d9e7015">trajectory</a>)</td></tr>
+<tr class="memitem:a919f2f0e87ab763cdae69585d089d23d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trajectory_8h.html#a919f2f0e87ab763cdae69585d089d23d">trajectory_planning</a> (float <a class="el" href="globals_8c.html#a4a4a6918df3caa78a889c76207349a02">car_x</a>, float <a class="el" href="globals_8c.html#a2ff6267ace75a40353ce62fdb02b9e67">car_y</a>, float <a class="el" href="globals_8c.html#ad9878a31df3b8d7db61cf55b7eb07cd4">car_angle</a>, <a class="el" href="structcone.html">cone</a> *<a class="el" href="group__PerceptionModule.html#gaab5237f191baaef95b94ad0686b40aa6">detected_cones</a>, <a class="el" href="structwaypoint.html">waypoint</a> *<a class="el" href="trajectory_8c.html#a14d14f43fd111513bf4ad3b550c1b0ae">trajectory</a>)</td></tr>
 <tr class="separator:a919f2f0e87ab763cdae69585d089d23d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a909b9a123f41f67f27ddab0f43094733"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structwaypoint.html">waypoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trajectory_8h.html#a909b9a123f41f67f27ddab0f43094733">trajectory</a> [2 *<a class="el" href="globals_8h.html#ac5ffab41ad229777dae06978b9a7bc15">MAX_DETECTED_CONES</a>]</td></tr>
-<tr class="memdesc:a909b9a123f41f67f27ddab0f43094733"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global array of waypoints forming the planned trajectory.  <a href="trajectory_8h.html#a909b9a123f41f67f27ddab0f43094733">More...</a><br /></td></tr>
-<tr class="separator:a909b9a123f41f67f27ddab0f43094733"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92c74c7ad62a359a84f3eb680ff31720"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structwaypoint.html">waypoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trajectory_8h.html#a92c74c7ad62a359a84f3eb680ff31720">trajectory</a> [<a class="el" href="trajectory_8h.html#a0351e86a69da7f513f59240246a49d09">MAX_WAYPOINTS</a>]</td></tr>
+<tr class="memdesc:a92c74c7ad62a359a84f3eb680ff31720"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global array of waypoints forming the planned trajectory.  <a href="trajectory_8h.html#a92c74c7ad62a359a84f3eb680ff31720">More...</a><br /></td></tr>
+<tr class="separator:a92c74c7ad62a359a84f3eb680ff31720"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95c304e54bd0cdde5be7e3053ed2e9c0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trajectory_8h.html#a95c304e54bd0cdde5be7e3053ed2e9c0">trajectory_idx</a></td></tr>
 <tr class="memdesc:a95c304e54bd0cdde5be7e3053ed2e9c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global index used to track the number of waypoints currently stored in the trajectory.  <a href="trajectory_8h.html#a95c304e54bd0cdde5be7e3053ed2e9c0">More...</a><br /></td></tr>
 <tr class="separator:a95c304e54bd0cdde5be7e3053ed2e9c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -115,7 +121,22 @@ Variables</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Provides declarations for trajectory planning based on cone detection. </p>
 <p>This header defines the data structures and function prototypes necessary for generating trajectories (waypoints) that guide the car through detected cones. </p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a0351e86a69da7f513f59240246a49d09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0351e86a69da7f513f59240246a49d09">&#9670;&nbsp;</a></span>MAX_WAYPOINTS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MAX_WAYPOINTS&#160;&#160;&#160;(4*<a class="el" href="globals_8h.html#ac5ffab41ad229777dae06978b9a7bc15">MAX_DETECTED_CONES</a>)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="a919f2f0e87ab763cdae69585d089d23d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a919f2f0e87ab763cdae69585d089d23d">&#9670;&nbsp;</a></span>trajectory_planning()</h2>
 
@@ -168,8 +189,8 @@ Here is the caller graph for this function:</div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a909b9a123f41f67f27ddab0f43094733"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a909b9a123f41f67f27ddab0f43094733">&#9670;&nbsp;</a></span>trajectory</h2>
+<a id="a92c74c7ad62a359a84f3eb680ff31720"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92c74c7ad62a359a84f3eb680ff31720">&#9670;&nbsp;</a></span>trajectory</h2>
 
 <div class="memitem">
 <div class="memproto">

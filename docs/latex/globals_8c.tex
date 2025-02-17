@@ -24,11 +24,11 @@ const int \mbox{\hyperlink{globals_8c_af2068572bded057c07f9af467ef531bd}{Y\+\_\+
 \item 
 const float \mbox{\hyperlink{globals_8c_aee7b5f297a1877e9b4a1995379ea5dff}{cone\+\_\+radius}} = 0.\+05f
 \item 
-float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}} = 4.\+5f
+float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}} = 4.\+0f
 \item 
 float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}} = 3.\+0f
 \item 
-int \mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}} = 0
+int \mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}} = 270
 \item 
 \mbox{\hyperlink{structcone}{cone}} \mbox{\hyperlink{globals_8c_a6bff9042bc7c83b01b7c3c5285f48e82}{cones}} \mbox{[}\mbox{\hyperlink{globals_8h_af35d3efb02d45acebff24eebfb0a1f33}{MAX\+\_\+\+CONES\+\_\+\+MAP}}\mbox{]}
 \item 
@@ -73,6 +73,16 @@ int \mbox{\hyperlink{globals_8c_a6e208843f894f38fa7644608917a2a41}{green}}
 sem\+\_\+t \mbox{\hyperlink{globals_8c_a88234d9ca4c491b833932c377e5d71f5}{lidar\+\_\+sem}}
 \item 
 pthread\+\_\+mutex\+\_\+t \mbox{\hyperlink{globals_8c_ad4db8311e07824b47f416a7485ebfa31}{draw\+\_\+mutex}} = PTHREAD\+\_\+\+MUTEX\+\_\+\+INITIALIZER
+\item 
+int \mbox{\hyperlink{globals_8c_a9455f2c8b15fb5ca0c1e1841cfb833f5}{dl\+\_\+miss\+\_\+perception}} = 0
+\item 
+int \mbox{\hyperlink{globals_8c_a476edec7d3a3162e1e3fdf6d3d667411}{dl\+\_\+miss\+\_\+trajectory}} = 0
+\item 
+int \mbox{\hyperlink{globals_8c_af5f10ab762ac911a89c92cd9c5c54341}{dl\+\_\+miss\+\_\+control}} = 0
+\item 
+int \mbox{\hyperlink{globals_8c_a310099202df6ed575130f2ba22388f5e}{dl\+\_\+miss\+\_\+display}} = 0
+\item 
+int \mbox{\hyperlink{globals_8c_a7166534abfe18c16e1e1aa2a951e7369}{dl\+\_\+miss\+\_\+settings}} = 0
 \end{DoxyCompactItemize}
 
 
@@ -124,7 +134,7 @@ This file declares and initializes global constants, variables, and resources us
 \index{globals.c@{globals.c}!car\_angle@{car\_angle}}
 \index{car\_angle@{car\_angle}!globals.c@{globals.c}}
 \doxysubsubsection{\texorpdfstring{car\_angle}{car\_angle}}
-{\footnotesize\ttfamily int car\+\_\+angle = 0}
+{\footnotesize\ttfamily int car\+\_\+angle = 270}
 
 The initial orientation angle of the car (in degrees).
 
@@ -138,7 +148,7 @@ The initial orientation angle of the car (in degrees).
 \index{globals.c@{globals.c}!car\_x@{car\_x}}
 \index{car\_x@{car\_x}!globals.c@{globals.c}}
 \doxysubsubsection{\texorpdfstring{car\_x}{car\_x}}
-{\footnotesize\ttfamily float car\+\_\+x = 4.\+5f}
+{\footnotesize\ttfamily float car\+\_\+x = 4.\+0f}
 
 The initial X-\/coordinate position of the car within the simulation.
 \begin{DoxyItemize}
@@ -192,7 +202,37 @@ Bitmap pointers used for rendering various components of the simulation such as 
 \begin{DoxyItemize}
 \item 
 \end{DoxyItemize}
-\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_ad4db8311e07824b47f416a7485ebfa31}\label{globals_8c_ad4db8311e07824b47f416a7485ebfa31}} 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_af5f10ab762ac911a89c92cd9c5c54341}\label{globals_8c_af5f10ab762ac911a89c92cd9c5c54341}} 
+\index{globals.c@{globals.c}!dl\_miss\_control@{dl\_miss\_control}}
+\index{dl\_miss\_control@{dl\_miss\_control}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{dl\_miss\_control}{dl\_miss\_control}}
+{\footnotesize\ttfamily int dl\+\_\+miss\+\_\+control = 0}
+
+\mbox{\Hypertarget{globals_8c_a310099202df6ed575130f2ba22388f5e}\label{globals_8c_a310099202df6ed575130f2ba22388f5e}} 
+\index{globals.c@{globals.c}!dl\_miss\_display@{dl\_miss\_display}}
+\index{dl\_miss\_display@{dl\_miss\_display}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{dl\_miss\_display}{dl\_miss\_display}}
+{\footnotesize\ttfamily int dl\+\_\+miss\+\_\+display = 0}
+
+\mbox{\Hypertarget{globals_8c_a9455f2c8b15fb5ca0c1e1841cfb833f5}\label{globals_8c_a9455f2c8b15fb5ca0c1e1841cfb833f5}} 
+\index{globals.c@{globals.c}!dl\_miss\_perception@{dl\_miss\_perception}}
+\index{dl\_miss\_perception@{dl\_miss\_perception}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{dl\_miss\_perception}{dl\_miss\_perception}}
+{\footnotesize\ttfamily int dl\+\_\+miss\+\_\+perception = 0}
+
+\mbox{\Hypertarget{globals_8c_a7166534abfe18c16e1e1aa2a951e7369}\label{globals_8c_a7166534abfe18c16e1e1aa2a951e7369}} 
+\index{globals.c@{globals.c}!dl\_miss\_settings@{dl\_miss\_settings}}
+\index{dl\_miss\_settings@{dl\_miss\_settings}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{dl\_miss\_settings}{dl\_miss\_settings}}
+{\footnotesize\ttfamily int dl\+\_\+miss\+\_\+settings = 0}
+
+\mbox{\Hypertarget{globals_8c_a476edec7d3a3162e1e3fdf6d3d667411}\label{globals_8c_a476edec7d3a3162e1e3fdf6d3d667411}} 
+\index{globals.c@{globals.c}!dl\_miss\_trajectory@{dl\_miss\_trajectory}}
+\index{dl\_miss\_trajectory@{dl\_miss\_trajectory}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{dl\_miss\_trajectory}{dl\_miss\_trajectory}}
+{\footnotesize\ttfamily int dl\+\_\+miss\+\_\+trajectory = 0}
+
+\mbox{\Hypertarget{globals_8c_ad4db8311e07824b47f416a7485ebfa31}\label{globals_8c_ad4db8311e07824b47f416a7485ebfa31}} 
 \index{globals.c@{globals.c}!draw\_mutex@{draw\_mutex}}
 \index{draw\_mutex@{draw\_mutex}!globals.c@{globals.c}}
 \doxysubsubsection{\texorpdfstring{draw\_mutex}{draw\_mutex}}

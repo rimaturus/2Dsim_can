@@ -16,8 +16,7 @@ Rendering and display update functions for the 2D simulation using Allegro.
 {\ttfamily \#include \char`\"{}control.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}vehicle.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}display.\+h\char`\"{}}\newline
-Include dependency graph for display.\+c\+:
-\nopagebreak
+Include dependency graph for display.\+c\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -41,7 +40,7 @@ void \mbox{\hyperlink{display_8c_aa45d316f5e50fa968e686d790d57457b}{draw\+\_\+co
 \begin{DoxyCompactList}\small\item\em Draws the cone map overlay. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{display_8c_acd5437d29ba24cfc00dbd2f9f6b0cd28}{draw\+\_\+perception}} ()
 \begin{DoxyCompactList}\small\item\em Renders the complete perception layer. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{display_8c_a2d077fa92b741d504d6ef5c5f2fdd74c}{draw\+\_\+trajectory}} (\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$\mbox{\hyperlink{trajectory_8c_a525ffa7b5c81396c8024ff1f8d9e7015}{trajectory}})
+void \mbox{\hyperlink{display_8c_a2d077fa92b741d504d6ef5c5f2fdd74c}{draw\+\_\+trajectory}} (\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$\mbox{\hyperlink{trajectory_8c_a14d14f43fd111513bf4ad3b550c1b0ae}{trajectory}})
 \begin{DoxyCompactList}\small\item\em Draws the trajectory of the car. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{display_8c_a385702fb79f2c451da015c3147f80515}{draw\+\_\+controls}} ()
 \begin{DoxyCompactList}\small\item\em Draws user control indicators. \end{DoxyCompactList}\item 
@@ -50,6 +49,8 @@ void \mbox{\hyperlink{display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b}{update\+\_\+
 void \mbox{\hyperlink{display_8c_abdb9fae5dfda6a7b08efb162b243c776}{display\+\_\+pedal}} (BITMAP $\ast$bitmap)
 \item 
 void \mbox{\hyperlink{display_8c_a5bcee09191f66649a2968b6f2ba32935}{draw\+\_\+button}} (\mbox{\hyperlink{structButton}{Button}} $\ast$btn, BITMAP $\ast$buffer)
+\item 
+void \mbox{\hyperlink{display_8c_ad36e5b47cc4f9664a60cd8b95e82fc6a}{disp\+\_\+deadline\+\_\+miss}} ()
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -74,14 +75,27 @@ Rendering and display update functions for the 2D simulation using Allegro.
 This file contains functions responsible for drawing various elements of the simulation, including the car sprite, direction indicator, track, lidar/perception display, trajectory, and user controls (e.\+g., steering wheel and pedal gauge). It also handles the final composition of the display buffer and its transfer to the screen. 
 
 \doxysubsection{Function Documentation}
+\mbox{\Hypertarget{display_8c_ad36e5b47cc4f9664a60cd8b95e82fc6a}\label{display_8c_ad36e5b47cc4f9664a60cd8b95e82fc6a}} 
+\index{display.c@{display.c}!disp\_deadline\_miss@{disp\_deadline\_miss}}
+\index{disp\_deadline\_miss@{disp\_deadline\_miss}!display.c@{display.c}}
+\doxysubsubsection{\texorpdfstring{disp\_deadline\_miss()}{disp\_deadline\_miss()}}
+{\footnotesize\ttfamily void disp\+\_\+deadline\+\_\+miss (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{display_8c_ad36e5b47cc4f9664a60cd8b95e82fc6a_icgraph}
+\end{center}
+\end{figure}
 \mbox{\Hypertarget{display_8c_abdb9fae5dfda6a7b08efb162b243c776}\label{display_8c_abdb9fae5dfda6a7b08efb162b243c776}} 
 \index{display.c@{display.c}!display\_pedal@{display\_pedal}}
 \index{display\_pedal@{display\_pedal}!display.c@{display.c}}
 \doxysubsubsection{\texorpdfstring{display\_pedal()}{display\_pedal()}}
 {\footnotesize\ttfamily void display\+\_\+pedal (\begin{DoxyParamCaption}\item[{BITMAP $\ast$}]{bitmap }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -94,8 +108,7 @@ Here is the caller graph for this function\+:
 \doxysubsubsection{\texorpdfstring{draw\_button()}{draw\_button()}}
 {\footnotesize\ttfamily void draw\+\_\+button (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structButton}{Button}} $\ast$}]{btn,  }\item[{BITMAP $\ast$}]{buffer }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -125,16 +138,14 @@ Calculates the proper position for the car sprite based on its coordinates in th
 {\em car\+\_\+angle} & The car\textquotesingle{}s angle in degrees. \\
 \hline
 \end{DoxyParams}
-Here is the call graph for this function\+:
-\nopagebreak
+Here is the call graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=297pt]{display_8c_a01a4e859fcc5ddef923afe9a8a674826_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -162,8 +173,7 @@ Iterates through the track map data and draws a white filled circle at each cone
 {\em track\+\_\+map\+\_\+idx} & The number of valid entries in the track map array. \\
 \hline
 \end{DoxyParams}
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -180,16 +190,14 @@ Here is the caller graph for this function\+:
 
 Draws user control indicators. 
 
-Renders the steering wheel sprite with the correct rotation and draws a gauge for pedal control. The gauge\textquotesingle{}s fill color indicates the pedal level (green for positive, red for non-\/positive). Here is the call graph for this function\+:
-\nopagebreak
+Renders the steering wheel sprite with the correct rotation and draws a gauge for pedal control. The gauge\textquotesingle{}s fill color indicates the pedal level (green for positive, red for non-\/positive). Here is the call graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
 \includegraphics[width=321pt]{display_8c_a385702fb79f2c451da015c3147f80515_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -215,8 +223,7 @@ Iterates through the array of detected cones and draws a filled circle at each c
 {\em detected\+\_\+cones} & Pointer to an array of detected cone structures. \\
 \hline
 \end{DoxyParams}
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -235,8 +242,7 @@ Draws a directional arrow representing the car\textquotesingle{}s orientation.
 
 Draws a directional arrow.
 
-Computes the arrow\textquotesingle{}s start (at the car\textquotesingle{}s position) and end points based on the car angle, using cosine and sine functions. The arrow shaft and head are drawn as thick green lines, with the head drawn at two angles to form a head shape. Here is the caller graph for this function\+:
-\nopagebreak
+Computes the arrow\textquotesingle{}s start (at the car\textquotesingle{}s position) and end points based on the car angle, using cosine and sine functions. The arrow shaft and head are drawn as thick green lines, with the head drawn at two angles to form a head shape. Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -262,8 +268,7 @@ Clears the perception bitmap and centers it on the car\textquotesingle{}s positi
 {\em measures} & Pointer to an array of lidar measurements. \\
 \hline
 \end{DoxyParams}
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -289,8 +294,7 @@ Combines the lidar lines, detected cones, and cone map visualizations to create 
 \includegraphics[width=336pt]{display_8c_acd5437d29ba24cfc00dbd2f9f6b0cd28_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -307,8 +311,7 @@ Here is the caller graph for this function\+:
 
 Draws the track. 
 
-Checks that the track bitmap has valid dimensions, and if so, draws the track image onto the display buffer. If the bitmap dimensions are invalid, an error message is shown. Here is the caller graph for this function\+:
-\nopagebreak
+Checks that the track bitmap has valid dimensions, and if so, draws the track image onto the display buffer. If the bitmap dimensions are invalid, an error message is shown. Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -334,8 +337,7 @@ Clears and sets the background for the trajectory bitmap and iterates over each 
 {\em trajectory} & Pointer to an array of waypoint structures representing the car\textquotesingle{}s trajectory. \\
 \hline
 \end{DoxyParams}
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -362,8 +364,7 @@ Locks the drawing mutex and sequentially renders the background, track, car, per
 \includegraphics[width=350pt]{display_8c_aa2eb9ba074b23fc3b4a91c98e0c83c8b_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode

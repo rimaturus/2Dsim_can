@@ -13,7 +13,9 @@ Contains periodic task functions for Li\+DAR perception, trajectory planning, ve
 {\ttfamily \#include \char`\"{}vehicle.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}display.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}ptask.\+h\char`\"{}}\newline
-Include dependency graph for tasks.\+c\+:\nopagebreak
+{\ttfamily \#include \char`\"{}control.\+h\char`\"{}}\newline
+Include dependency graph for tasks.\+c\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -64,7 +66,8 @@ This file implements tasks that run periodically in separate threads. Each task 
 \doxysubsubsection{\texorpdfstring{control\_task()}{control\_task()}}
 {\footnotesize\ttfamily void$\ast$ control\+\_\+task (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -105,8 +108,7 @@ Here is the caller graph for this function\+:\nopagebreak
 \doxysubsubsection{\texorpdfstring{is\_mouse\_over\_button()}{is\_mouse\_over\_button()}}
 {\footnotesize\ttfamily int is\+\_\+mouse\+\_\+over\+\_\+button (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structButton}{Button}} $\ast$}]{btn,  }\item[{int}]{mouse\+\_\+x,  }\item[{int}]{mouse\+\_\+y }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -187,8 +189,7 @@ Thread task that handles simulation settings and configuration updates. Should b
 \includegraphics[width=350pt]{tasks_8c_a746b11c2b14e499dab89746ee003716d_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -209,8 +210,7 @@ Here is the call graph for this function\+:
 \includegraphics[width=325pt]{tasks_8c_a0fc6c027e96e920540028bd808a43c5f_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:
-\nopagebreak
+Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -223,7 +223,8 @@ Here is the caller graph for this function\+:
 \doxysubsubsection{\texorpdfstring{trajectory\_task()}{trajectory\_task()}}
 {\footnotesize\ttfamily void$\ast$ trajectory\+\_\+task (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode

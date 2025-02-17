@@ -15,7 +15,8 @@ Include dependency graph for control.\+h\+:\nopagebreak
 \includegraphics[width=320pt]{control_8h__incl}
 \end{center}
 \end{figure}
-This graph shows which files directly or indirectly include this file\+:\nopagebreak
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -27,7 +28,7 @@ This graph shows which files directly or indirectly include this file\+:\nopageb
 \item 
 void \mbox{\hyperlink{control_8h_aa7d41004f6e6355c5dd871a9a8c8a59d}{keyboard\+\_\+control}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}})
 \begin{DoxyCompactList}\small\item\em Adjusts vehicle controls based on keyboard input. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d}{autonomous\+\_\+control}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, \mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$\mbox{\hyperlink{trajectory_8c_a525ffa7b5c81396c8024ff1f8d9e7015}{trajectory}})
+void \mbox{\hyperlink{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d}{autonomous\+\_\+control}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, \mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$\mbox{\hyperlink{trajectory_8c_a14d14f43fd111513bf4ad3b550c1b0ae}{trajectory}})
 \begin{DoxyCompactList}\small\item\em Autonomous control routine using centerline waypoints. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -35,6 +36,10 @@ void \mbox{\hyperlink{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d}{autonomous\+
 float \mbox{\hyperlink{control_8h_abf65b77f4a341762b97d645dd857e021}{steering}}
 \begin{DoxyCompactList}\small\item\em Controls the vehicle using keyboard input. \end{DoxyCompactList}\item 
 float \mbox{\hyperlink{control_8h_aa469e51bab916bcd3fc763e8563db01b}{pedal}}
+\item 
+\mbox{\hyperlink{structwaypoint}{waypoint}} \mbox{\hyperlink{control_8h_af1cb573aecad4ff2445ecc8232dd3c30}{reordered\+\_\+ahead}} \mbox{[}\mbox{\hyperlink{trajectory_8h_a0351e86a69da7f513f59240246a49d09}{MAX\+\_\+\+WAYPOINTS}}\mbox{]}
+\item 
+int \mbox{\hyperlink{control_8h_ab55a93057166c9eaeed20fc85c2a2e39}{wp\+\_\+ahead\+\_\+idx}}
 \end{DoxyCompactItemize}
 
 
@@ -95,7 +100,8 @@ Implements an autonomous control strategy based on a provided centerline represe
 \mbox{\texttt{ in}}  & {\em center\+\_\+waypoints} & Pointer to an array of waypoints representing the desired centerline trajectory. The array should be terminated by a waypoint with x $<$ 0.\+0f. \\
 \hline
 \end{DoxyParams}
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -130,7 +136,8 @@ This function processes the state of keyboard keys to adjust the vehicle\textquo
 \mbox{\texttt{ in,out}}  & {\em car\+\_\+angle} & Pointer to the vehicle\textquotesingle{}s orientation angle (in degrees). \\
 \hline
 \end{DoxyParams}
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -152,6 +159,12 @@ Here is the caller graph for this function\+:\nopagebreak
 \index{pedal@{pedal}!control.h@{control.h}}
 \doxysubsubsection{\texorpdfstring{pedal}{pedal}}
 {\footnotesize\ttfamily float pedal\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{control_8h_af1cb573aecad4ff2445ecc8232dd3c30}\label{control_8h_af1cb573aecad4ff2445ecc8232dd3c30}} 
+\index{control.h@{control.h}!reordered\_ahead@{reordered\_ahead}}
+\index{reordered\_ahead@{reordered\_ahead}!control.h@{control.h}}
+\doxysubsubsection{\texorpdfstring{reordered\_ahead}{reordered\_ahead}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structwaypoint}{waypoint}} reordered\+\_\+ahead\mbox{[}\mbox{\hyperlink{trajectory_8h_a0351e86a69da7f513f59240246a49d09}{MAX\+\_\+\+WAYPOINTS}}\mbox{]}\hspace{0.3cm}{\ttfamily [extern]}}
 
 \mbox{\Hypertarget{control_8h_abf65b77f4a341762b97d645dd857e021}\label{control_8h_abf65b77f4a341762b97d645dd857e021}} 
 \index{control.h@{control.h}!steering@{steering}}
@@ -189,3 +202,9 @@ Uses the provided trajectory (a sequence of waypoints) to automatically adjust t
 {\em trajectory} & Pointer to the waypoint structure that defines the trajectory. \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{control_8h_ab55a93057166c9eaeed20fc85c2a2e39}\label{control_8h_ab55a93057166c9eaeed20fc85c2a2e39}} 
+\index{control.h@{control.h}!wp\_ahead\_idx@{wp\_ahead\_idx}}
+\index{wp\_ahead\_idx@{wp\_ahead\_idx}!control.h@{control.h}}
+\doxysubsubsection{\texorpdfstring{wp\_ahead\_idx}{wp\_ahead\_idx}}
+{\footnotesize\ttfamily int wp\+\_\+ahead\+\_\+idx\hspace{0.3cm}{\ttfamily [extern]}}
+
