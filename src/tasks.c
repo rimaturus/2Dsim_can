@@ -99,7 +99,7 @@ void *perception_task(void *arg)
 		if (btn_state_perception){
 			runtime(0, "PERCEPTION");
 
-			lidar(car_x, car_y, measures);
+			lidar(measures);
 
 			task_activate(TRAJECTORY_ID); // Signal trajectory task
 
@@ -107,14 +107,8 @@ void *perception_task(void *arg)
 				first_measure_done = 1;
 				task_activate(CONTROL_ID); // Signal CONTROL task
 			}
-
-			for (int i = 0; i < MAX_DETECTED_CONES; i++){
-				detected_cones[i].x = -1;
-				detected_cones[i].y = -1;
-				detected_cones[i].color = -1;
-			}
 			
-			if (btn_state_map) mapping(car_x, car_y, car_angle, detected_cones); // Pass the address of first element
+			if (btn_state_map) mapping(detected_cones); // Pass the address of first element
 
 			
 
@@ -143,7 +137,7 @@ void *trajectory_task(void *arg)
 		{
 			runtime(0, "TRAJ_PLANNING");
 
-			trajectory_planning(car_x, car_y, car_angle, detected_cones, trajectory);
+			trajectory_planning(trajectory);
 
 			runtime(1, "TRAJ_PLANNING");
 		}
@@ -165,9 +159,9 @@ void *control_task(void *arg)
 		runtime(0, "CONTROL");
 
 		if (btn_state_autonomous)
-			autonomous_control(&car_x, &car_y, &car_angle, trajectory);
+			autonomous_control(trajectory);
 		else
-			keyboard_control(&car_x, &car_y, &car_angle);
+			keyboard_control();
 
 		runtime(1, "CONTROL");
 
@@ -255,11 +249,11 @@ void *settings_task(void *arg)
 			}
 		}
 
-		if (key[KEY_A]) {btn_state_autonomous = !btn_state_autonomous; rest(500);}
-		if (key[KEY_C]) {btn_state_cones = !btn_state_cones; rest(500);}
-		if (key[KEY_L]) {btn_state_perception = !btn_state_perception; rest(500);}
-		if (key[KEY_M]) {btn_state_map = !btn_state_map; rest(500);}
-		if (key[KEY_T]) {btn_state_traj = !btn_state_traj; rest(500);}
+		if (key[KEY_A]) {btn_state_autonomous = !btn_state_autonomous;}
+		if (key[KEY_C]) {btn_state_cones = !btn_state_cones;}
+		if (key[KEY_L]) {btn_state_perception = !btn_state_perception;}
+		if (key[KEY_M]) {btn_state_map = !btn_state_map;}
+		if (key[KEY_T]) {btn_state_traj = !btn_state_traj;}
 
 		// TODO: add the button and check if they are pressed
 

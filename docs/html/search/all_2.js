@@ -8,5 +8,5 @@ var searchData=
   ['asem_7',['asem',['../structtask__par.html#ac326a2f011fbf466af23bf057a2806c8',1,'task_par']]],
   ['asphalt_5fgray_8',['asphalt_gray',['../globals_8h.html#a2c68c05ef3599e92e4e531256103a9b2',1,'asphalt_gray():&#160;globals.h'],['../globals_8c.html#a2c68c05ef3599e92e4e531256103a9b2',1,'asphalt_gray():&#160;globals.c']]],
   ['at_9',['at',['../structtask__par.html#a0cde69f56942213d42d12f33bc7bc6ae',1,'task_par']]],
-  ['autonomous_5fcontrol_10',['autonomous_control',['../control_8h.html#ae3c1be6c75e99edd3ab89b0d2f6c4b0d',1,'autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *trajectory):&#160;control.c'],['../control_8c.html#aa7f0354fe7078dc6c93c9443ab06623c',1,'autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *center_waypoints):&#160;control.c']]]
+  ['autonomous_5fcontrol_10',['autonomous_control',['../control_8h.html#abd7255724b48800476fe2a40c29e99cd',1,'autonomous_control(waypoint *trajectory):&#160;control.c'],['../control_8c.html#af502e05f1d9d69e6fe3fb49ea32b1513',1,'autonomous_control(waypoint *center_waypoints):&#160;control.c']]]
 ];

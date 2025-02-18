@@ -14,8 +14,7 @@ Include dependency graph for trajectory.\+h\+:\nopagebreak
 \includegraphics[width=319pt]{trajectory_8h__incl}
 \end{center}
 \end{figure}
-This graph shows which files directly or indirectly include this file\+:
-\nopagebreak
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -30,12 +29,12 @@ struct \mbox{\hyperlink{structwaypoint}{waypoint}}
 \doxysubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{trajectory_8h_a0351e86a69da7f513f59240246a49d09}{MAX\+\_\+\+WAYPOINTS}}~(4$\ast$\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}})
+\#define \mbox{\hyperlink{trajectory_8h_a0351e86a69da7f513f59240246a49d09}{MAX\+\_\+\+WAYPOINTS}}~(40$\ast$\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}})
 \end{DoxyCompactItemize}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \mbox{\hyperlink{trajectory_8h_a919f2f0e87ab763cdae69585d089d23d}{trajectory\+\_\+planning}} (float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, float \mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, \mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}}, \mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$\mbox{\hyperlink{trajectory_8c_a14d14f43fd111513bf4ad3b550c1b0ae}{trajectory}})
+void \mbox{\hyperlink{trajectory_8h_ab095066c9ecacc28445abc2927d3d937}{trajectory\+\_\+planning}} (\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$\mbox{\hyperlink{trajectory_8c_a14d14f43fd111513bf4ad3b550c1b0ae}{trajectory}})
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -56,22 +55,23 @@ This header defines the data structures and function prototypes necessary for ge
 \index{trajectory.h@{trajectory.h}!MAX\_WAYPOINTS@{MAX\_WAYPOINTS}}
 \index{MAX\_WAYPOINTS@{MAX\_WAYPOINTS}!trajectory.h@{trajectory.h}}
 \doxysubsubsection{\texorpdfstring{MAX\_WAYPOINTS}{MAX\_WAYPOINTS}}
-{\footnotesize\ttfamily \#define MAX\+\_\+\+WAYPOINTS~(4$\ast$\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}})}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+WAYPOINTS~(40$\ast$\mbox{\hyperlink{globals_8h_ac5ffab41ad229777dae06978b9a7bc15}{MAX\+\_\+\+DETECTED\+\_\+\+CONES}})}
 
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{trajectory_8h_a919f2f0e87ab763cdae69585d089d23d}\label{trajectory_8h_a919f2f0e87ab763cdae69585d089d23d}} 
+\mbox{\Hypertarget{trajectory_8h_ab095066c9ecacc28445abc2927d3d937}\label{trajectory_8h_ab095066c9ecacc28445abc2927d3d937}} 
 \index{trajectory.h@{trajectory.h}!trajectory\_planning@{trajectory\_planning}}
 \index{trajectory\_planning@{trajectory\_planning}!trajectory.h@{trajectory.h}}
 \doxysubsubsection{\texorpdfstring{trajectory\_planning()}{trajectory\_planning()}}
-{\footnotesize\ttfamily void trajectory\+\_\+planning (\begin{DoxyParamCaption}\item[{float}]{car\+\_\+x,  }\item[{float}]{car\+\_\+y,  }\item[{float}]{car\+\_\+angle,  }\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{detected\+\_\+cones,  }\item[{\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$}]{trajectory }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void trajectory\+\_\+planning (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$}]{trajectory }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{trajectory_8h_a919f2f0e87ab763cdae69585d089d23d_icgraph}
+\includegraphics[width=350pt]{trajectory_8h_ab095066c9ecacc28445abc2927d3d937_icgraph}
 \end{center}
 \end{figure}
 

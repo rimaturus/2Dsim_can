@@ -55,7 +55,7 @@ extern waypoint reordered_ahead[MAX_WAYPOINTS];
 extern int wp_ahead_idx;
 
 
-void keyboard_control(float *car_x, float *car_y, int *car_angle);
-void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *trajectory);
+void keyboard_control();
+void autonomous_control(waypoint *trajectory);
 
 #endif // CONTROL_H

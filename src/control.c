@@ -24,12 +24,8 @@
  * It increments or decrements the pedal value and steering angle within pre-defined limits depending on the keys
  * pressed (e.g., KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT). After updating these control signals, the vehicle's state
  * is updated by calling the vehicle_model function.
- *
- * @param[in,out] car_x   Pointer to the vehicle's x-coordinate (in meters).
- * @param[in,out] car_y   Pointer to the vehicle's y-coordinate (in meters).
- * @param[in,out] car_angle Pointer to the vehicle's orientation angle (in degrees).
  */
-void keyboard_control(float *car_x, float *car_y, int *car_angle);
+void keyboard_control();
 
 /**
  * @brief Autonomous control routine using centerline waypoints.
@@ -48,19 +44,16 @@ void keyboard_control(float *car_x, float *car_y, int *car_angle);
  *        two waypoints.
  *      * If only one waypoint is available, the vector from the vehicle to that waypoint is used as the reference.
  *  - The computed reference trajectory is normalized. If normalization fails, a default forward direction is used.
- *  - The vehicle's current heading is computed as a unit vector based on car_angle.
+ *  - The vehicle's current heading is computed as a unit vector based on local_car_angle.
  *  - The required steering correction (delta) is obtained by computing the sine of the angle difference through the 2D cross
  *    product between the normalized reference vector and the heading vector.
  *  - A constant pedal value is applied.
  *  - Finally, the updated control signals (pedal and delta for steering) are applied to the vehicle by calling vehicle_model.
- *
- * @param[in,out] car_x          Pointer to the vehicle's x-coordinate (in meters).
- * @param[in,out] car_y          Pointer to the vehicle's y-coordinate (in meters).
- * @param[in,out] car_angle      Pointer to the vehicle's orientation angle (in degrees).
+
  * @param[in]     center_waypoints Pointer to an array of waypoints representing the desired centerline trajectory.
  *                                 The array should be terminated by a waypoint with x < 0.0f.
  */
-void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *center_waypoints);
+void autonomous_control(waypoint *center_waypoints);
 
 waypoint reordered_ahead[MAX_WAYPOINTS];
 int wp_ahead_idx = 0;
@@ -68,7 +61,15 @@ int wp_ahead_idx = 0;
 float pedal = 0.0f;         // current speed in m per step
 float steering = 0.0f;      // current steering angle in radians
 
-void keyboard_control(float *car_x, float *car_y, int *car_angle)
+
+
+
+
+
+
+
+
+void keyboard_control()
 {
 const float     accel_step = 0.01;    // speed increment per key press
 const float     brake_step = 0.1;     // brake increment per key press
@@ -105,17 +106,38 @@ const float     max_steering = 30 * deg2rad;     // maximum steering angle in ra
     }
 
 	// Motion model of the vehicle
-	vehicle_model(car_x, car_y, car_angle, pedal, steering);
+	vehicle_model(pedal, steering);
 }
 
-void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *center_waypoints)
+float bound_steering(float steering_rads)
+{
+    const float     max_steering = 30 * deg2rad;     // maximum steering angle in radians
+
+    if (steering_rads > max_steering)
+    {
+        steering_rads = max_steering;
+    }
+    else if (steering_rads < -max_steering)
+    {
+        steering_rads = -max_steering;
+    }
+    return steering_rads;
+}
+
+void autonomous_control(waypoint *center_waypoints)
 {   
+    pthread_mutex_lock(&map_mutex); // Begin critical section
+	float local_car_x = car_x;
+	float local_car_y = car_y;
+    float local_car_angle = car_angle;
+	pthread_mutex_unlock(&map_mutex); // End critical section
+
     if (center_waypoints == NULL){
         return; // the trajectory is not computed yet
     }
 
-    float car_versor_x = cos(*car_angle * deg2rad);
-    float car_versor_y = sin(*car_angle * deg2rad);
+    float car_versor_x = cos(-local_car_angle * deg2rad);
+    float car_versor_y = sin(-local_car_angle * deg2rad);
 
     waypoint waypoints_ahead[MAX_WAYPOINTS];
     wp_ahead_idx = 0;
@@ -123,8 +145,8 @@ void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *ce
     int wp_idx = 0;    
     while ((wp_idx < MAX_WAYPOINTS) && (center_waypoints[wp_idx].x >= 0.0f))
     {
-        float car2wp_x = center_waypoints[wp_idx].x - *car_x;
-        float car2wp_y = center_waypoints[wp_idx].y - *car_y;
+        float car2wp_x = center_waypoints[wp_idx].x - local_car_x;
+        float car2wp_y = center_waypoints[wp_idx].y - local_car_y;
 
         float norm_car2wp = sqrt(car2wp_x * car2wp_x + car2wp_y * car2wp_y);
 
@@ -138,7 +160,7 @@ void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *ce
         // if cos > 0 ==> angle car - waypoint < 90° (abs)
         int ctrl_ahead = (dot_product > 0) ? 1 : 0;
 
-        if (ctrl_ahead){
+        if (!ctrl_ahead){
             wp_idx++;
             continue;
         }
@@ -165,8 +187,8 @@ void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *ce
         reordered_ahead[i].y = -1;
     }
 
-    float current_x = *car_x;
-    float current_y = *car_y;
+    float current_x = local_car_x;
+    float current_y = local_car_y;
 
     for (int j = 0; j < wp_ahead_idx; j++)
     {
@@ -197,21 +219,22 @@ void autonomous_control(float *car_x, float *car_y, int *car_angle, waypoint *ce
     }
 
     // reordered_ahead is ordered
-    float car2wp2_x = reordered_ahead[1].x - *car_x;
-    float car2wp2_y = reordered_ahead[1].y - *car_y;
+    float car2wp2_x = reordered_ahead[3].x - local_car_x;
+    float car2wp2_y = reordered_ahead[3].y - local_car_y;
 
     float norm_car2wp2 = sqrt(car2wp2_x * car2wp2_x + car2wp2_y * car2wp2_y);
 
     float car2wp2_versor_x = car2wp2_x/norm_car2wp2;
     float car2wp2_versor_y = car2wp2_y/norm_car2wp2;
 
-    float dot_product2 = car2wp2_versor_x * car_versor_x + car2wp2_versor_y * car_versor_y;
+    float cross_product = car_versor_y * car2wp2_versor_x - car_versor_x * car2wp2_versor_y;
 
-    float steer_target = acos(dot_product2) / deg2rad;
-    printf("steer_target: %f\n", steer_target);
+    float steer_target = bound_steering(asinf(cross_product));
+    // printf("cross_product: %f\n", cross_product);
+    // printf("asinf(cross_product): %f\n", asinf(cross_product)/deg2rad );
 
     // steering = (steer_target > 0) ? 1 : -1;
     pedal = 0.05;
 
-    vehicle_model(car_x, car_y, car_angle, pedal, steer_target);
+    vehicle_model(pedal, steer_target);
 }

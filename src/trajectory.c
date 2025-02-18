@@ -19,10 +19,6 @@
  * - Generating trajectory waypoints by calculating the midpoint between connected cones.
  * - Reordering trajectory points based on proximity to ensure a smooth and sequential path.
  *
- * @param car_x            The current x-coordinate of the car.
- * @param car_y            The current y-coordinate of the car.
- * @param car_angle        The current orientation angle of the car in radians.
- * @param detected_cones   Pointer to an array of cones detected by the car's perception system.
  * @param trajectory       Pointer to an array of waypoints where the computed trajectory will be stored.
  *
  * @note
@@ -45,12 +41,8 @@
 int trajectory_idx = 0;
 waypoint trajectory[MAX_WAYPOINTS];
 
-void 	trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory)
+void 	trajectory_planning(waypoint *trajectory) // USES TRACK_MAP CONES
 {
-	(void) car_x;
-	(void) car_y;
-	(void) car_angle;
-	(void) detected_cones;
 	// Initialize trajectory points to invalid values
 	for (int i = 0; i < MAX_DETECTED_CONES; i++) {
 		trajectory[i].x = -1;

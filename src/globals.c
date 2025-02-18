@@ -103,6 +103,8 @@ pthread_mutex_t draw_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 pthread_mutex_t map_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+pthread_mutex_t car_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 
 int dl_miss_perception 	= 0;
 int dl_miss_trajectory 	= 0;

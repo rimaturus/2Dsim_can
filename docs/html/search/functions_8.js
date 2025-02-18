@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['main_292',['main',['../main_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main.c']]],
-  ['mapping_293',['mapping',['../group__PerceptionModule.html#ga9c68a3d545ebb7bb3092f88b7e10084a',1,'mapping(float car_x, float car_y, int car_angle, cone *detected_cones):&#160;perception.c'],['../group__PerceptionModule.html#ga9c68a3d545ebb7bb3092f88b7e10084a',1,'mapping(float car_x, float car_y, int car_angle, cone *detected_cones):&#160;perception.c']]]
+  ['lidar_295',['lidar',['../group__PerceptionModule.html#ga6deb1401c6553c041502734beae834c7',1,'lidar(pointcloud_t *measures):&#160;perception.c'],['../group__PerceptionModule.html#ga6deb1401c6553c041502734beae834c7',1,'lidar(pointcloud_t *measures):&#160;perception.c']]],
+  ['load_5fcones_5fpositions_296',['load_cones_positions',['../utilities_8h.html#a77d50bbb4a4844ce7ddab4a7b3d52d24',1,'load_cones_positions(const char *filename, cone *cones, int max_cones):&#160;utilities.c'],['../utilities_8c.html#a77d50bbb4a4844ce7ddab4a7b3d52d24',1,'load_cones_positions(const char *filename, cone *cones, int max_cones):&#160;utilities.c']]]
 ];

@@ -156,10 +156,10 @@ typedef struct {
 } Hough_circle_point_t;
 
 // LiDAR measures
-void lidar(float car_x, float car_y, pointcloud_t *measures);
+void lidar(pointcloud_t *measures);
 
 // Real-time mapping
-void mapping(float car_x, float car_y, int car_angle, cone *detected_cones);
+void mapping(cone *detected_cones);
 void check_nearest_point(int angle, float new_point_x, float new_point_y, int color, cone_border *cone_borders);
 
 // Update the map

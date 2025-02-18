@@ -39,7 +39,6 @@
  * @param car_x The x-coordinate of the car's current position.
  * @param car_y The y-coordinate of the car's current position.
  * @param car_angle The heading angle of the car in radians.
- * @param detected_cones Pointer to an array of cone structures representing detected cones.
  * @param trajectory Pointer to an array of waypoint structures where the planned trajectory will be stored.
  */
 #ifndef TRAJECTORY_H
@@ -53,11 +52,11 @@ typedef struct {
 	float y;
 } waypoint;
 
-#define MAX_WAYPOINTS (4*MAX_DETECTED_CONES)
+#define MAX_WAYPOINTS (40*MAX_DETECTED_CONES)
 
 extern waypoint trajectory[MAX_WAYPOINTS];
 extern int trajectory_idx;
 
-void trajectory_planning(float car_x, float car_y, float car_angle, cone *detected_cones, waypoint *trajectory);
+void trajectory_planning(waypoint *trajectory);
 
 #endif // TRAJECTORY_H

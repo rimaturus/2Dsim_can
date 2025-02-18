@@ -79,7 +79,7 @@
 /* Task periods (ms) */
 #define PERCEPTION_PERIOD	50
 #define TRAJECTORY_PERIOD	100 // aperiodic (called by perception) ==> placeholder value
-#define CONTROL_PERIOD		10
+#define CONTROL_PERIOD		50
 #define DISPLAY_PERIOD		17
 #define SETTINGS_PERIOD		100
 
@@ -115,6 +115,9 @@ extern pthread_mutex_t draw_mutex;
 
 // Shared resource for map updates
 extern pthread_mutex_t map_mutex;
+
+// Shared resource for car pose updates
+extern pthread_mutex_t car_mutex;
 
 // ------------------------
 //  CONVERSIONs COSTANTS

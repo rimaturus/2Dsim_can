@@ -49,8 +49,6 @@
  * a minimum ignore distance until an obstacle of interest (yellow or blue pixel) is reached.
  * The found distance and corresponding point coordinates are stored in the measures array.
  *
- * @param car_x Vehicle's x coordinate in world space.
- * @param car_y Vehicle's y coordinate in world space.
  * @param measures Pointer to a pointcloud_t array where LiDAR measurements are stored.
  */
 
@@ -121,9 +119,6 @@
  * and finally selects the best center for each cone. The resulting cone centers are stored, with their
  * color information preserved.
  *
- * @param car_x Vehicle's x coordinate in world space.
- * @param car_y Vehicle's y coordinate in world space.
- * @param car_angle Vehicle's heading angle in degrees.
  * @param detected_cones Pointer to an array of cones where the detected cone centers will be stored.
  */
 
@@ -208,8 +203,13 @@ void 	check_nearest_point(int angle, float new_point_x, float new_point_y, int c
 	}
 }
 
-void    lidar(float car_x, float car_y, pointcloud_t *measures)
+void    lidar(pointcloud_t *measures)
 {
+	pthread_mutex_lock(&map_mutex); // Begin critical section
+	float local_car_x = car_x;
+	float local_car_y = car_y;
+	pthread_mutex_unlock(&map_mutex); // End critical section
+
 	int stop_distance; 
 
 	// Check for each angle in the range [0, 360] with a step of angle_step
@@ -228,8 +228,8 @@ void    lidar(float car_x, float car_y, pointcloud_t *measures)
 		for (float distance = ignore_distance; distance < maxRange; distance += distance_resolution)
 		{
 			// Calculate the x and y coordinates of the pixel at the current distance and angle
-			float x = car_x + ( distance * cos((float)(lidar_angle) * deg2rad) );
-			float y = car_y + ( distance * sin((float)(lidar_angle) * deg2rad) );
+			float x = local_car_x + ( distance * cos((float)(lidar_angle) * deg2rad) );
+			float y = local_car_y + ( distance * sin((float)(lidar_angle) * deg2rad) );
 
 			int x_px = x * px_per_meter;
 			int y_px = y * px_per_meter;
@@ -379,11 +379,15 @@ float* find_cone_center(Hough_circle_point_t *possible_centers, int center_count
 }
 
 
-void 	mapping(float car_x, float car_y, int car_angle, cone *detected_cones)
+void 	mapping(cone *detected_cones)
 {
-(void)car_x;       // Silence unused parameter warnings
-(void)car_y;
-(void)car_angle; 
+	// Reset the detected cones array
+	for (int i = 0; i < MAX_DETECTED_CONES; i++){
+		detected_cones[i].x = -1;
+		detected_cones[i].y = -1;
+		detected_cones[i].color = -1;
+	}
+
 cone_border cone_borders[MAX_DETECTED_CONES]; // maximum number of cones viewed at each position
 
 // init cone borders

@@ -40,9 +40,72 @@
 #define M_PI 3.14159265358979323846
 static float rad_angle = 270 * deg2rad;
 
-void 	vehicle_model(float *car_x, float *car_y, int *car_angle, float pedal, float target_steering)
+void 	vehicle_model(float pedal, float target_steering)
 {
 #define CINEMATIC_MODEL
+
+	pthread_mutex_lock(&map_mutex); // Begin critical section
+	float local_car_x = car_x;
+	float local_car_y = car_y;
+	float local_car_angle = car_angle;
+	pthread_mutex_unlock(&map_mutex); // End critical section
+
+#ifdef CINEMATIC_MODEL
+    // Example single-track model
+    const float dt = (float)(CONTROL_PERIOD)/100;
+    const float wheelbase = 0.5f;
+    const float maxSpeed = 1.0f;
+    const float maxBraking = 0.50f;
+    const float maxSteering = 30.0f * deg2rad; // in rad
+
+    static float current_speed_cinematic = 0.0f;
+    float speed_cinematic, accel_cinematic;
+
+    // Compute speed from pedal
+    if (pedal > 0.0f) {
+        speed_cinematic = pedal * maxSpeed;
+        accel_cinematic = speed_cinematic - current_speed_cinematic;
+    } else {
+        accel_cinematic = (pedal * maxBraking * current_speed_cinematic);
+    }
+    current_speed_cinematic += accel_cinematic * dt;
+    current_speed_cinematic = (current_speed_cinematic < 0.0f) ? 0.0f : current_speed_cinematic;
+
+    // Clamp the steering target
+    target_steering = (target_steering > maxSteering) ? maxSteering : ((target_steering < -maxSteering) ? -maxSteering : target_steering);
+    
+    // Smoothly follow target steering with proper boundary conditions
+    float steering_rate = 0.1f;  // Rate of steering change
+    if (fabs(steering - target_steering) < steering_rate) {
+        steering = target_steering;  // Snap to target if very close
+    } else if (steering < target_steering) {
+        steering += steering_rate;
+    } else if (steering > target_steering) {
+        steering -= steering_rate;
+    }
+    // Update heading using angular rate
+    float angular_rate = (current_speed_cinematic / wheelbase) * tan(steering);
+    rad_angle += angular_rate * dt;
+
+    // Convert to degrees and normalize
+    float deg_angle = rad_angle / deg2rad;
+    deg_angle = fmod(deg_angle, 360.0);
+    if (deg_angle < 0) deg_angle += 360.0;
+
+    // Store the final angle
+    local_car_angle = (int)deg_angle;
+
+    // Update position
+    local_car_x += current_speed_cinematic * cos(-deg_angle*deg2rad) * dt;
+    local_car_y += current_speed_cinematic * sin(-deg_angle*deg2rad) * dt;
+
+	pthread_mutex_lock(&map_mutex); // Begin critical section
+	car_x = local_car_x;
+	car_y = local_car_y;
+	car_angle = local_car_angle;
+	pthread_mutex_unlock(&map_mutex); // End critical section
+
+#endif /* CINEMATIC_MODEL */
 
 #ifndef CINEMATIC_MODEL
 // Simulation parameters
@@ -104,57 +167,6 @@ float speed, acceleration;
 	// Store updated heading in degrees
 	*car_angle = (int)(theta / deg2rad);
 #endif /* NON CINEMATIC_MODEL */
-
-#ifdef CINEMATIC_MODEL
-    // Example single-track model
-    const float dt = (float)(CONTROL_PERIOD)/100;
-    const float wheelbase = 0.5f;
-    const float maxSpeed = 1.0f;
-    const float maxBraking = 0.50f;
-    const float maxSteering = 30.0f * deg2rad; // in rad
-
-    static float current_speed_cinematic = 0.0f;
-    float speed_cinematic, accel_cinematic;
-
-    // Compute speed from pedal
-    if (pedal > 0.0f) {
-        speed_cinematic = pedal * maxSpeed;
-        accel_cinematic = speed_cinematic - current_speed_cinematic;
-    } else {
-        accel_cinematic = (pedal * maxBraking * current_speed_cinematic);
-    }
-    current_speed_cinematic += accel_cinematic * dt;
-    current_speed_cinematic = (current_speed_cinematic < 0.0f) ? 0.0f : current_speed_cinematic;
-
-    // Clamp the steering target
-    target_steering = (target_steering > maxSteering) ? maxSteering : ((target_steering < -maxSteering) ? -maxSteering : target_steering);
-    
-    // Smoothly follow target steering with proper boundary conditions
-    float steering_rate = 0.1f;  // Rate of steering change
-    if (fabs(steering - target_steering) < steering_rate) {
-        steering = target_steering;  // Snap to target if very close
-    } else if (steering < target_steering) {
-        steering += steering_rate;
-    } else if (steering > target_steering) {
-        steering -= steering_rate;
-    }
-    // Update heading using angular rate
-    float angular_rate = (current_speed_cinematic / wheelbase) * tan(steering);
-    rad_angle += angular_rate * dt;
-
-    // Convert to degrees and normalize
-    float deg_angle = rad_angle / deg2rad;
-    deg_angle = fmod(deg_angle, 360.0);
-    if (deg_angle < 0) deg_angle += 360.0;
-
-    // Store the final angle
-    *car_angle = (int)deg_angle;
-
-    // Update position
-    *car_x += current_speed_cinematic * cos(-deg_angle*deg2rad) * dt;
-    *car_y += current_speed_cinematic * sin(-deg_angle*deg2rad) * dt;
-
-#endif /* CINEMATIC_MODEL */
 }
 
 

@@ -15,8 +15,7 @@ Include dependency graph for globals.\+h\+:\nopagebreak
 \includegraphics[width=319pt]{globals_8h__incl}
 \end{center}
 \end{figure}
-This graph shows which files directly or indirectly include this file\+:
-\nopagebreak
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -33,11 +32,13 @@ struct \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}}
 \doxysubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
+\#define \mbox{\hyperlink{globals_8h_a8c097a59d344c89887c5f4cbdbcf493e}{PROFILING}}
+\item 
 \#define \mbox{\hyperlink{globals_8h_af16fdb17c97af7858f199089c651840d}{PERCEPTION\+\_\+\+PERIOD}}~50
 \item 
 \#define \mbox{\hyperlink{globals_8h_af354276741358e5c6922f593505b7abd}{TRAJECTORY\+\_\+\+PERIOD}}~100
 \item 
-\#define \mbox{\hyperlink{globals_8h_af36dcc5b8d483f93687711244b6a11ef}{CONTROL\+\_\+\+PERIOD}}~10
+\#define \mbox{\hyperlink{globals_8h_af36dcc5b8d483f93687711244b6a11ef}{CONTROL\+\_\+\+PERIOD}}~50
 \item 
 \#define \mbox{\hyperlink{globals_8h_aa7a9aa177dfa0114e2c9ce16ae874e35}{DISPLAY\+\_\+\+PERIOD}}~17
 \item 
@@ -97,6 +98,10 @@ int \mbox{\hyperlink{globals_8h_a310099202df6ed575130f2ba22388f5e}{dl\+\_\+miss\
 int \mbox{\hyperlink{globals_8h_a7166534abfe18c16e1e1aa2a951e7369}{dl\+\_\+miss\+\_\+settings}}
 \item 
 pthread\+\_\+mutex\+\_\+t \mbox{\hyperlink{globals_8h_a01db197a65364d7b7b2f59f5863007c2}{draw\+\_\+mutex}}
+\item 
+pthread\+\_\+mutex\+\_\+t \mbox{\hyperlink{globals_8h_aae4c65f47a2612af74e29221b5f46615}{map\+\_\+mutex}}
+\item 
+pthread\+\_\+mutex\+\_\+t \mbox{\hyperlink{globals_8h_a33be0e05d65c8e475835659eeb66a731}{car\+\_\+mutex}}
 \item 
 const char $\ast$ \mbox{\hyperlink{globals_8h_a051e403214cb6872ad3fe4e50302a6ee}{title}}
 \item 
@@ -252,7 +257,7 @@ This header file declares all global macros, extern variables, and data types re
 \index{globals.h@{globals.h}!CONTROL\_PERIOD@{CONTROL\_PERIOD}}
 \index{CONTROL\_PERIOD@{CONTROL\_PERIOD}!globals.h@{globals.h}}
 \doxysubsubsection{\texorpdfstring{CONTROL\_PERIOD}{CONTROL\_PERIOD}}
-{\footnotesize\ttfamily \#define CONTROL\+\_\+\+PERIOD~10}
+{\footnotesize\ttfamily \#define CONTROL\+\_\+\+PERIOD~50}
 
 \mbox{\Hypertarget{globals_8h_af1e970e49915c36967fbd8acd7fa07c0}\label{globals_8h_af1e970e49915c36967fbd8acd7fa07c0}} 
 \index{globals.h@{globals.h}!CONTROL\_PRIORITY@{CONTROL\_PRIORITY}}
@@ -331,6 +336,12 @@ This header file declares all global macros, extern variables, and data types re
 \index{PERCEPTION\_PRIORITY@{PERCEPTION\_PRIORITY}!globals.h@{globals.h}}
 \doxysubsubsection{\texorpdfstring{PERCEPTION\_PRIORITY}{PERCEPTION\_PRIORITY}}
 {\footnotesize\ttfamily \#define PERCEPTION\+\_\+\+PRIORITY~15}
+
+\mbox{\Hypertarget{globals_8h_a8c097a59d344c89887c5f4cbdbcf493e}\label{globals_8h_a8c097a59d344c89887c5f4cbdbcf493e}} 
+\index{globals.h@{globals.h}!PROFILING@{PROFILING}}
+\index{PROFILING@{PROFILING}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{PROFILING}{PROFILING}}
+{\footnotesize\ttfamily \#define PROFILING}
 
 \mbox{\Hypertarget{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}\label{globals_8h_a55bd5f5c909901931b7a03caa2ed75a8}} 
 \index{globals.h@{globals.h}!px\_per\_meter@{px\_per\_meter}}
@@ -441,7 +452,13 @@ The initial orientation angle of the car (in degrees).
 \begin{DoxyItemize}
 \item 
 \end{DoxyItemize}
-\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_aa62dd86c39b5bdbe50e06812f94da902}\label{globals_8h_aa62dd86c39b5bdbe50e06812f94da902}} 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a33be0e05d65c8e475835659eeb66a731}\label{globals_8h_a33be0e05d65c8e475835659eeb66a731}} 
+\index{globals.h@{globals.h}!car\_mutex@{car\_mutex}}
+\index{car\_mutex@{car\_mutex}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{car\_mutex}{car\_mutex}}
+{\footnotesize\ttfamily pthread\+\_\+mutex\+\_\+t car\+\_\+mutex\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{globals_8h_aa62dd86c39b5bdbe50e06812f94da902}\label{globals_8h_aa62dd86c39b5bdbe50e06812f94da902}} 
 \index{globals.h@{globals.h}!car\_x@{car\_x}}
 \index{car\_x@{car\_x}!globals.h@{globals.h}}
 \doxysubsubsection{\texorpdfstring{car\_x}{car\_x}}
@@ -564,7 +581,13 @@ The multiplier \textquotesingle{}px\+\_\+per\+\_\+meter\textquotesingle{} used f
 A POSIX semaphore used to synchronize access to Li\+DAR data.
 \begin{DoxyItemize}
 \item 
-\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_a1e7de054f2faeeadadbab6364a1b5fe4}\label{globals_8h_a1e7de054f2faeeadadbab6364a1b5fe4}} 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8h_aae4c65f47a2612af74e29221b5f46615}\label{globals_8h_aae4c65f47a2612af74e29221b5f46615}} 
+\index{globals.h@{globals.h}!map\_mutex@{map\_mutex}}
+\index{map\_mutex@{map\_mutex}!globals.h@{globals.h}}
+\doxysubsubsection{\texorpdfstring{map\_mutex}{map\_mutex}}
+{\footnotesize\ttfamily pthread\+\_\+mutex\+\_\+t map\+\_\+mutex\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{globals_8h_a1e7de054f2faeeadadbab6364a1b5fe4}\label{globals_8h_a1e7de054f2faeeadadbab6364a1b5fe4}} 
 \index{globals.h@{globals.h}!measures@{measures}}
 \index{measures@{measures}!globals.h@{globals.h}}
 \doxysubsubsection{\texorpdfstring{measures}{measures}}

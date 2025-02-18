@@ -1,0 +1,6 @@
+<map id="bound_steering" name="bound_steering">
+<area shape="rect" id="node1" title=" " alt="" coords="461,5,584,32"/>
+<area shape="rect" id="node2" href="$control_8h.html#abd7255724b48800476fe2a40c29e99cd" title="Autonomous control routine using centerline waypoints." alt="" coords="259,5,413,32"/>
+<area shape="rect" id="node3" href="$tasks_8h.html#a91e3918bad881fbf7304d534268de11d" title=" " alt="" coords="108,5,211,32"/>
+<area shape="rect" id="node4" href="$main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title=" " alt="" coords="5,5,60,32"/>
+</map>

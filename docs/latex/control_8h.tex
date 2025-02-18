@@ -15,8 +15,7 @@ Include dependency graph for control.\+h\+:\nopagebreak
 \includegraphics[width=320pt]{control_8h__incl}
 \end{center}
 \end{figure}
-This graph shows which files directly or indirectly include this file\+:
-\nopagebreak
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -26,9 +25,9 @@ This graph shows which files directly or indirectly include this file\+:
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \mbox{\hyperlink{control_8h_aa7d41004f6e6355c5dd871a9a8c8a59d}{keyboard\+\_\+control}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}})
+void \mbox{\hyperlink{control_8h_a0160232bc658e89aca912fe380e0635b}{keyboard\+\_\+control}} ()
 \begin{DoxyCompactList}\small\item\em Adjusts vehicle controls based on keyboard input. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d}{autonomous\+\_\+control}} (float $\ast$\mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float $\ast$\mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int $\ast$\mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, \mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$\mbox{\hyperlink{trajectory_8c_a14d14f43fd111513bf4ad3b550c1b0ae}{trajectory}})
+void \mbox{\hyperlink{control_8h_abd7255724b48800476fe2a40c29e99cd}{autonomous\+\_\+control}} (\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$\mbox{\hyperlink{trajectory_8c_a14d14f43fd111513bf4ad3b550c1b0ae}{trajectory}})
 \begin{DoxyCompactList}\small\item\em Autonomous control routine using centerline waypoints. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -62,11 +61,11 @@ Dependencies\+:
 \end{DoxyItemize}
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d}\label{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d}} 
+\mbox{\Hypertarget{control_8h_abd7255724b48800476fe2a40c29e99cd}\label{control_8h_abd7255724b48800476fe2a40c29e99cd}} 
 \index{control.h@{control.h}!autonomous\_control@{autonomous\_control}}
 \index{autonomous\_control@{autonomous\_control}!control.h@{control.h}}
 \doxysubsubsection{\texorpdfstring{autonomous\_control()}{autonomous\_control()}}
-{\footnotesize\ttfamily void autonomous\+\_\+control (\begin{DoxyParamCaption}\item[{float $\ast$}]{car\+\_\+x,  }\item[{float $\ast$}]{car\+\_\+y,  }\item[{int $\ast$}]{car\+\_\+angle,  }\item[{\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$}]{center\+\_\+waypoints }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void autonomous\+\_\+control (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structwaypoint}{waypoint}} $\ast$}]{center\+\_\+waypoints }\end{DoxyParamCaption})}
 
 
 
@@ -83,7 +82,7 @@ Implements an autonomous control strategy based on a provided centerline represe
 \item If only one waypoint is available, the vector from the vehicle to that waypoint is used as the reference.
 \end{DoxyItemize}
 \item The computed reference trajectory is normalized. If normalization fails, a default forward direction is used.
-\item The vehicle\textquotesingle{}s current heading is computed as a unit vector based on car\+\_\+angle.
+\item The vehicle\textquotesingle{}s current heading is computed as a unit vector based on local\+\_\+car\+\_\+angle.
 \item The required steering correction (delta) is obtained by computing the sine of the angle difference through the 2D cross product between the normalized reference vector and the heading vector.
 \item A constant pedal value is applied.
 \item Finally, the updated control signals (pedal and delta for steering) are applied to the vehicle by calling vehicle\+\_\+model.
@@ -91,12 +90,6 @@ Implements an autonomous control strategy based on a provided centerline represe
 
 
 \begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in,out}}  & {\em car\+\_\+x} & Pointer to the vehicle\textquotesingle{}s x-\/coordinate (in meters). \\
-\hline
-\mbox{\texttt{ in,out}}  & {\em car\+\_\+y} & Pointer to the vehicle\textquotesingle{}s y-\/coordinate (in meters). \\
-\hline
-\mbox{\texttt{ in,out}}  & {\em car\+\_\+angle} & Pointer to the vehicle\textquotesingle{}s orientation angle (in degrees). \\
-\hline
 \mbox{\texttt{ in}}  & {\em center\+\_\+waypoints} & Pointer to an array of waypoints representing the desired centerline trajectory. The array should be terminated by a waypoint with x $<$ 0.\+0f. \\
 \hline
 \end{DoxyParams}
@@ -105,50 +98,41 @@ Here is the call graph for this function\+:
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=320pt]{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d_cgraph}
+\includegraphics[width=324pt]{control_8h_abd7255724b48800476fe2a40c29e99cd_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{control_8h_ae3c1be6c75e99edd3ab89b0d2f6c4b0d_icgraph}
+\includegraphics[width=350pt]{control_8h_abd7255724b48800476fe2a40c29e99cd_icgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{control_8h_aa7d41004f6e6355c5dd871a9a8c8a59d}\label{control_8h_aa7d41004f6e6355c5dd871a9a8c8a59d}} 
+\mbox{\Hypertarget{control_8h_a0160232bc658e89aca912fe380e0635b}\label{control_8h_a0160232bc658e89aca912fe380e0635b}} 
 \index{control.h@{control.h}!keyboard\_control@{keyboard\_control}}
 \index{keyboard\_control@{keyboard\_control}!control.h@{control.h}}
 \doxysubsubsection{\texorpdfstring{keyboard\_control()}{keyboard\_control()}}
-{\footnotesize\ttfamily void keyboard\+\_\+control (\begin{DoxyParamCaption}\item[{float $\ast$}]{car\+\_\+x,  }\item[{float $\ast$}]{car\+\_\+y,  }\item[{int $\ast$}]{car\+\_\+angle }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void keyboard\+\_\+control (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
 Adjusts vehicle controls based on keyboard input. 
 
-This function processes the state of keyboard keys to adjust the vehicle\textquotesingle{}s pedal (speed) and steering angle. It increments or decrements the pedal value and steering angle within pre-\/defined limits depending on the keys pressed (e.\+g., KEY\+\_\+\+UP, KEY\+\_\+\+DOWN, KEY\+\_\+\+LEFT, KEY\+\_\+\+RIGHT). After updating these control signals, the vehicle\textquotesingle{}s state is updated by calling the vehicle\+\_\+model function.
-
-
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in,out}}  & {\em car\+\_\+x} & Pointer to the vehicle\textquotesingle{}s x-\/coordinate (in meters). \\
-\hline
-\mbox{\texttt{ in,out}}  & {\em car\+\_\+y} & Pointer to the vehicle\textquotesingle{}s y-\/coordinate (in meters). \\
-\hline
-\mbox{\texttt{ in,out}}  & {\em car\+\_\+angle} & Pointer to the vehicle\textquotesingle{}s orientation angle (in degrees). \\
-\hline
-\end{DoxyParams}
-Here is the call graph for this function\+:
+This function processes the state of keyboard keys to adjust the vehicle\textquotesingle{}s pedal (speed) and steering angle. It increments or decrements the pedal value and steering angle within pre-\/defined limits depending on the keys pressed (e.\+g., KEY\+\_\+\+UP, KEY\+\_\+\+DOWN, KEY\+\_\+\+LEFT, KEY\+\_\+\+RIGHT). After updating these control signals, the vehicle\textquotesingle{}s state is updated by calling the vehicle\+\_\+model function. Here is the call graph for this function\+:
 \nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=305pt]{control_8h_aa7d41004f6e6355c5dd871a9a8c8a59d_cgraph}
+\includegraphics[width=305pt]{control_8h_a0160232bc658e89aca912fe380e0635b_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{control_8h_aa7d41004f6e6355c5dd871a9a8c8a59d_icgraph}
+\includegraphics[width=350pt]{control_8h_a0160232bc658e89aca912fe380e0635b_icgraph}
 \end{center}
 \end{figure}
 

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['perception_5ftask_294',['perception_task',['../tasks_8h.html#a746b11c2b14e499dab89746ee003716d',1,'perception_task(void *arg):&#160;tasks.c'],['../tasks_8c.html#a746b11c2b14e499dab89746ee003716d',1,'perception_task(void *arg):&#160;tasks.c']]],
-  ['ptask_5finit_295',['ptask_init',['../ptask_8h.html#a16dc5b4ee9790f380821701ff6865e90',1,'ptask.h']]]
+  ['main_297',['main',['../main_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main.c']]],
+  ['mapping_298',['mapping',['../group__PerceptionModule.html#ga7a08d156b7c6bc70ed16acb315bd41ed',1,'mapping(cone *detected_cones):&#160;perception.c'],['../group__PerceptionModule.html#ga7a08d156b7c6bc70ed16acb315bd41ed',1,'mapping(cone *detected_cones):&#160;perception.c']]]
 ];

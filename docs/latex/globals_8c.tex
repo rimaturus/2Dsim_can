@@ -74,6 +74,10 @@ sem\+\_\+t \mbox{\hyperlink{globals_8c_a88234d9ca4c491b833932c377e5d71f5}{lidar\
 \item 
 pthread\+\_\+mutex\+\_\+t \mbox{\hyperlink{globals_8c_ad4db8311e07824b47f416a7485ebfa31}{draw\+\_\+mutex}} = PTHREAD\+\_\+\+MUTEX\+\_\+\+INITIALIZER
 \item 
+pthread\+\_\+mutex\+\_\+t \mbox{\hyperlink{globals_8c_aae4c65f47a2612af74e29221b5f46615}{map\+\_\+mutex}} = PTHREAD\+\_\+\+MUTEX\+\_\+\+INITIALIZER
+\item 
+pthread\+\_\+mutex\+\_\+t \mbox{\hyperlink{globals_8c_a33be0e05d65c8e475835659eeb66a731}{car\+\_\+mutex}} = PTHREAD\+\_\+\+MUTEX\+\_\+\+INITIALIZER
+\item 
 int \mbox{\hyperlink{globals_8c_a9455f2c8b15fb5ca0c1e1841cfb833f5}{dl\+\_\+miss\+\_\+perception}} = 0
 \item 
 int \mbox{\hyperlink{globals_8c_a476edec7d3a3162e1e3fdf6d3d667411}{dl\+\_\+miss\+\_\+trajectory}} = 0
@@ -144,7 +148,13 @@ The initial orientation angle of the car (in degrees).
 \begin{DoxyItemize}
 \item 
 \end{DoxyItemize}
-\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a4a4a6918df3caa78a889c76207349a02}\label{globals_8c_a4a4a6918df3caa78a889c76207349a02}} 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a33be0e05d65c8e475835659eeb66a731}\label{globals_8c_a33be0e05d65c8e475835659eeb66a731}} 
+\index{globals.c@{globals.c}!car\_mutex@{car\_mutex}}
+\index{car\_mutex@{car\_mutex}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{car\_mutex}{car\_mutex}}
+{\footnotesize\ttfamily pthread\+\_\+mutex\+\_\+t car\+\_\+mutex = PTHREAD\+\_\+\+MUTEX\+\_\+\+INITIALIZER}
+
+\mbox{\Hypertarget{globals_8c_a4a4a6918df3caa78a889c76207349a02}\label{globals_8c_a4a4a6918df3caa78a889c76207349a02}} 
 \index{globals.c@{globals.c}!car\_x@{car\_x}}
 \index{car\_x@{car\_x}!globals.c@{globals.c}}
 \doxysubsubsection{\texorpdfstring{car\_x}{car\_x}}
@@ -264,7 +274,13 @@ The multiplier \textquotesingle{}px\+\_\+per\+\_\+meter\textquotesingle{} used f
 A POSIX semaphore used to synchronize access to Li\+DAR data.
 \begin{DoxyItemize}
 \item 
-\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}\label{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}} 
+\end{DoxyItemize}\mbox{\Hypertarget{globals_8c_aae4c65f47a2612af74e29221b5f46615}\label{globals_8c_aae4c65f47a2612af74e29221b5f46615}} 
+\index{globals.c@{globals.c}!map\_mutex@{map\_mutex}}
+\index{map\_mutex@{map\_mutex}!globals.c@{globals.c}}
+\doxysubsubsection{\texorpdfstring{map\_mutex}{map\_mutex}}
+{\footnotesize\ttfamily pthread\+\_\+mutex\+\_\+t map\+\_\+mutex = PTHREAD\+\_\+\+MUTEX\+\_\+\+INITIALIZER}
+
+\mbox{\Hypertarget{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}\label{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}} 
 \index{globals.c@{globals.c}!measures@{measures}}
 \index{measures@{measures}!globals.c@{globals.c}}
 \doxysubsubsection{\texorpdfstring{measures}{measures}}

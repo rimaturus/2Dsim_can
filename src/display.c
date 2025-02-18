@@ -386,7 +386,8 @@ void draw_trajectory(waypoint *trajectory)
 			3,
 			makecol(0, 255, 0)
 		);
-
+	}
+#ifdef DEBUG
 	for (int i = 0; i < wp_ahead_idx; i++)
 	{
 		circlefill(
@@ -411,37 +412,26 @@ void draw_trajectory(waypoint *trajectory)
 		);
 
 		free(text);  // Free the memory
-
-
 	}
 
-#ifdef DEBUG
-		char* text = (char*)malloc(10);  // Allocate space for the string
-		snprintf(text, 10, "%d", traj_point_idx);  // Convert int to string
 
-		textout_ex(
-			trajectory_bmp, 
-			font, 
-			text, 
-			(int)(trajectory[traj_point_idx].x * px_per_meter), // - (int)(car_x * px_per_meter - maxRange*px_per_meter), 
-			(int)(trajectory[traj_point_idx].y * px_per_meter), // - (int)(car_y * px_per_meter - maxRange*px_per_meter), 
-			makecol(255, 0, 0), 
-			makecol(255, 255, 255)
-		);
+    // Draw car2wp2 vector as a line on perception bitmap
+    line(display_buffer,
+        (int)(car_x * px_per_meter), 
+        (int)(car_y * px_per_meter),
+        (int)(reordered_ahead[3].x * px_per_meter),
+        (int)(reordered_ahead[3].y * px_per_meter),
+        makecol(0, 0, 255));  // Red line
 
-		free(text);  // Free the memory
+    line(display_buffer,
+        (int)(car_x * px_per_meter), 
+        (int)(car_y * px_per_meter),
+        (int)((car_x + car_versor_x) * px_per_meter),
+        (int)((car_y + car_versor_y) * px_per_meter),
+        makecol(0,255, 0));  // Red line
 
-		line(
-			car, 
-			(int)(car->w/2),
-			(int)(car->h/2),
-			(int)(car->w/2),
-			(int)(car->h/2) - 1000,
-			makecol(0, 255, 0)
-		);
 #endif /* DEBUG */
 
-	}
 	draw_sprite(display_buffer, trajectory_bmp, 0, 0);
 }
 
@@ -537,7 +527,7 @@ void draw_controls()
 
 void disp_deadline_miss(){
 	char text[100];
-	sprintf(text, "PERCEPTION: %d, \nTRAJECTORY: %d, \nCONTROL: %d, \nDISPLAY: %d, \nSETTINGS: %d", dl_miss_perception, dl_miss_trajectory, dl_miss_control, dl_miss_display, dl_miss_settings);
+	sprintf(text, "PERCEPTION: %d, TRAJECTORY: %d, CONTROL: %d, DISPLAY: %d, SETTINGS: %d", dl_miss_perception, dl_miss_trajectory, dl_miss_control, dl_miss_display, dl_miss_settings);
 	textout_ex(display_buffer, font, text, 0, 20, makecol(255, 255, 255), makecol(0, 0, 0));
 }
 

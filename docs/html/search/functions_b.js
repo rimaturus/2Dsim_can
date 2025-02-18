@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['settings_5ftask_297',['settings_task',['../tasks_8h.html#a0fc6c027e96e920540028bd808a43c5f',1,'settings_task(void *arg):&#160;tasks.c'],['../tasks_8c.html#a0fc6c027e96e920540028bd808a43c5f',1,'settings_task(void *arg):&#160;tasks.c']]]
+  ['runtime_301',['runtime',['../utilities_8h.html#a28b6717d007598c8d776ee5b8652be51',1,'runtime(int stop_signal, char *task_name):&#160;utilities.c'],['../utilities_8c.html#a28b6717d007598c8d776ee5b8652be51',1,'runtime(int stop_signal, char *task_name):&#160;utilities.c']]]
 ];

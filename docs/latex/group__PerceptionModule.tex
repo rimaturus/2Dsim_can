@@ -22,7 +22,7 @@ file \mbox{\hyperlink{perception_8c}{perception.\+c}}
 \item 
 void \mbox{\hyperlink{group__PerceptionModule_gaf16a2babc7e4a480309f889a0e848c72}{check\+\_\+nearest\+\_\+point}} (int angle, float new\+\_\+point\+\_\+x, float new\+\_\+point\+\_\+y, int color, \mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$cone\+\_\+borders)
 \item 
-void \mbox{\hyperlink{group__PerceptionModule_gad42bf825ec1093bf25b80bc192f3f952}{lidar}} (float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, \mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} $\ast$\mbox{\hyperlink{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}{measures}})
+void \mbox{\hyperlink{group__PerceptionModule_ga6deb1401c6553c041502734beae834c7}{lidar}} (\mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} $\ast$\mbox{\hyperlink{globals_8c_a6579cbc24dcb1c6ec71ccdcf287e01f7}{measures}})
 \item 
 void \mbox{\hyperlink{group__PerceptionModule_ga72a3e7493207b8631b9866f4518aac0b}{init\+\_\+cone\+\_\+borders}} (\mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$cone\+\_\+borders)
 \item 
@@ -34,7 +34,7 @@ void \mbox{\hyperlink{group__PerceptionModule_ga6d3463008b5a741855cf97777c2ab141
 \item 
 float $\ast$ \mbox{\hyperlink{group__PerceptionModule_ga53da800f4ff7588c8d7fec76b1baebfb}{find\+\_\+cone\+\_\+center}} (\mbox{\hyperlink{structHough__circle__point__t}{Hough\+\_\+circle\+\_\+point\+\_\+t}} $\ast$possible\+\_\+centers, int center\+\_\+count)
 \item 
-void \mbox{\hyperlink{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a}{mapping}} (float \mbox{\hyperlink{globals_8c_a4a4a6918df3caa78a889c76207349a02}{car\+\_\+x}}, float \mbox{\hyperlink{globals_8c_a2ff6267ace75a40353ce62fdb02b9e67}{car\+\_\+y}}, int \mbox{\hyperlink{globals_8c_ad9878a31df3b8d7db61cf55b7eb07cd4}{car\+\_\+angle}}, \mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}})
+void \mbox{\hyperlink{group__PerceptionModule_ga7a08d156b7c6bc70ed16acb315bd41ed}{mapping}} (\mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}})
 \item 
 void \mbox{\hyperlink{group__PerceptionModule_ga697c64eba1fb6796e0e5ccc17dc578dd}{update\+\_\+map}} (\mbox{\hyperlink{structcone}{cone}} $\ast$\mbox{\hyperlink{group__PerceptionModule_gaab5237f191baaef95b94ad0686b40aa6}{detected\+\_\+cones}})
 \end{DoxyCompactItemize}
@@ -79,7 +79,8 @@ int \mbox{\hyperlink{group__PerceptionModule_ga7b64bf8a899686d6bf0c7d6c65e9d522}
 \doxysubsubsection{\texorpdfstring{check\_nearest\_point()}{check\_nearest\_point()}}
 {\footnotesize\ttfamily void check\+\_\+nearest\+\_\+point (\begin{DoxyParamCaption}\item[{int}]{angle,  }\item[{float}]{new\+\_\+point\+\_\+x,  }\item[{float}]{new\+\_\+point\+\_\+y,  }\item[{int}]{color,  }\item[{\mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$}]{cone\+\_\+borders }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -110,37 +111,40 @@ Here is the caller graph for this function\+:\nopagebreak
 \doxysubsubsection{\texorpdfstring{init\_cone\_borders()}{init\_cone\_borders()}}
 {\footnotesize\ttfamily void init\+\_\+cone\+\_\+borders (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcone__border}{cone\+\_\+border}} $\ast$}]{cone\+\_\+borders }\end{DoxyParamCaption})}
 
-\mbox{\Hypertarget{group__PerceptionModule_gad42bf825ec1093bf25b80bc192f3f952}\label{group__PerceptionModule_gad42bf825ec1093bf25b80bc192f3f952}} 
+\mbox{\Hypertarget{group__PerceptionModule_ga6deb1401c6553c041502734beae834c7}\label{group__PerceptionModule_ga6deb1401c6553c041502734beae834c7}} 
 \index{Cone Detection and Mapping@{Cone Detection and Mapping}!lidar@{lidar}}
 \index{lidar@{lidar}!Cone Detection and Mapping@{Cone Detection and Mapping}}
 \doxysubsubsection{\texorpdfstring{lidar()}{lidar()}}
-{\footnotesize\ttfamily void lidar (\begin{DoxyParamCaption}\item[{float}]{car\+\_\+x,  }\item[{float}]{car\+\_\+y,  }\item[{\mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} $\ast$}]{measures }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void lidar (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structpointcloud__t}{pointcloud\+\_\+t}} $\ast$}]{measures }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=326pt]{group__PerceptionModule_gad42bf825ec1093bf25b80bc192f3f952_icgraph}
+\includegraphics[width=326pt]{group__PerceptionModule_ga6deb1401c6553c041502734beae834c7_icgraph}
 \end{center}
 \end{figure}
-\mbox{\Hypertarget{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a}\label{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a}} 
+\mbox{\Hypertarget{group__PerceptionModule_ga7a08d156b7c6bc70ed16acb315bd41ed}\label{group__PerceptionModule_ga7a08d156b7c6bc70ed16acb315bd41ed}} 
 \index{Cone Detection and Mapping@{Cone Detection and Mapping}!mapping@{mapping}}
 \index{mapping@{mapping}!Cone Detection and Mapping@{Cone Detection and Mapping}}
 \doxysubsubsection{\texorpdfstring{mapping()}{mapping()}}
-{\footnotesize\ttfamily void mapping (\begin{DoxyParamCaption}\item[{float}]{car\+\_\+x,  }\item[{float}]{car\+\_\+y,  }\item[{int}]{car\+\_\+angle,  }\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{detected\+\_\+cones }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void mapping (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{detected\+\_\+cones }\end{DoxyParamCaption})}
 
-Here is the call graph for this function\+:\nopagebreak
+Here is the call graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=292pt]{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a_cgraph}
+\includegraphics[width=292pt]{group__PerceptionModule_ga7a08d156b7c6bc70ed16acb315bd41ed_cgraph}
 \end{center}
 \end{figure}
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=347pt]{group__PerceptionModule_ga9c68a3d545ebb7bb3092f88b7e10084a_icgraph}
+\includegraphics[width=347pt]{group__PerceptionModule_ga7a08d156b7c6bc70ed16acb315bd41ed_icgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{group__PerceptionModule_ga697c64eba1fb6796e0e5ccc17dc578dd}\label{group__PerceptionModule_ga697c64eba1fb6796e0e5ccc17dc578dd}} 
@@ -149,7 +153,8 @@ Here is the caller graph for this function\+:\nopagebreak
 \doxysubsubsection{\texorpdfstring{update\_map()}{update\_map()}}
 {\footnotesize\ttfamily void update\+\_\+map (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcone}{cone}} $\ast$}]{detected\+\_\+cones }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:\nopagebreak
+Here is the caller graph for this function\+:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
